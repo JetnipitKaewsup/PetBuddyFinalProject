@@ -9,6 +9,9 @@ android {
     compileSdk {
         version = release(36)
     }
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.petbuddy"
@@ -35,6 +38,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+
+        //calendar
+        isCoreLibraryDesugaringEnabled = true
+
     }
 }
 
