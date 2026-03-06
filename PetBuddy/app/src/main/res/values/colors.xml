@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="home_botton">#E3D0C1</color>
+    <color name="element_color">#F0E9E2</color>
+    <color name="brown">#A8817A</color>
+    <color name="light_brown">#F0E9E2</color>
+    <color name="backgroundColor">#FFFDF6</color>
 </resources>
