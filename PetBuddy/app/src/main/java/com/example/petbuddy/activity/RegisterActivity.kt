@@ -1,5 +1,6 @@
 package com.example.petbuddy.activity
 
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +16,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var mAuth: FirebaseAuth
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

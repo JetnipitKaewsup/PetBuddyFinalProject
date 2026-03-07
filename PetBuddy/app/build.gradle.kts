@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -31,10 +33,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -71,4 +69,15 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("ru.cleverpumpkin:crunchycalendar:2.6.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation("io.github.jan-tennert.supabase:supabase-kt:2.0.0")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.0.0")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.0.0")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.0.0")
+    implementation("io.github.jan-tennert.supabase:realtime-kt:2.0.0")
+
+    implementation("io.ktor:ktor-client-okhttp:2.3.7")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
