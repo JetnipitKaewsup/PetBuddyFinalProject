@@ -73,7 +73,7 @@
         android:layout_marginTop="25dp"/>
 
     <ImageView
-        android:id="@+id/uploadPic"
+        android:id="@+id/imageProfile"
         android:layout_width="194dp"
         android:layout_height="194dp"
         app:layout_constraintBottom_toTopOf="@+id/editUsername"
