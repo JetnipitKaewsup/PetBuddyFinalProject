@@ -1,5 +1,6 @@
 package com.example.petbuddy.activity
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -61,6 +62,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+
             registerUser(email,password,username)
         }
     }
@@ -109,7 +111,7 @@ class RegisterActivity : AppCompatActivity() {
                 } ?: throw Exception("Image read failed")
 
                 val bucket = SupabaseClient.client.storage.from("picture")
-                
+
                 bucket.upload(
                     path = "profile/$uid.jpg",
                     data = bytes,
@@ -168,6 +170,9 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
 
+                val intent = Intent(this, CreatePetProfile::class.java)
+                startActivity(intent)
+
                 finish()
 
             }
@@ -180,7 +185,7 @@ class RegisterActivity : AppCompatActivity() {
                 ).show()
 
             }
-
     }
 
 }
+

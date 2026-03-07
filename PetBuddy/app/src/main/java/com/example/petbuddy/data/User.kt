@@ -7,10 +7,4 @@ data class User(
     val username: String = "",
     val profileImage: String = "",
     val createAccount: Boolean = false,
-
-    val petIds: List<String> = emptyList(),
-    val weightIds: List<String> = emptyList(),
-    val expenseIds: List<String> = emptyList(),
-    val scheduleIds: List<String> = emptyList(),
-    val feedingIds: List<String> = emptyList()
 )

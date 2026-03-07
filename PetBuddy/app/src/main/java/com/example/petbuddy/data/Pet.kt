@@ -12,9 +12,4 @@ data class Pet(
     val birthDate: Timestamp? = null,
     val pathURL: String = "",
     var isSelected: Boolean = false,
-
-    val weightIds: List<String> = emptyList(),
-    val expenseIds: List<String> = emptyList(),
-    val scheduleIds: List<String> = emptyList(),
-    val feedingIds: List<String> = emptyList()
 )

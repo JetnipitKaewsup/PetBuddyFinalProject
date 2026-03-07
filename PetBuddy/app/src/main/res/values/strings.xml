@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PetBuddy</string>
+    <string-array name="pet">
+        <item>Dog</item>
+        <item>Cat</item>
+    </string-array>
 </resources>
