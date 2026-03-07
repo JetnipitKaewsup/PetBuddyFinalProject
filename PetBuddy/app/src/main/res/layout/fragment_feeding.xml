@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="จัดการตารางการให้อาหาร"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- ปุ่มเลือกสัตว์เลี้ยง -->
+    <Button
+        android:id="@+id/btnSelectPets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="เลือกสัตว์เลี้ยง"
+        android:backgroundTint="@color/brown"
+        android:layout_marginBottom="8dp" />
+
+    <!-- แสดงจำนวนที่เลือก -->
+    <TextView
+        android:id="@+id/tvSelectedCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ยังไม่ได้เลือกสัตว์เลี้ยง"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginBottom="16dp" />
+
+    <!-- รายการสัตว์เลี้ยงที่เลือก -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="สัตว์เลี้ยงที่เลือก:"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSelectedPets"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp" />
+
+    <!-- แสดงเมื่อไม่มีสัตว์เลี้ยง -->
+    <TextView
+        android:id="@+id/tvNoPets"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="ยังไม่ได้เลือกสัตว์เลี้ยง\nกรุณากดปุ่ม 'เลือกสัตว์เลี้ยง'"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:visibility="visible" />
+
+    <!-- ปุ่มบันทึก -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="บันทึกตารางการให้อาหาร"
+        android:backgroundTint="@color/brown"
+        android:enabled="false" />
+
+</LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- สีเมื่อเลือกเมนูนั้น (checked) -->
+    <item android:color="@color/brown" android:state_checked="true" />
+    <!-- สีเมื่อไม่ได้เลือกเมนูนั้น -->
+    <item android:color="@android:color/darker_gray" android:state_checked="false" />
+</selector>

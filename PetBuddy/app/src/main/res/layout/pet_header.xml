@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/petHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp"
+    app:strokeColor="@color/brown"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <!-- รูปสัตว์เลี้ยง -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivPetHeaderImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/pet_placeholder"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/brown" />
+
+        <!-- ข้อมูลสัตว์เลี้ยง -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPetHeaderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ชื่อสัตว์เลี้ยง"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPetHeaderDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="สุนัข • โกลเด้น • 3 ปี"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray" />
+
+        </LinearLayout>
+
+        <!-- ปุ่มเปลี่ยนสัตว์เลี้ยง (สำหรับเมนูที่เลือกตัวเดียว) -->
+        <Button
+            android:id="@+id/btnChangePet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เปลี่ยน"
+            android:backgroundTint="@color/black"
+            android:visibility="gone" />
+
+        <!-- สำหรับเมนูที่เลือกหลายตัว แสดงจำนวนที่เลือก -->
+        <TextView
+            android:id="@+id/tvSelectedCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 ตัว"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

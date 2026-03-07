@@ -82,4 +82,11 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // ViewModel และ LiveData
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // สำหรับ by viewModels() ใน Fragment
+    implementation("androidx.activity:activity-ktx:1.8.0")
 }

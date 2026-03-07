@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- เลื่อนจากตำแหน่งปกติออกไปทางซ้าย -->
+    <translate
+        android:duration="300"
+        android:fromXDelta="0%"
+    android:toXDelta="-100%" />       <!-- ไปทางซ้ายสุด -->
+
+    <!-- ค่อยๆ จางหาย (fade out) -->
+    <alpha
+        android:duration="300"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0" />
+</set>
