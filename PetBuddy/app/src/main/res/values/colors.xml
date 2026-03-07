@@ -7,4 +7,6 @@
     <color name="brown">#A8817A</color>
     <color name="light_brown">#F0E9E2</color>
     <color name="backgroundColor">#FFFDF6</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_white_secondary">#DDFFFFFF</color>
 </resources>

@@ -3,7 +3,7 @@ package com.example.petbuddy.data
 import com.google.firebase.Timestamp
 
 data class Pet(
-    val petId: String = "",
+    var petId: String = "",
     val userId: String = "",
     val petName: String = "",
     val sex: String = "",
