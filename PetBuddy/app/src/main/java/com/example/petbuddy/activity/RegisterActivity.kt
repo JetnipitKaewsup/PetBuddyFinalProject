@@ -109,15 +109,13 @@ class RegisterActivity : AppCompatActivity() {
                 } ?: throw Exception("Image read failed")
 
                 val bucket = SupabaseClient.client.storage.from("picture")
-
-                // Upload image
+                
                 bucket.upload(
                     path = "profile/$uid.jpg",
                     data = bytes,
                     upsert = true
                 )
 
-                // Get public URL
                 val imageUrl = bucket.publicUrl("profile/$uid.jpg")
 
                 Log.d("UPLOAD","Image URL: $imageUrl")
