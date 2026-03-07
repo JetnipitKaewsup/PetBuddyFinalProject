@@ -23,10 +23,10 @@
             android:id="@+id/imagePet"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:scaleType="centerCrop"
             android:src="@drawable/logo_1"
-            android:clipToOutline="true"
-            app:shapeAppearanceOverlay="@style/CircleImage"
+            android:scaleType="centerCrop"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#15A8817A"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
