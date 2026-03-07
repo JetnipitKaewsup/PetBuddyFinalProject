@@ -1,5 +1,6 @@
 package com.example.petbuddy.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,19 +31,18 @@ class PetResultAdapter(
         holder.nameTextView.text = pet.petName
         holder.breedTextView.text = pet.breed
 
-        Glide.with(holder.imageView.context)
-            .load(pet.pathURL)
+        Glide.with(holder.itemView.context)
+            .load(pet.imagePath)
             .centerCrop()
             .into(holder.imageView)
 
+        Log.d("PET_IMAGE_URL", pet.imagePath)
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(pet)
         }
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
     fun updatePets(newPets: List<Pet>) {
         items.clear()

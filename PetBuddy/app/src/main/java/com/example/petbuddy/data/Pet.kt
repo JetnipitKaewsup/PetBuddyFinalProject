@@ -10,6 +10,6 @@ data class Pet(
     val breed: String = "",
     val petTypeId: String = "",
     val birthDate: Timestamp? = null,
-    val pathURL: String = "",
+    val imagePath: String = "",
     var isSelected: Boolean = false,
 )

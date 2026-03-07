@@ -19,7 +19,7 @@
         android:padding="14dp">
 
         <!-- Pet Image -->
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imagePet"
             android:layout_width="60dp"
             android:layout_height="60dp"

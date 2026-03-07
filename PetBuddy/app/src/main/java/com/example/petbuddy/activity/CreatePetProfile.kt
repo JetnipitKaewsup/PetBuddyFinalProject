@@ -1,6 +1,7 @@
 package com.example.petbuddy.activity
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -211,6 +212,8 @@ class CreatePetProfile : AppCompatActivity() {
             }
 
             savePetToFirestore(petName, sex, breed, petType)
+
+
         }
     }
 
@@ -249,6 +252,7 @@ class CreatePetProfile : AppCompatActivity() {
             .addOnSuccessListener {
 
                 Toast.makeText(this,"Pet created successfully!",Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, PetResult::class.java))
                 finish()
 
             }
