@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="?selectableItemBackgroundBorderless"
+                android:tint="@color/brown"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="เพิ่มประวัติวัคซีน"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/brown"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <!-- ================= New Vaccine Section ================= -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="บันทึกการฉีดวัคซีน"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Vaccine Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ชื่อวัคซีน *"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerVaccineName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_brown_bg"
+            android:spinnerMode="dialog"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Dose -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เข็มที่ *"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerDose"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_brown_bg"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Date and Time Row -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="วันที่ฉีด *"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <!-- Date Picker -->
+            <LinearLayout
+                android:id="@+id/layoutDate"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:background="@drawable/light_brown_bg"
+                android:layout_marginEnd="8dp">
+
+                <EditText
+                    android:id="@+id/edtVaccineDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:hint="เลือกวันที่"
+                    android:textSize="14sp"
+                    android:paddingVertical="8dp"/>
+
+                <ImageView
+                    android:id="@+id/btnVaccineDatePicker"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:tint="@color/brown"/>
+            </LinearLayout>
+
+            <!-- Time Picker -->
+            <LinearLayout
+                android:id="@+id/layoutTime"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:background="@drawable/light_brown_bg"
+                android:layout_marginStart="8dp">
+
+                <EditText
+                    android:id="@+id/edtVaccineTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:hint="เลือกเวลา"
+                    android:textSize="14sp"
+                    android:paddingVertical="8dp"/>
+
+                <ImageView
+                    android:id="@+id/btnVaccineTimePicker"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_clock"
+                    android:tint="@color/brown"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Place -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="สถานที่"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/edtVaccinePlace"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_brown_bg"
+            android:hint="โรงพยาบาลสัตว์ / คลินิก"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- ================= Next Vaccine Button ================= -->
+        <LinearLayout
+            android:id="@+id/btnNextVaccine"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/brown_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="เพิ่มข้อมูลเข็มถัดไป (ไม่บังคับ)"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_add"
+                android:tint="@android:color/white"/>
+        </LinearLayout>
+
+        <!-- ================= Next Vaccine Form (Hidden by default) ================= -->
+        <LinearLayout
+            android:id="@+id/layoutNextVaccine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/light_brown"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ข้อมูลเข็มถัดไป"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/brown"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Next Vaccine Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ชื่อวัคซีน"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerNextVaccineName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/light_brown_bg"
+                android:paddingHorizontal="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Next Dose -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เข็มที่"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerNextDose"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/light_brown_bg"
+                android:paddingHorizontal="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Next Date and Time -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="วันที่นัด"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <!-- Next Date Picker -->
+                <LinearLayout
+                    android:id="@+id/layoutNextDate"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="12dp"
+                    android:background="@drawable/light_brown_bg"
+                    android:layout_marginEnd="8dp">
+
+                    <EditText
+                        android:id="@+id/edtNextVaccineDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:hint="เลือกวันที่"
+                        android:textSize="14sp"
+                        android:paddingVertical="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/btnNextVaccineDatePicker"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calendar"
+                        android:tint="@color/brown"/>
+                </LinearLayout>
+
+                <!-- Next Time Picker -->
+                <LinearLayout
+                    android:id="@+id/layoutNextTime"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="12dp"
+                    android:background="@drawable/light_brown_bg"
+                    android:layout_marginStart="8dp">
+
+                    <EditText
+                        android:id="@+id/edtNextVaccineTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:hint="เลือกเวลา"
+                        android:textSize="14sp"
+                        android:paddingVertical="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/btnNextVaccineTimePicker"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_clock"
+                        android:tint="@color/brown"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Next Place -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="สถานที่"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/edtNextVaccinePlace"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/light_brown_bg"
+                android:hint="โรงพยาบาลสัตว์ / คลินิก"
+                android:paddingHorizontal="12dp"
+                android:layout_marginBottom="8dp"/>
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="ยกเลิก"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="@color/brown"
+                app:strokeColor="@color/brown"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="บันทึก"
+                android:backgroundTint="@color/brown"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

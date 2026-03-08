@@ -87,7 +87,7 @@
                 android:layout_height="59dp"
                 android:contentDescription="Go back"
                 android:background="@drawable/background_circle_light"
-                android:src="@drawable/outline_arrow_back_ios_24"
+                android:src="@drawable/ic_arrow_back"
                 app:tint="@color/brown" />
 
             <Space

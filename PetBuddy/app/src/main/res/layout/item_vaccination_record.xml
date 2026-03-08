@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <!-- Main Vaccine Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        android:layout_marginBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Vaccine Name and Dose -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvVaccineName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Rabies virus"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/brown"/>
+
+                <TextView
+                    android:id="@+id/tvDose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="เข็ม 4"
+                    android:textSize="14sp"
+                    android:background="@drawable/light_brown_bg"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"/>
+            </LinearLayout>
+
+            <!-- Date and Time -->
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="26/04/2025"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:00"
+                android:textSize="14sp"/>
+
+            <!-- Place -->
+            <TextView
+                android:id="@+id/tvPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vet Hospital"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <!-- Next Vaccine Info -->
+            <LinearLayout
+                android:id="@+id/layoutNextVaccine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:background="@color/light_brown"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="เข็มถัดไป"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/brown"/>
+
+                <TextView
+                    android:id="@+id/tvNextVaccineName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rabies virus"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tvNextDose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="เข็มที่ 5"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tvNextDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30/05/2025"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tvDaysLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="อีก 7 วัน"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/brown"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
