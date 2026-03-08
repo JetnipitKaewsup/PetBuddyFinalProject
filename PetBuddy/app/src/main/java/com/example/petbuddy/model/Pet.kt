@@ -3,10 +3,11 @@ package com.example.petbuddy.model
 import com.google.firebase.Timestamp
 
 data class Pet(
-    val id: String = "",
-    val name: String = "",
-    val species: String = "",
+    var petId: String = "",
+    val petName: String = "",
+    val sex: String = "",
     val breed: String = "",
-    val birthdate: Timestamp? = null,
-    val imageUrl: String = ""
-)
+    val petType: String = "",
+    val birthDate: Timestamp? = null,
+    val imagePath: String ?= null,
+    )

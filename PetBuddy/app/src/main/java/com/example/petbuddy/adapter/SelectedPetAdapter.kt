@@ -3,16 +3,14 @@ package com.example.petbuddy.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.petbuddy.databinding.ItemSelectedPetBinding
 import com.example.petbuddy.model.Pet
-import com.example.petbuddy.R
 
 class SelectedPetAdapter(
     private val onRemoveClick: (String) -> Unit
 ) : RecyclerView.Adapter<SelectedPetAdapter.SelectedPetViewHolder>() {
 
-    private var pets = listOf<Pet>()
+    private var pets: List<Pet> = emptyList()
 
     fun submitList(newPets: List<Pet>) {
         pets = newPets
@@ -39,18 +37,18 @@ class SelectedPetAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(pet: Pet) {
-            binding.tvPetName.text = pet.name
-            binding.tvPetBreed.text = pet.breed
+            binding.apply {
+                tvPetName.text = pet.petName
+                /*
+                tvPetType.text = when (pet.type) {
+                    "dog" -> "สุนัข"
+                    "cat" -> "แมว"
+                    else -> pet.type ?: "ไม่ระบุ"
+                }*/
 
-            Glide.with(binding.ivPet.context)
-                .load(pet.imageUrl)
-                .placeholder(R.drawable.pet_placeholder)
-                .error(R.drawable.pet_placeholder)
-                .circleCrop()
-                .into(binding.ivPet)
-
-            binding.btnRemove.setOnClickListener {
-                onRemoveClick(pet.id)
+                btnRemove.setOnClickListener {
+                    onRemoveClick(pet.petId)
+                }
             }
         }
     }

@@ -1,50 +1,49 @@
 package com.example.petbuddy.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.R
+import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.PetAdapter
 import com.example.petbuddy.databinding.FragmentPetSelectionBinding
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.util.Constants
-import com.example.petbuddy.viewmodel.SharedPetViewModel
-
 
 class PetSelectionFragment : Fragment() {
+
     private var _binding: FragmentPetSelectionBinding? = null
     private val binding get() = _binding!!
 
-    // ใช้ activityViewModels() เพื่อแชร์ ViewModel กับ Activity
-    private val sharedViewModel: SharedPetViewModel by activityViewModels()
-
-    private lateinit var mode: SelectionMode //เก็บโหมดการเลือก ซึ่งถูกส่งมาจาก Acitivity
-    private val selectedPets = mutableListOf<Pet>()
-    private lateinit var adapter: PetAdapter // จัดการส่วนแสดงสัตว์เลี้ยงใน recyclerView
+    private lateinit var baseActivity: BaseActivity
+    private lateinit var mode: SelectionMode
+    private lateinit var adapter: PetAdapter
 
     private var sourceTag: String? = null
 
-
     // ข้อมูลตัวอย่าง (จริงๆ ต้องโหลดจาก Firebase)
     private val mockPets = listOf(
-        Pet("1", "ทองต้วน", "dog", "โกลเด้น", null, ""),
-        Pet("2", "สีดา", "cat", "วิเชียรมาศ", null, ""),
-        Pet("3", "ดำ", "dog", "ชิวาวา", null, "")
+        Pet("1", "ทองต้วน", "dog", "โกลเด้น", "dog", null),
+        Pet("2", "สีดา", "cat", "วิเชียรมาศ", "cat", null),
+        Pet("3", "ดำ", "dog", "ชิวาวา", "dog", null)
     )
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mode = arguments?.getSerializable("mode", SelectionMode::class.java) ?: SelectionMode.SINGLE
         sourceTag = arguments?.getString("source_tag")
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // เก็บ reference ของ BaseActivity
+        baseActivity = context as BaseActivity
     }
 
     override fun onCreateView(
@@ -53,7 +52,8 @@ class PetSelectionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPetSelectionBinding.inflate(inflater, container, false)
-        return binding.root}
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,20 +65,18 @@ class PetSelectionFragment : Fragment() {
 
     private fun setupUI() {
         binding.tvSubtitle.text = when (mode) {
-            SelectionMode.SINGLE -> "Choose a pet"
-            SelectionMode.MULTIPLE -> "Select one or more pets (at least 1)"
+            SelectionMode.SINGLE -> "เลือกสัตว์เลี้ยง 1 ตัว"
+            SelectionMode.MULTIPLE -> "เลือกสัตว์เลี้ยง 1 ตัวขึ้นไป"
         }
 
         if (mode == SelectionMode.MULTIPLE) {
             binding.btnConfirm.visibility = View.VISIBLE
-            binding.btnConfirm.text = "confirm (0)"
+            binding.btnConfirm.text = "ยืนยัน (0)"
             binding.btnConfirm.isEnabled = false
 
             binding.btnConfirm.setOnClickListener {
                 onConfirmClick()
             }
-        }else if (mode == SelectionMode.SINGLE) {
-
         }
     }
 
@@ -90,7 +88,7 @@ class PetSelectionFragment : Fragment() {
             },
             onSelectionChanged = { selectedCount ->
                 if (mode == SelectionMode.MULTIPLE) {
-                    binding.btnConfirm.text = "confirm ($selectedCount)"
+                    binding.btnConfirm.text = "ยืนยัน ($selectedCount)"
                     binding.btnConfirm.isEnabled = selectedCount > 0
                 }
             }
@@ -103,8 +101,9 @@ class PetSelectionFragment : Fragment() {
     private fun handlePetClick(pet: Pet) {
         when (mode) {
             SelectionMode.SINGLE -> {
-                // เลือกตัวเดียว → ส่งข้อมูลไป ViewModel ทันที
-                sharedViewModel.selectPet(pet)
+                // ใช้ BaseActivity
+                baseActivity.selectPet(pet)
+
                 // กลับไปหน้าก่อนตาม sourceTag
                 when (sourceTag) {
                     Constants.TAG_HEALTH_DASHBOARD -> {
@@ -117,8 +116,8 @@ class PetSelectionFragment : Fragment() {
                 }
             }
             SelectionMode.MULTIPLE -> {
-                // เลือกหลายตัว → เก็บไว้ก่อน รอกดปุ่มยืนยัน
-                // Adapter จะจัดการ selection เอง
+                // Adapter จะจัดการ selection เอง รอกดปุ่มยืนยัน
+                // ไม่ต้องทำอะไรเพิ่ม
             }
         }
     }
@@ -126,7 +125,9 @@ class PetSelectionFragment : Fragment() {
     private fun onConfirmClick() {
         val selectedPets = adapter.getSelectedPets()
         if (selectedPets.isNotEmpty()) {
-            sharedViewModel.selectPets(selectedPets)
+            // ใช้ BaseActivity
+            baseActivity.selectPets(selectedPets)
+
             // ตรวจสอบ sourceTag เพื่อกลับไปหน้าถูกต้อง
             when (sourceTag) {
                 Constants.TAG_FEEDING -> {
@@ -142,19 +143,26 @@ class PetSelectionFragment : Fragment() {
                     parentFragmentManager.popBackStack(Constants.TAG_HEALTH_DASHBOARD, 0)
                 }
                 else -> {
-                    // ถ้าไม่รู้จัก ก็กลับไปหน้าก่อน
                     parentFragmentManager.popBackStack()
                 }
             }
 
         } else {
-            Toast.makeText(requireContext(), "Please select a pet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "กรุณาเลือกสัตว์เลี้ยง", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun loadPets() {
-        // TODO: โหลดจาก Firebase
-        adapter.submitList(mockPets)
+        // โหลดจาก Firebase ผ่าน BaseActivity
+        baseActivity.loadAllPets { pets ->
+            if (pets.isNotEmpty()) {
+                adapter.submitList(pets)
+            } else {
+                // ถ้าไม่มีข้อมูล ให้ใช้ mock data
+                adapter.submitList(mockPets)
+                Toast.makeText(requireContext(), "ใช้ข้อมูลตัวอย่าง", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

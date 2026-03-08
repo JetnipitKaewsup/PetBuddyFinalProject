@@ -1,151 +1,110 @@
 package com.example.petbuddy.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import com.example.petbuddy.R
+import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.FragmentHealthDashboardBinding
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.util.Constants
-import com.example.petbuddy.utils.PetHeaderHelper
-import com.example.petbuddy.viewmodel.SharedPetViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import java.util.Date
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HealthDashboardFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HealthDashboardFragment : Fragment() {
+
     private var _binding: FragmentHealthDashboardBinding? = null
     private val binding get() = _binding!!
+    private lateinit var baseActivity: BaseActivity
 
-    // ใช้ activityViewModels() เพื่อแชร์ ViewModel กับ Activity
-    private val sharedViewModel: SharedPetViewModel by activityViewModels()
-    private var db = FirebaseFirestore.getInstance()
-
-
-
-    /*
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }*/
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        baseActivity = context as BaseActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHealthDashboardBinding.inflate(inflater, container, false)
-        return binding.root}
-/*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HealthDashboardFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HealthDashboardFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }*/
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ตรวจสอบว่ามีสัตว์เลี้ยงที่เลือกหรือไม่
-        if (!sharedViewModel.hasSelectedPet()) {
-            // ยังไม่มี ให้ไปเลือกสัตว์เลี้ยงก่อน
-            goToPetSelection()
-            return
-        }
         setupUI()
-        observeViewModel()
-        loadHealthData()
         setupClickListeners()
+        checkSelectedPet()
     }
 
-    private fun observeViewModel() {
-        // สังเกตการเปลี่ยนแปลงของสัตว์เลี้ยงที่เลือก
-        sharedViewModel.selectedPet.observe(viewLifecycleOwner) { pet ->
-            pet?.let {
-                binding.tvPetName.text = it.name
-                loadHealthData() // โหลดข้อมูลใหม่เมื่อเปลี่ยนสัตว์เลี้ยง
-            }
+    override fun onResume() {
+        super.onResume()
+        // ทุกครั้งที่กลับมาที่ fragment ให้ตรวจสอบข้อมูลอีกครั้ง
+        checkSelectedPet()
+    }
+
+    private fun checkSelectedPet() {
+        val currentPet = baseActivity.selectedPet
+        if (currentPet == null) {
+            // ยังไม่มีสัตว์เลี้ยงที่เลือก ให้ไปเลือกก่อน
+            goToPetSelection()
+        } else {
+            // มีสัตว์เลี้ยงที่เลือกแล้ว อัพเดท UI
+            updatePetInfo(currentPet)
+            loadHealthData(currentPet.petId)
         }
     }
+
     private fun setupUI() {
-        // แสดงชื่อสัตว์เลี้ยงจาก SharedPreferences
-        val petName = sharedViewModel.getSelectedPetName()
-        if (!petName.isNullOrEmpty()) {
-            binding.tvPetName.text = petName
+        // แสดงชื่อสัตว์เลี้ยงจาก BaseActivity
+        val currentPet = baseActivity.selectedPet
+        if (currentPet != null) {
+            binding.tvPetName.text = currentPet.petName
         }
     }
-    private fun loadHealthData() {
-        val petId = sharedViewModel.getSelectedPetId() ?: return
-        loadLatestWeight(petId)
-        loadVaccinationData(petId)
+
+    private fun updatePetInfo(pet: com.example.petbuddy.model.Pet) {
+        binding.tvPetName.text = pet.petName
+        // สามารถอัพเดทข้อมูลอื่นๆ เช่น รูปสัตว์เลี้ยงได้ที่นี่
     }
 
-    private fun loadLatestWeight(petId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+    private fun loadHealthData(petId: String) {
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
 
-        db.collection("users")
+        // โหลดน้ำหนักล่าสุด
+        baseActivity.db.collection("users")
             .document(userId)
-            .collection("pets")
-            .document(petId)
             .collection("weights")
+            .document(petId)
+            .collection("records")
             .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .limit(1)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     val weight = documents.documents[0].getDouble("weight") ?: 0.0
-                    val date = documents.documents[0].getDate("date")
-
-                    binding.tvLatestWeight.text = String.format("%.1f", weight)
-
-                    // คำนวณสถานะ (ตัวอย่าง)
+                    binding.tvLatestWeight.text = String.format("%.1f kg", weight)
                     binding.tvWeightStatus.text = "น้ำหนักปกติ"
                     binding.tvWeightStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
                 } else {
-                    binding.tvLatestWeight.text = "0.0"
+                    binding.tvLatestWeight.text = "- kg"
                     binding.tvWeightStatus.text = "ยังไม่มีข้อมูลน้ำหนัก"
                 }
             }
-    }
+            .addOnFailureListener {
+                binding.tvLatestWeight.text = "- kg"
+                binding.tvWeightStatus.text = "โหลดไม่สำเร็จ"
+            }
 
-    private fun loadVaccinationData(petId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        db.collection("users")
+        // โหลดวัคซีนที่กำลังจะถึง
+        baseActivity.db.collection("users")
             .document(userId)
-            .collection("pets")
-            .document(petId)
             .collection("vaccinations")
-            .whereGreaterThan("nextDueDate", Date())
+            .document(petId)
+            .collection("records")
+            .whereGreaterThan("nextDueDate", java.util.Date())
             .orderBy("nextDueDate", com.google.firebase.firestore.Query.Direction.ASCENDING)
             .limit(1)
             .get()
@@ -157,10 +116,10 @@ class HealthDashboardFragment : Fragment() {
                     binding.tvNextVaccine.text = "ไม่มีวัคซีนที่กำลังจะถึง"
                 }
             }
+            .addOnFailureListener {
+                binding.tvNextVaccine.text = "โหลดไม่สำเร็จ"
+            }
     }
-
-
-
 
     private fun setupClickListeners() {
         binding.btnChangePet.setOnClickListener {
@@ -168,7 +127,7 @@ class HealthDashboardFragment : Fragment() {
         }
 
         binding.cardWeight.setOnClickListener {
-            // ไปหน้า Weight (ส่ง petId ผ่าน ViewModel)
+            // ไปหน้า Weight
             val fragment = WeightFragment()
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -196,9 +155,8 @@ class HealthDashboardFragment : Fragment() {
                 .addToBackStack("vaccination")
                 .commit()
         }
-
-
     }
+
     private fun goToPetSelection() {
         val fragment = PetSelectionFragment()
         val data = Bundle().apply {
@@ -219,19 +177,8 @@ class HealthDashboardFragment : Fragment() {
             .commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // เมื่อกลับมาจาก PetSelectionFragment ให้โหลดข้อมูลใหม่
-        if (sharedViewModel.hasSelectedPet()) {
-            loadHealthData()
-            setupUI()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

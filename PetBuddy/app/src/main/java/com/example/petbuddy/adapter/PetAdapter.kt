@@ -55,11 +55,11 @@ class PetAdapter (
 
         fun bind(pet: Pet) {
             binding.apply {
-                tvPetName.text = pet.name
-                tvPetBreed.text = "${pet.species} • ${pet.breed}"
+                tvPetName.text = pet.petName
+                tvPetBreed.text = "${pet.petType} • ${pet.breed}"
 
                 Glide.with(ivPet.context)
-                    .load(pet.imageUrl)
+                    .load(pet.imagePath)
                     .placeholder(R.drawable.pet_placeholder)
                     .error(R.drawable.pet_placeholder)
                     .circleCrop()

@@ -1,30 +1,32 @@
 package com.example.petbuddy.fragments.feeding
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.databinding.FragmentFeedingBinding
 import com.example.petbuddy.R
+import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.SelectedPetAdapter
 import com.example.petbuddy.fragment.PetSelectionFragment
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.util.Constants
-import com.example.petbuddy.viewmodel.SharedPetViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class FeedingFragment : Fragment() {
+
     private var _binding: FragmentFeedingBinding? = null
     private val binding get() = _binding!!
-
-    private val sharedViewModel: SharedPetViewModel by activityViewModels()
+    private lateinit var baseActivity: BaseActivity
     private lateinit var adapter: SelectedPetAdapter
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        baseActivity = context as BaseActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,11 +42,16 @@ class FeedingFragment : Fragment() {
 
         setupUI()
         setupRecyclerView()
-        observeViewModel()
+        updateSelectedPetsDisplay()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // ทุกครั้งที่กลับมาที่ fragment ให้อัพเดทข้อมูล
+        updateSelectedPetsDisplay()
     }
 
     private fun setupUI() {
-        // ปุ่มเลือกสัตว์เลี้ยง
         binding.btnSelectPets.setOnClickListener {
             // ไป PetSelectionFragment เพื่อเลือกสัตว์เลี้ยง (MULTIPLE MODE)
             val fragment = PetSelectionFragment()
@@ -66,7 +73,6 @@ class FeedingFragment : Fragment() {
                 .commit()
         }
 
-        // ปุ่มบันทึก
         binding.btnSave.setOnClickListener {
             saveFeedingSchedule()
         }
@@ -74,36 +80,39 @@ class FeedingFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = SelectedPetAdapter { petId ->
-            sharedViewModel.removePetFromSelection(petId)
+            // ลบสัตว์เลี้ยงออกจากการเลือก
+            baseActivity.removePetFromSelection(petId)
+            updateSelectedPetsDisplay()
         }
 
         binding.rvSelectedPets.layoutManager = LinearLayoutManager(requireContext())
         binding.rvSelectedPets.adapter = adapter
     }
 
-    private fun observeViewModel() {
-        sharedViewModel.selectedPets.observe(viewLifecycleOwner) { pets ->
-            adapter.submitList(pets)
+    private fun updateSelectedPetsDisplay() {
+        val selectedPets = baseActivity.selectedPets
 
-            if (pets.isEmpty()) {
-                binding.tvNoPets.visibility = View.VISIBLE
-                binding.btnSave.isEnabled = false
-            } else {
-                binding.tvNoPets.visibility = View.GONE
-                binding.btnSave.isEnabled = true
-                binding.tvSelectedCount.text = "เลือก ${pets.size} ตัว"
-            }
+        adapter.submitList(selectedPets)
+
+        if (selectedPets.isEmpty()) {
+            binding.tvNoPets.visibility = View.VISIBLE
+            binding.btnSave.isEnabled = false
+            binding.tvSelectedCount.text = "ยังไม่ได้เลือกสัตว์เลี้ยง"
+        } else {
+            binding.tvNoPets.visibility = View.GONE
+            binding.btnSave.isEnabled = true
+            binding.tvSelectedCount.text = "เลือก ${selectedPets.size} ตัว"
         }
     }
 
     private fun saveFeedingSchedule() {
-        val selectedPets = sharedViewModel.selectedPets.value
-        if (selectedPets.isNullOrEmpty()) {
+        val selectedPets = baseActivity.selectedPets
+        if (selectedPets.isEmpty()) {
             Toast.makeText(requireContext(), "กรุณาเลือกสัตว์เลี้ยง", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // TODO: บันทึกตารางการให้อาหารลง Firebase
+        // TODO: บันทึกตารางการให้อาหาร
         Toast.makeText(requireContext(), "บันทึกตารางการให้อาหารสำหรับ ${selectedPets.size} ตัว", Toast.LENGTH_SHORT).show()
     }
 
@@ -111,6 +120,4 @@ class FeedingFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

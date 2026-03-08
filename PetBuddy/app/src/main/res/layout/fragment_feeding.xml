@@ -1,75 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white">
+    tools:context=".fragments.feeding.FeedingFragment">
 
+    <!-- หัวข้อหน้า Feeding -->
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="จัดการตารางการให้อาหาร"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:textColor="@color/brown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ปุ่มเลือกสัตว์เลี้ยง -->
-    <Button
-        android:id="@+id/btnSelectPets"
-        android:layout_width="match_parent"
+    <!-- Card สำหรับเลือกสัตว์เลี้ยง -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardSelectPets"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="เลือกสัตว์เลี้ยง"
-        android:backgroundTint="@color/brown"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
-    <!-- แสดงจำนวนที่เลือก -->
-    <TextView
-        android:id="@+id/tvSelectedCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ยังไม่ได้เลือกสัตว์เลี้ยง"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginBottom="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เลือกสัตว์เลี้ยง"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/tvSelectedCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="ยังไม่ได้เลือกสัตว์เลี้ยง"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <Button
+                android:id="@+id/btnSelectPets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="เลือกสัตว์เลี้ยง"
+                android:backgroundTint="@color/brown"
+                android:textColor="@android:color/white"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- รายการสัตว์เลี้ยงที่เลือก -->
     <TextView
+        android:id="@+id/tvSelectedPetsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="สัตว์เลี้ยงที่เลือก:"
-        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:text="สัตว์เลี้ยงที่เลือก"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:textColor="@color/brown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardSelectPets" />
 
+    <!-- RecyclerView สำหรับแสดงสัตว์เลี้ยงที่เลือก -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSelectedPets"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginTop="12dp"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSelectedPetsTitle" />
 
-    <!-- แสดงเมื่อไม่มีสัตว์เลี้ยง -->
+    <!-- แสดงเมื่อไม่มีสัตว์เลี้ยงที่เลือก -->
     <TextView
         android:id="@+id/tvNoPets"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="ยังไม่ได้เลือกสัตว์เลี้ยง\nกรุณากดปุ่ม 'เลือกสัตว์เลี้ยง'"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="ยังไม่มีสัตว์เลี้ยงที่เลือก\nกรุณากดปุ่มเลือกสัตว์เลี้ยง"
         android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/brown"
         android:gravity="center"
-        android:visibility="visible" />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSelectedPetsTitle" />
+
+    <!-- Card สำหรับตั้งค่าตารางการให้อาหาร -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardScheduleSettings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ตั้งค่าตารางการให้อาหาร"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/brown" />
+
+            <!-- เวลาให้อาหาร -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="เวลาให้อาหาร">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFeedingTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="time" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- จำนวนมื้อต่อวัน -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="จำนวนมื้อต่อวัน">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMealsPerDay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- ปริมาณอาหาร (กรัม) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="ปริมาณอาหาร (กรัม/มื้อ)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFoodAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- ชนิดอาหาร -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="ชนิดอาหาร">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFoodType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- หมายเหตุ -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="หมายเหตุ (ถ้ามี)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- ปุ่มบันทึก -->
     <Button
         android:id="@+id/btnSave"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:text="บันทึกตารางการให้อาหาร"
         android:backgroundTint="@color/brown"
-        android:enabled="false" />
+        android:textColor="@android:color/white"
+        android:enabled="false"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
