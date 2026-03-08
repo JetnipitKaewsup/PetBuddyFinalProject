@@ -1,18 +1,24 @@
 package com.example.petbuddy
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.ActivityMainBinding
 import com.example.petbuddy.navigation.NavigationManager
 import com.example.petbuddy.viewmodel.SharedPetViewModel
 import com.example.petbuddy.model.SelectionMode
-class MainActivity : AppCompatActivity() {
+import com.google.firebase.firestore.FirebaseFirestore
+
+class MainActivity : BaseActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var navigationManager: NavigationManager
     private lateinit var sharedViewModel: SharedPetViewModel
@@ -39,9 +45,10 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager,
             R.id.fragment_container
         )
-
+        // โหลดข้อมูล user
+        loadUserInfo()
         setupBottomNavigation()
-        //observeViewModel()
+        observeViewModel()
 
         if (savedInstanceState == null) {
             navigationManager.navigateToHome()
@@ -211,5 +218,76 @@ class MainActivity : AppCompatActivity() {
 
     fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     * โหลดข้อมูลผู้ใช้จาก Firestore
+     */
+    private fun loadUserInfo() {
+        val userId = currentUserId
+        if (userId == null) {
+            showToast("ไม่พบข้อมูลผู้ใช้")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("userInfo")
+            .document("profile")
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    // ดึงชื่อผู้ใช้
+                    val userName = document.getString("username") ?: "Unknown User"
+                    binding.tvUserName.text = userName
+
+                    // ดึง URL รูปโปรไฟล์
+                    val profileImageUrl = document.getString("profileImage")
+
+                    // โหลดรูปด้วย Glide
+                    loadProfileImage(profileImageUrl)
+
+                    // เก็บข้อมูลอื่นๆ ใน ViewModel ถ้าต้องการ
+                    //sharedViewModel.setCurrentUserInfo(document.data)
+                } else {
+                    showToast("ไม่พบข้อมูลโปรไฟล์")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error loading user info", e)
+                showToast("ไม่สามารถโหลดข้อมูลผู้ใช้ได้")
+            }
+    }
+
+    /**
+     * โหลดรูปโปรไฟล์ด้วย Glide
+     */
+    private fun loadProfileImage(imageUrl: String?) {
+        val imageView = binding.ivUserProfile
+
+        if (!imageUrl.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(imageUrl)
+                .apply(
+                    RequestOptions()
+                        .placeholder(R.drawable.user_placeholder) // รอโหลด
+                        .error(R.drawable.user_placeholder) // โหลดไม่สำเร็จ
+                        .circleCrop() // ทำให้เป็นวงกลม
+                )
+                .into(imageView)
+        } else {
+            // ถ้าไม่มีรูป ใช้รูปเริ่มต้น
+            Glide.with(this)
+                .load(R.drawable.user_placeholder)
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageView)
+        }
+    }
+
+    /**
+     * รีเฟรชข้อมูลผู้ใช้ (เรียกเมื่อมีการแก้ไขโปรไฟล์)
+     */
+    fun refreshUserInfo() {
+        loadUserInfo()
     }
 }

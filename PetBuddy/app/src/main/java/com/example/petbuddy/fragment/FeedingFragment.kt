@@ -24,8 +24,7 @@ class FeedingFragment : Fragment() {
 
     private val sharedViewModel: SharedPetViewModel by activityViewModels()
     private lateinit var adapter: SelectedPetAdapter
-    private var db =  FirebaseFirestore.getInstance()
-    private  var auth = FirebaseAuth.getInstance()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +37,6 @@ class FeedingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         setupUI()
         setupRecyclerView()
