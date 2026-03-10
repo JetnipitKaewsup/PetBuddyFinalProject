@@ -41,7 +41,7 @@ class WeightFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
-        navigator = (requireActivity() as MainActivity).navigator //ประกาศบันทัดนี้
+        navigator = (requireActivity() as MainActivity).navigator
 
     }
 
@@ -203,18 +203,19 @@ class WeightFragment : Fragment() {
     }
 
     private fun navigateToAddWeight(record: WeightRecord? = null) {
-        val fragment = AddWeightFragment.newInstance(record)
-
-        parentFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack("add_weight")
-            .commit()
+        navigator.navigateToAddWeight(record)
+//        val fragment = AddWeightFragment.newInstance(record)
+//
+//        parentFragmentManager.beginTransaction()
+//            .setCustomAnimations(
+//                R.anim.slide_in_right,
+//                R.anim.slide_out_left,
+//                R.anim.slide_in_left,
+//                R.anim.slide_out_right
+//            )
+//            .replace(R.id.fragment_container, fragment)
+//            .addToBackStack("add_weight")
+//            .commit()
     }
 
     private fun showEditDeleteDialog(record: WeightRecord) {

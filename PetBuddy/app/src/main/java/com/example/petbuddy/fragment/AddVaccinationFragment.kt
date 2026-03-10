@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.FragmentAddVaccinationBinding
@@ -17,6 +18,7 @@ import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.VaccinationRecord
 import com.example.petbuddy.model.VaccineData
 import com.example.petbuddy.model.VaccineInfo
+import com.example.petbuddy.navigation.MainNavigator
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +27,7 @@ class AddVaccinationFragment : Fragment() {
     private var _binding: FragmentAddVaccinationBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
-
+    private lateinit var navigator: MainNavigator
     private var existingRecord: VaccinationRecord? = null
     private var currentPet: Pet? = null
 
@@ -64,6 +66,7 @@ class AddVaccinationFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+        navigator = (requireActivity() as MainActivity).navigator
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

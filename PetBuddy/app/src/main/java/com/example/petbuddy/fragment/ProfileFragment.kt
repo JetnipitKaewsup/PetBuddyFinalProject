@@ -59,8 +59,9 @@ class ProfileFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = MyPetsAdapter { pet ->
-            Toast.makeText(requireContext(), "${pet.petName} has click", Toast.LENGTH_SHORT).show()
             navigator.navigateToEditPetProfile(pet)
+            Toast.makeText(requireContext(), "${pet.petName} has click", Toast.LENGTH_SHORT).show()
+
 
         }
         binding.rvMyPets.layoutManager = LinearLayoutManager(requireContext())
@@ -77,6 +78,7 @@ class ProfileFragment : Fragment() {
     private fun setupClickListener() {
         binding.btntMyProfile.setOnClickListener {
             // navigate to profile edit
+            navigator.navigateToEditUserProfile()
             Toast.makeText(requireContext(), "My profile clicked", Toast.LENGTH_SHORT).show()
 
         }

@@ -9,12 +9,12 @@ import com.example.petbuddy.R
 import com.example.petbuddy.databinding.ItemPetBinding
 import com.example.petbuddy.databinding.ItemPetInProfileBinding
 import com.example.petbuddy.model.Pet
+import com.example.petbuddy.navigation.MainNavigator
 
 class MyPetsAdapter (
     private val onPetClick : (Pet) -> Unit
 ) : RecyclerView.Adapter<MyPetsAdapter.MyPetViewHolder>(){
     private var pets : List<Pet> = emptyList()
-
     fun submitList(newPets : List<Pet>){
         pets = newPets
         notifyDataSetChanged()
@@ -24,12 +24,13 @@ class MyPetsAdapter (
         parent: ViewGroup,
         viewType: Int
     ): MyPetsAdapter.MyPetViewHolder {
+
         val binding = ItemPetInProfileBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return MyPetViewHolder(binding)
+        return MyPetViewHolder(binding,onPetClick)
     }
 
     override fun onBindViewHolder(holder: MyPetViewHolder, position: Int) {
@@ -41,7 +42,8 @@ class MyPetsAdapter (
     }
 
     class MyPetViewHolder(
-        private val binding: ItemPetInProfileBinding
+        private val binding: ItemPetInProfileBinding,
+        private val onPetClick: (Pet) -> Unit
     ) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(pet: Pet){
@@ -63,8 +65,9 @@ class MyPetsAdapter (
                 } else {
                     ivPet.setImageResource(R.drawable.pet_placeholder)
                 }
-
-
+                root.setOnClickListener {
+                    onPetClick(pet)  // เรียก callback เมื่อคลิก
+                }
             }
         }
     }

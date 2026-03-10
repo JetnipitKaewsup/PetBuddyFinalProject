@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.RecentVaccineAdapter
@@ -16,6 +17,7 @@ import com.example.petbuddy.adapter.VaccinationRecordAdapter
 import com.example.petbuddy.databinding.FragmentVaccinationBinding
 import com.example.petbuddy.model.VaccinationRecord
 import com.example.petbuddy.model.VaccineData
+import com.example.petbuddy.navigation.MainNavigator
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Query
 
@@ -24,6 +26,7 @@ class VaccinationFragment : Fragment() {
     private var _binding: FragmentVaccinationBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
+    private lateinit var navigator: MainNavigator
     private lateinit var adapter: VaccinationRecordAdapter
     private lateinit var recentAdapter: RecentVaccineAdapter
 
@@ -32,6 +35,7 @@ class VaccinationFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+        navigator = (requireActivity() as MainActivity).navigator
     }
 
     override fun onCreateView(
@@ -252,18 +256,19 @@ class VaccinationFragment : Fragment() {
     }
 
     private fun navigateToAddVaccination(record: VaccinationRecord? = null) {
-        val fragment = AddVaccinationFragment.newInstance(record)
-
-        parentFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack("add_vaccination")
-            .commit()
+        navigator.navigateToAddVaccination(record)
+//        val fragment = AddVaccinationFragment.newInstance(record)
+//
+//        parentFragmentManager.beginTransaction()
+//            .setCustomAnimations(
+//                R.anim.slide_in_right,
+//                R.anim.slide_out_left,
+//                R.anim.slide_in_left,
+//                R.anim.slide_out_right
+//            )
+//            .replace(R.id.fragment_container, fragment)
+//            .addToBackStack("add_vaccination")
+//            .commit()
     }
 
     private fun goToPetSelection() {

@@ -3,6 +3,8 @@ package com.example.petbuddy.navigation
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.petbuddy.R
+import com.example.petbuddy.model.VaccinationRecord
+import com.example.petbuddy.model.WeightRecord
 
 abstract class BaseNavigator(protected val activity: FragmentActivity) {
 
@@ -39,20 +41,24 @@ abstract class BaseNavigator(protected val activity: FragmentActivity) {
 
     fun navigateToEditPetProfile(pet: com.example.petbuddy.model.Pet) {
         val fragment = com.example.petbuddy.fragment.EditPetProfileFragment(pet)
-        navigator.navigateTo(fragment, "edit_pet")
+        navigator.navigateTo(fragment, "edit_pet_profile")
     }
 
+    fun navigateToEditUserProfile(){
+        val fragment = com.example.petbuddy.fragment.EditUserProfile()
+        navigator.navigateTo(fragment,"edit_user_profile")
+    }
     fun navigateToAllMyPets() {
         val fragment = com.example.petbuddy.fragment.AllMyPetsFragment()
         navigator.navigateTo(fragment, "all_my_pets")
     }
 
-    fun navigateToAddWeight() {
+    fun navigateToAddWeight(record: WeightRecord? = null) {
         val fragment = com.example.petbuddy.fragment.AddWeightFragment.newInstance()
         navigator.navigateTo(fragment, "add_weight")
     }
 
-    fun navigateToAddVaccination(record: com.example.petbuddy.model.VaccinationRecord? = null) {
+    fun navigateToAddVaccination(record: VaccinationRecord? = null) {
         val fragment = com.example.petbuddy.fragment.AddVaccinationFragment.newInstance(record)
         navigator.navigateTo(fragment, "add_vaccination")
     }
