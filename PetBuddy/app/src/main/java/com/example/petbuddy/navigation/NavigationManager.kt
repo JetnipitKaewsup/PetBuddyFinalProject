@@ -3,12 +3,15 @@ package com.example.petbuddy.navigation
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.petbuddy.R
+import com.example.petbuddy.fragment.AllMyPetsFragment
+import com.example.petbuddy.fragment.EditPetProfileFragment
 import com.example.petbuddy.fragment.HealthDashboardFragment
 import com.example.petbuddy.fragment.PetSelectionFragment
 import com.example.petbuddy.fragment.ScheduleFragment
 import com.example.petbuddy.fragments.feeding.FeedingFragment
 import com.example.petbuddy.fragments.home.HomeFragment
 import com.example.petbuddy.fragments.profile.ProfileFragment
+import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.SelectionMode
 
 class NavigationManager(
@@ -22,6 +25,8 @@ class NavigationManager(
         const val TAG_SCHEDULE = "SCHEDULE"
         const val TAG_PROFILE = "PROFILE"
         const val TAG_PET_SELECTION = "PET_SELECTION"
+        const val TAG_ALL_MY_PETS = "ALL_MY_PETS"
+        const val TAG_EDIT_PET_PROFILE = "EDIT_PET_PROFILE"
         const val TAG_WEIGHT = "WEIGHT"
         const val TAG_VACCINATION = "VACCINATION"
     }
@@ -54,6 +59,14 @@ class NavigationManager(
             }
         }
         replaceFragment(fragment, addToBackStack = true, tag = TAG_PET_SELECTION)
+    }
+
+    fun navigateToAllMyPets(){
+        replaceFragment(AllMyPetsFragment(), addToBackStack = true, tag = TAG_ALL_MY_PETS)
+    }
+
+    fun navigateToEditPetProfile(pet : Pet){
+        replaceFragment(EditPetProfileFragment(pet),addToBackStack = true,tag = TAG_EDIT_PET_PROFILE)
     }
 
     fun navigateToRoot() {

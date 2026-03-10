@@ -27,48 +27,43 @@
 
         <!-- ข้อมูลสัตว์เลี้ยง -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="269dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvPetName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ชื่อสัตว์เลี้ยง"
+                android:text="Pet Name"
+                android:textColor="@color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPetBreed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="สายพันธุ์"
-                android:textSize="14sp"
+                android:layout_marginTop="2dp"
+                android:text="breed"
                 android:textColor="@android:color/darker_gray"
-                android:layout_marginTop="2dp" />
-
+                android:textSize="14sp" />
         </LinearLayout>
-
-        <!-- RadioButton สำหรับโหมด SINGLE -->
-        <RadioButton
-            android:id="@+id/radioButton"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/black"
-            android:visibility="gone" />
-
-        <!-- CheckBox สำหรับโหมด MULTIPLE -->
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/black"
-            android:visibility="gone" />
+            android:text="edit pet profile"
+            android:textColor="@color/brown"/>
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/calendar_ic_arrow_right"
+            android:tint="@color/brown"
+            android:visibility="visible" />
 
     </LinearLayout>
 

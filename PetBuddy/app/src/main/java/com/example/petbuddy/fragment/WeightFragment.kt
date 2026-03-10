@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.FragmentWeightBinding
 import com.example.petbuddy.databinding.ItemWeightRecordBinding
 import com.example.petbuddy.model.WeightRecord
+import com.example.petbuddy.navigation.MainNavigator
+import com.example.petbuddy.navigation.NavigationManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
@@ -27,9 +30,9 @@ class WeightFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
     private lateinit var adapter: WeightRecordAdapter
-
+    private lateinit var navigator: MainNavigator // ประกาศตัวแปร
     private var weightRecords = mutableListOf<WeightRecord>()
-    private var isDescending = true // true = ล่าสุดขึ้นก่อน, false = เก่าสุดขึ้นก่อน
+    private var isDescending = true
 
     companion object {
         private const val TAG = "WeightFragment"
@@ -38,6 +41,8 @@ class WeightFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+        navigator = (requireActivity() as MainActivity).navigator //ประกาศบันทัดนี้
+
     }
 
     override fun onCreateView(

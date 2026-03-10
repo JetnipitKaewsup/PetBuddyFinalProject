@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.FragmentHealthDashboardBinding
 import com.example.petbuddy.model.SelectionMode
+import com.example.petbuddy.navigation.MainNavigator
 import com.example.petbuddy.util.Constants
 
 class HealthDashboardFragment : Fragment() {
@@ -17,10 +19,12 @@ class HealthDashboardFragment : Fragment() {
     private var _binding: FragmentHealthDashboardBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
+    private lateinit var navigator: MainNavigator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+        navigator = (requireActivity() as MainActivity).navigator
     }
 
     override fun onCreateView(
@@ -83,14 +87,16 @@ class HealthDashboardFragment : Fragment() {
             .limit(1)
             .get()
             .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val weight = documents.documents[0].getDouble("weight") ?: 0.0
-                    binding.tvLatestWeight.text = String.format("%.1f kg", weight)
-                    binding.tvWeightStatus.text = "น้ำหนักปกติ"
-                    binding.tvWeightStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
-                } else {
-                    binding.tvLatestWeight.text = "- kg"
-                    binding.tvWeightStatus.text = "ยังไม่มีข้อมูลน้ำหนัก"
+                if (isAdded && _binding != null) {
+                    if (!documents.isEmpty) {
+                        val weight = documents.documents[0].getDouble("weight") ?: 0.0
+                        binding.tvLatestWeight.text = String.format("%.1f kg", weight)
+                        binding.tvWeightStatus.text = "น้ำหนักปกติ"
+                        binding.tvWeightStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
+                    } else {
+                        binding.tvLatestWeight.text = "- kg"
+                        binding.tvWeightStatus.text = "ยังไม่มีข้อมูลน้ำหนัก"
+                    }
                 }
             }
             .addOnFailureListener {
@@ -127,33 +133,35 @@ class HealthDashboardFragment : Fragment() {
         }
 
         binding.cardWeight.setOnClickListener {
+            navigator.navigateToWeight()
             // ไปหน้า Weight
-            val fragment = WeightFragment()
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left,
-                    R.anim.slide_in_left,
-                    R.anim.slide_out_right
-                )
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack("weight")
-                .commit()
+//            val fragment = WeightFragment()
+//            parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    R.anim.slide_in_right,
+//                    R.anim.slide_out_left,
+//                    R.anim.slide_in_left,
+//                    R.anim.slide_out_right
+//                )
+//                .replace(R.id.fragment_container, fragment)
+//                .addToBackStack("weight")
+//                .commit()
         }
 
         binding.cardVaccination.setOnClickListener {
+            navigator.navigateToVaccination()
             // ไปหน้า Vaccination
-            val fragment = VaccinationFragment()
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left,
-                    R.anim.slide_in_left,
-                    R.anim.slide_out_right
-                )
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack("vaccination")
-                .commit()
+//            val fragment = VaccinationFragment()
+//            parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    R.anim.slide_in_right,
+//                    R.anim.slide_out_left,
+//                    R.anim.slide_in_left,
+//                    R.anim.slide_out_right
+//                )
+//                .replace(R.id.fragment_container, fragment)
+//                .addToBackStack("vaccination")
+//                .commit()
         }
     }
 

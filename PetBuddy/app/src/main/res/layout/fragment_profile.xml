@@ -29,10 +29,18 @@
                 android:textColor="@color/brown"
                 android:layout_marginBottom="16dp"/>
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvMyPet"
+                android:id="@+id/rvMyPets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
+            <Button
+                android:id="@+id/btnViewAllMyPets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View All My Pets"
+                android:backgroundTint="@color/brown"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
 
             <!-- Divider -->

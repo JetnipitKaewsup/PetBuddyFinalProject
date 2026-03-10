@@ -9,22 +9,30 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.activity.LoginActivity
+import com.example.petbuddy.adapter.MyPetsAdapter
 import com.example.petbuddy.databinding.FragmentProfileBinding
 import com.example.petbuddy.model.Pet
+import com.example.petbuddy.navigation.NavigationManager
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
-    private var pets: List<Pet> = emptyList()
-
+    private lateinit var navigationManager: NavigationManager
+    private lateinit var adapter: MyPetsAdapter
+    private var allPets: List<Pet> = emptyList()
+    private var isNotificationEnabled = true
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,11 +44,11 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpClickListener()
+        setupRecyclerView()
+        setupClickListener()
         loadUserPets()
+        loadNotificationSetting()
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -48,18 +56,69 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun setUpClickListener(){
+    private fun setupRecyclerView() {
+        adapter = MyPetsAdapter { pet ->
+            Toast.makeText(requireContext(), "${pet.petName} has click", Toast.LENGTH_SHORT).show()
+            navigationManager.navigateToEditPetProfile(pet)
+
+        }
+        binding.rvMyPets.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvMyPets.adapter = adapter
+        binding.rvMyPets.isNestedScrollingEnabled = false
+    }
+
+    private fun loadNotificationSetting() {
+        // TODO("Not yet implemented")
+        Toast.makeText(requireContext(), "Notification Setting", Toast.LENGTH_SHORT).show()
+    }
+
+
+    private fun setupClickListener() {
         binding.btntMyProfile.setOnClickListener {
             // navigate to profile edit
             Toast.makeText(requireContext(), "My profile clicked", Toast.LENGTH_SHORT).show()
+
+        }
+        binding.layoutPassword.setOnClickListener {
+            Toast.makeText(requireContext(), "Password clicked", Toast.LENGTH_SHORT).show()
+            // TODO: Navigate to Change Password
+        }
+        binding.switchNotification.setOnCheckedChangeListener { _, isChecked ->
+            isNotificationEnabled = isChecked
+            saveNotificationSetting(isChecked)
+            Toast.makeText(
+                requireContext(),
+                if (isChecked) "Notifications enabled" else "Notifications disabled",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         binding.btnLogout.setOnClickListener {
             showLogoutConfirmation()
         }
     }
 
+    private fun saveNotificationSetting(enable : Boolean){
+
+    }
+
     private fun loadUserPets() {
-        //
+        baseActivity.loadAllPets { petList ->
+            allPets = petList
+
+            // แสดงเฉพาะ 3 ตัวแรกใน RecyclerView
+            val displayPets = if (petList.size > 3) petList.subList(0, 3) else petList
+            adapter.submitList(displayPets)
+
+            // ถ้ามีสัตว์เลี้ยงมากกว่า 3 ตัว แสดงปุ่ม "ดูเพิ่มเติม"
+            if (petList.size > 3) {
+                showViewAllButton()
+            }
+        }
+    }
+
+    private fun showViewAllButton(){
+        binding.btnViewAllMyPets.visibility = View.VISIBLE
+        binding.btnViewAllMyPets.setOnClickListener { navigationManager.navigateToAllMyPets() }
     }
 
     private fun showLogoutConfirmation() {
@@ -88,5 +147,6 @@ class ProfileFragment : Fragment() {
         requireActivity().finish()
     }
 }
+
 
 

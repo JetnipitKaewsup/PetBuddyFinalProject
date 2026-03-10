@@ -10,14 +10,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.ActivityMainBinding
-import com.example.petbuddy.navigation.NavigationManager
 import com.example.petbuddy.model.SelectionMode
+import com.example.petbuddy.navigation.MainNavigator
 import com.example.petbuddy.util.Constants
 
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var navigationManager: NavigationManager
+    lateinit var navigator: MainNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,20 +31,17 @@ class MainActivity : BaseActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        // สร้าง Navigator
+        navigator = MainNavigator(this)
 
         init()
-        // สร้าง Navigation Manager
-        navigationManager = NavigationManager(
-            supportFragmentManager,
-            R.id.fragment_container
-        )
 
         // โหลดข้อมูล user
         loadUserInfo()
         setupBottomNavigation()
 
         if (savedInstanceState == null) {
-            navigationManager.navigateToHome()
+            navigator.navigateToHome()
             binding.bottomNavigation.selectedItemId = R.id.nav_home
         }
     }
@@ -84,7 +81,7 @@ class MainActivity : BaseActivity() {
         binding.bottomNavigation.setOnItemReselectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home -> {
-                    navigationManager.navigateToRoot()
+                    navigator.navigateToRoot()
                 }
             }
         }
@@ -92,38 +89,38 @@ class MainActivity : BaseActivity() {
 
     private fun init(){
         binding.userProfileHeader.setOnClickListener {
-            navigationManager.navigateToProfile()
+            navigator.navigateToProfile()
         }
     }
 
     private fun handleHomeSelected() {
-        val currentTag = navigationManager.getCurrentTag()
-        if (currentTag != NavigationManager.TAG_HOME) {
-            navigationManager.navigateToRoot()
+        val currentTag = navigator.getCurrentTag()
+        if (currentTag != MainNavigator.TAG_HOME) {
+            navigator.navigateToRoot()
         }
     }
 
     private fun handleFeedingSelected() {
         // ไปที่ FeedingFragment โดยตรง
-        navigationManager.navigateToFeeding()
+        navigator.navigateToFeeding()
     }
 
     private fun handleHealthSelected() {
         if (hasSelectedPet) {
             // มีสัตว์เลี้ยงที่เลือกแล้ว ไปหน้า Health
-            navigationManager.navigateToHealthDashboard()
+            navigator.navigateToHealth()
         } else {
             // ยังไม่มี ไปเลือกสัตว์เลี้ยงก่อน
-            navigationManager.navigateToPetSelection(SelectionMode.SINGLE, Constants.TAG_HEALTH_DASHBOARD)
+            navigator.navigateToPetSelection(SelectionMode.SINGLE, Constants.TAG_HEALTH_DASHBOARD)
         }
     }
 
     private fun handleScheduleSelected() {
-        navigationManager.navigateToSchedule()
+        navigator.navigateToSchedule()
     }
 
     private fun handleProfileSelected() {
-        navigationManager.navigateToProfile()
+        navigator.navigateToProfile()
     }
 
     private fun showExitConfirmation() {
