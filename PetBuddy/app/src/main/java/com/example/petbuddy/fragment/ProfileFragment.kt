@@ -16,6 +16,7 @@ import com.example.petbuddy.activity.LoginActivity
 import com.example.petbuddy.adapter.MyPetsAdapter
 import com.example.petbuddy.databinding.FragmentProfileBinding
 import com.example.petbuddy.model.Pet
+import com.example.petbuddy.navigation.MainNavigator
 import com.example.petbuddy.navigation.NavigationManager
 
 class ProfileFragment : Fragment() {
@@ -23,14 +24,14 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
-    private lateinit var navigationManager: NavigationManager
+    private lateinit var navigator: MainNavigator
     private lateinit var adapter: MyPetsAdapter
     private var allPets: List<Pet> = emptyList()
     private var isNotificationEnabled = true
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
-
+        navigator = (requireActivity() as MainActivity).navigator
     }
 
     override fun onCreateView(
@@ -59,7 +60,7 @@ class ProfileFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = MyPetsAdapter { pet ->
             Toast.makeText(requireContext(), "${pet.petName} has click", Toast.LENGTH_SHORT).show()
-            navigationManager.navigateToEditPetProfile(pet)
+            navigator.navigateToEditPetProfile(pet)
 
         }
         binding.rvMyPets.layoutManager = LinearLayoutManager(requireContext())
@@ -118,7 +119,7 @@ class ProfileFragment : Fragment() {
 
     private fun showViewAllButton(){
         binding.btnViewAllMyPets.visibility = View.VISIBLE
-        binding.btnViewAllMyPets.setOnClickListener { navigationManager.navigateToAllMyPets() }
+        binding.btnViewAllMyPets.setOnClickListener { navigator.navigateToAllMyPets() }
     }
 
     private fun showLogoutConfirmation() {
