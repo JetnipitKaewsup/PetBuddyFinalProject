@@ -32,6 +32,7 @@ class MainActivity : BaseActivity() {
             insets
         }
 
+        init()
         // สร้าง Navigation Manager
         navigationManager = NavigationManager(
             supportFragmentManager,
@@ -86,6 +87,12 @@ class MainActivity : BaseActivity() {
                     navigationManager.navigateToRoot()
                 }
             }
+        }
+    }
+
+    private fun init(){
+        binding.userProfileHeader.setOnClickListener {
+            navigationManager.navigateToProfile()
         }
     }
 

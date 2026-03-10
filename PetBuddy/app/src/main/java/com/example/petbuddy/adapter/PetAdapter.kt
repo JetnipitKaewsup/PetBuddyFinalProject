@@ -67,7 +67,7 @@ class PetAdapter (
 
                 when (mode) {
                     SelectionMode.SINGLE -> {
-                        radioButton.visibility = View.VISIBLE
+                        //radioButton.visibility = View.VISIBLE
                         checkBox.visibility = View.GONE
 
                         radioButton.isChecked = selectedPets.contains(pet)
@@ -80,7 +80,7 @@ class PetAdapter (
                         }
                     }
                     SelectionMode.MULTIPLE -> {
-                        radioButton.visibility = View.GONE
+                        //radioButton.visibility = View.GONE
                         checkBox.visibility = View.VISIBLE
 
                         checkBox.isChecked = selectedPets.contains(pet)

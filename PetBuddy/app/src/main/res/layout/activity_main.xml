@@ -20,6 +20,7 @@
 
         <!-- User Profile ใน Toolbar -->
         <LinearLayout
+            android:id="@+id/userProfileHeader"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
@@ -68,7 +69,7 @@
         app:elevation="8dp"
         app:itemIconTint="@color/bottom_nav_selector"
         app:itemTextColor="@color/bottom_nav_selector"
-        app:layout_constraintTop_toBottomOf="@id/fragment_container"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:menu="@menu/bottom_nav_menu" />

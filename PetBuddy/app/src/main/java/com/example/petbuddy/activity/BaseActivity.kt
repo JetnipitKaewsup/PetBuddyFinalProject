@@ -14,7 +14,7 @@ import com.google.gson.reflect.TypeToken
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    protected lateinit var mAuth: FirebaseAuth
+    lateinit var mAuth: FirebaseAuth
     lateinit var db: FirebaseFirestore
     protected var currentUserId: String? = null
 
@@ -276,6 +276,15 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun clearAllSavedData() {
         sharedPreferences.edit().clear().apply()
     }
+
+    fun clearAllData() {
+        // เคลียร์การเลือกสัตว์เลี้ยง
+        clearSelection()
+
+        // เคลียร์ SharedPreferences ทั้งหมด
+        clearAllSavedData()
+    }
+
 
     // =====  CALLBACK METHODS (ให้ Fragment Override ได้) =====
 
