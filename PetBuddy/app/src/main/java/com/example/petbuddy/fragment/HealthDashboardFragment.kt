@@ -19,12 +19,12 @@ class HealthDashboardFragment : Fragment() {
     private var _binding: FragmentHealthDashboardBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
-    private lateinit var navigator: MainNavigator
+    private lateinit var navigator: MainNavigator // ประกาศตัวแปร
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
-        navigator = (requireActivity() as MainActivity).navigator
+        navigator = (requireActivity() as MainActivity).navigator // เพิ่มบรรทัดนี้
     }
 
     override fun onCreateView(

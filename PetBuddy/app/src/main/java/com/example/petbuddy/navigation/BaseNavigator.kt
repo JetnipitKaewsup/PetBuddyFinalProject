@@ -42,9 +42,9 @@ abstract class BaseNavigator(protected val activity: FragmentActivity) {
         navigator.navigateTo(fragment, "edit_pet")
     }
 
-    fun navigateToAllPets() {
+    fun navigateToAllMyPets() {
         val fragment = com.example.petbuddy.fragment.AllMyPetsFragment()
-        navigator.navigateTo(fragment, "all_pets")
+        navigator.navigateTo(fragment, "all_my_pets")
     }
 
     fun navigateToAddWeight() {
