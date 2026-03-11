@@ -89,4 +89,6 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     // สำหรับ by viewModels() ใน Fragment
     implementation("androidx.activity:activity-ktx:1.8.0")
+
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
 }
