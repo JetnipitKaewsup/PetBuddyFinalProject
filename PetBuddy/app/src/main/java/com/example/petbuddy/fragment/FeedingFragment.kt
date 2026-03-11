@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.petbuddy.R
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.databinding.FragmentFeedingBinding
@@ -65,19 +66,26 @@ class FeedingFragment : Fragment() {
 
         binding.btnAddFeeding.setOnClickListener {
 
-            val fragment = PetSelectionFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable("mode", SelectionMode.MULTIPLE)
-                    putString("source_tag", "feeding")
-                }
-            }
+//            val fragment = PetSelectionFragment().apply {
+//                arguments = Bundle().apply {
+//                    putSerializable("mode", SelectionMode.MULTIPLE)
+//                    putString("source_tag", "feeding")
+//                }
+//            }
+
+//            parentFragmentManager.beginTransaction()
+//                .replace(
+//                    com.example.petbuddy.R.id.fragment_container,
+//                    fragment
+//                )
+//                .addToBackStack("feeding")
+//                .commit()
+
+            val fragment = FeedingAlarmFragment()
 
             parentFragmentManager.beginTransaction()
-                .replace(
-                    com.example.petbuddy.R.id.fragment_container,
-                    fragment
-                )
-                .addToBackStack("feeding")
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
                 .commit()
         }
     }

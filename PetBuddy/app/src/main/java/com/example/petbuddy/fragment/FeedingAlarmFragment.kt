@@ -24,6 +24,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         setupAmPmButtons()
         setupSaveButton()
         loadSelectedPets()
+        setupRepeatButtons()
     }
 
     private fun setupAmPmButtons() {
@@ -42,6 +43,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
     }
 
     private fun setupSaveButton() {
+
+
 
         binding.btnSave.setOnClickListener {
 
@@ -103,5 +106,20 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupRepeatButtons() {
+
+        binding.btnCustom.setOnClickListener {
+            binding.chipDays.visibility = View.VISIBLE
+        }
+
+        binding.btnOnce.setOnClickListener {
+            binding.chipDays.visibility = View.GONE
+        }
+
+        binding.btnEveryday.setOnClickListener {
+            binding.chipDays.visibility = View.GONE
+        }
     }
 }

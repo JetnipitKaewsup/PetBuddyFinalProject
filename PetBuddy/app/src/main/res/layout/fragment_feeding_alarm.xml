@@ -47,6 +47,7 @@
                 android:id="@+id/timeRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
                 android:layout_marginTop="36dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -62,7 +63,6 @@
                     android:textStyle="bold"/>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputHour"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -74,20 +74,17 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:inputType="number"
-                        android:text="08"
-                        android:textSize="18sp"/>
+                        android:text="08"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
                     android:text=":"
                     android:textSize="22sp"
-                    android:textStyle="bold"/>
+                    android:layout_marginStart="6dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputMinute"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -99,14 +96,10 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:inputType="number"
-                        android:text="30"
-                        android:textSize="18sp"/>
+                        android:text="30"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- AM PM -->
-
                 <LinearLayout
-                    android:id="@+id/amPmGroup"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -117,7 +110,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:text="AM"
-                        android:textAllCaps="false"/>
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/brown"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPm"
@@ -125,8 +119,8 @@
                         android:layout_height="48dp"
                         android:layout_marginTop="4dp"
                         android:text="PM"
-                        android:textAllCaps="false"/>
-
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/brown"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -137,8 +131,8 @@
                 android:id="@+id/repeatGroup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="28dp"
+                android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/timeRow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -148,7 +142,8 @@
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:text="Once"/>
+                    android:text="Once"
+                    android:backgroundTint="@color/brown"/>
 
                 <Button
                     android:id="@+id/btnEveryday"
@@ -156,7 +151,8 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="Everyday"/>
+                    android:text="Everyday"
+                    android:backgroundTint="@color/brown"/>
 
                 <Button
                     android:id="@+id/btnCustom"
@@ -164,20 +160,240 @@
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="Custom"/>
+                    android:text="Custom"
+                    android:backgroundTint="@color/brown"/>
 
             </LinearLayout>
 
-            <!-- Save Button -->
+            <!-- Day Chips -->
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipDays"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"
+                app:singleSelection="false"
+                app:layout_constraintTop_toBottomOf="@id/repeatGroup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMon"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mon"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTue"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tue"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipWed"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wed"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipThu"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thu"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFri"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fri"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSat"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sat"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSun"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sun"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- Title -->
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/chipDays"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <EditText
+                android:id="@+id/etTitle"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:hint="Food name"
+                android:background="@drawable/background_input_field"
+                android:padding="12dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Type Dropdown -->
+
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type"
+                android:layout_marginTop="14dp"
+                app:layout_constraintTop_toBottomOf="@id/etTitle"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <LinearLayout
+                android:id="@+id/typeContainer"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:background="@drawable/background_input_field"
+                android:paddingEnd="10dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/tvType"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <Spinner
+                    android:id="@+id/spinnerType"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:background="@android:color/transparent"
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="@android:color/white"
+                    tools:ignore="TouchTargetSizeCheck"/>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_arrow_drop_down"/>
+
+            </LinearLayout>
+
+            <!-- Pet Section -->
+
+            <LinearLayout
+                android:id="@+id/petSection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:background="@drawable/background_input_field"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintTop_toBottomOf="@id/typeContainer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvPet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Pets"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/tvEditPet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Edit"
+                        android:textColor="@color/brown"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/petRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/corgi"/>
+
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/corgi"/>
+
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/corgi"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Note -->
+
+            <TextView
+                android:id="@+id/tvNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Note"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/petSection"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <EditText
+                android:id="@+id/etNote"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:background="@drawable/background_input_field"
+                android:padding="12dp"
+                android:hint="additional note"
+                app:layout_constraintTop_toBottomOf="@id/tvNote"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Save -->
 
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:layout_marginTop="40dp"
+                android:backgroundTint="@color/brown"
                 android:text="Save changes"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                app:layout_constraintTop_toBottomOf="@id/repeatGroup"
+                app:layout_constraintTop_toBottomOf="@id/etNote"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
