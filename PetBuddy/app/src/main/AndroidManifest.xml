@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -13,14 +15,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PetBuddy">
+
         <activity
             android:name=".activity.PetResult"
             android:exported="false" />
+
         <activity
             android:name=".activity.CreatePetProfile"
-            android:exported="false" /> <!-- Register -->
+            android:exported="false" />
+
         <activity
             android:name=".activity.RegisterActivity"
+<<<<<<< Updated upstream
             android:exported="false" /> <!-- Login (Start Screen) -->
         <activity
             android:name=".MainActivity"
@@ -28,13 +34,40 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+=======
+            android:exported="false" />
+>>>>>>> Stashed changes
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> <!-- Main App -->
         <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />
+
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+
+        </service>
+
+        <receiver
+            android:name=".notifications.FeedingReminderReceiver"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
