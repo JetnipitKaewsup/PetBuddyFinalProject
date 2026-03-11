@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="12dp">
 
         <!-- Top Row -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chicken Food"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -38,52 +38,35 @@
                 android:id="@+id/tvFoodType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dry Food"
-                android:textSize="12sp"
+                android:text="(Dry Food)"
+                android:textSize="14sp"
                 android:textColor="#888888"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="6dp"
                 app:layout_constraintStart_toEndOf="@id/tvFoodName"
                 app:layout_constraintBottom_toBottomOf="@id/tvFoodName"/>
 
-            <!-- RecyclerView for Pets -->
+            <!-- Pet Icons -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPets"
                 android:layout_width="100dp"
-                android:contentDescription="Selected pets"
                 android:layout_height="28dp"
                 android:orientation="horizontal"
+                android:contentDescription="Pets fed"
                 tools:listitem="@layout/item_pet_icon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="@id/tvFoodName"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Date -->
+        <!-- Date + Time -->
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/tvDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10 Mar 2026"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp"/>
-
-        <!-- Time -->
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="18:30"
-            android:textSize="12sp"/>
-
-        <!-- Bottom Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAction"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Done"
-            android:textSize="12sp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/brown"/>
+            android:text="10 Mar • 18:30"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="6dp"/>
 
     </LinearLayout>
 

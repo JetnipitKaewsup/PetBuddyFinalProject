@@ -4,7 +4,6 @@ import com.google.firebase.Timestamp
 
 data class Pet(
     var petId: String = "",
-    val userId: String = "",
     val petName: String = "",
     val sex: String = "",
     val breed: String = "",

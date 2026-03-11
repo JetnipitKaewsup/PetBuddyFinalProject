@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.petbuddy.R
 
@@ -13,31 +12,28 @@ class FeedingReminderReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        val petName = intent.getStringExtra("pet_name") ?: "your pet"
+        val petName = intent.getStringExtra("pet_name") ?: "Your pet"
+
         val channelId = "feeding_channel"
 
-        val manager =
+        val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+            channelId,
+            "Feeding Reminder",
+            NotificationManager.IMPORTANCE_HIGH
+        )
 
-            val channel = NotificationChannel(
-                channelId,
-                "Feeding Reminder",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-
-            manager.createNotificationChannel(channel)
-        }
+        notificationManager.createNotificationChannel(channel)
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.baseline_pets_24)
-            .setContentTitle("Feeding Reminder 🐶")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Feeding Time")
             .setContentText("Time to feed $petName")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
             .build()
 
-        manager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
     }
 }

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
@@ -26,25 +26,16 @@
 
         <activity
             android:name=".activity.RegisterActivity"
-<<<<<<< Updated upstream
-            android:exported="false" /> <!-- Login (Start Screen) -->
-        <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-=======
             android:exported="false" />
->>>>>>> Stashed changes
 
         <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />
 
-
+        <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:exported="true">
 
             <intent-filter>
@@ -54,6 +45,7 @@
 
         </activity>
 
+        <!-- Firebase -->
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
@@ -64,6 +56,7 @@
 
         </service>
 
+        <!-- Local Notification Receiver -->
         <receiver
             android:name=".notifications.FeedingReminderReceiver"
             android:exported="false"/>

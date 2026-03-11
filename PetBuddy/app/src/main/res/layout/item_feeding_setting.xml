@@ -8,14 +8,17 @@
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     android:backgroundTint="@color/light_brown"
-    app:cardCornerRadius="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="15dp"
     app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="12dp">
 
         <!-- Top Row -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chicken Food"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -39,22 +42,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dry Food"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="#888888"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="6dp"
                 app:layout_constraintStart_toEndOf="@id/tvFoodName"
                 app:layout_constraintBottom_toBottomOf="@id/tvFoodName"/>
+
+            <!-- Edit Icon -->
+            <ImageView
+                android:id="@+id/ivEdit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_edit"
+                app:tint="#666666"
+                android:contentDescription="Edit feeding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <!-- RecyclerView for Pets -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPets"
-                android:layout_width="100dp"
-                android:contentDescription="Selected pets"
-                android:layout_height="28dp"
+                android:layout_width="110dp"
+                android:layout_height="30dp"
                 android:orientation="horizontal"
+                android:contentDescription="Selected pets"
                 tools:listitem="@layout/item_pet_icon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/ivEdit"
+                android:layout_marginTop="6dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -64,8 +79,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10 Mar 2026"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp"/>
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"/>
 
         <!-- Time -->
         <TextView
@@ -73,17 +88,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="18:30"
-            android:textSize="12sp"/>
-
-        <!-- Bottom Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAction"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Done"
-            android:textSize="12sp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/brown"/>
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

@@ -132,7 +132,8 @@ class PetSelectionFragment : Fragment() {
             when (sourceTag) {
                 Constants.TAG_FEEDING -> {
                     // กลับไป FeedingFragment
-                    parentFragmentManager.popBackStack(Constants.TAG_FEEDING, 0)
+//                    parentFragmentManager.popBackStack(Constants.TAG_FEEDING, 0)
+//                    val fragment = Feeding
                 }
                 Constants.TAG_SCHEDULE -> {
                     // กลับไป ScheduleFragment

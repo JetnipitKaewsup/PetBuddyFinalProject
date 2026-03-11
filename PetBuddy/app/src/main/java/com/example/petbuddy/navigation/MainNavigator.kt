@@ -3,7 +3,8 @@ package com.example.petbuddy.navigation
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.example.petbuddy.R
-import com.example.petbuddy.fragments.feeding.FeedingFragment
+import com.example.petbuddy.fragment.FeedingFragment
+//import com.example.petbuddy.fragments.FeedingFragment
 import com.example.petbuddy.fragments.home.HomeFragment
 import com.example.petbuddy.fragments.profile.ProfileFragment
 import com.example.petbuddy.fragment.ScheduleFragment
