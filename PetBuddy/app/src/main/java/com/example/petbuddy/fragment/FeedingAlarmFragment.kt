@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.PetIconAdapter
-import com.example.petbuddy.adapter.SelectedPetAdapter
 import com.example.petbuddy.databinding.FragmentFeedingAlarmBinding
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.notifications.ReminderManager
@@ -55,7 +54,12 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
+    // ---------------- AM PM ----------------
+
     private fun setupAmPmButtons() {
+
+        binding.btnAm.isEnabled = false
+        binding.btnPm.isEnabled = true
 
         binding.btnAm.setOnClickListener {
             isAm = true
@@ -69,6 +73,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
             binding.btnPm.isEnabled = false
         }
     }
+
+    // ---------------- REPEAT ----------------
 
     private fun setupRepeatButtons() {
 
@@ -103,35 +109,17 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
+    // ---------------- DAY CHIPS ----------------
+
     private fun setupDayChips() {
 
-        binding.chipMon.setOnCheckedChangeListener { _, checked ->
-            updateDay("Mon", checked)
-        }
-
-        binding.chipTue.setOnCheckedChangeListener { _, checked ->
-            updateDay("Tue", checked)
-        }
-
-        binding.chipWed.setOnCheckedChangeListener { _, checked ->
-            updateDay("Wed", checked)
-        }
-
-        binding.chipThu.setOnCheckedChangeListener { _, checked ->
-            updateDay("Thu", checked)
-        }
-
-        binding.chipFri.setOnCheckedChangeListener { _, checked ->
-            updateDay("Fri", checked)
-        }
-
-        binding.chipSat.setOnCheckedChangeListener { _, checked ->
-            updateDay("Sat", checked)
-        }
-
-        binding.chipSun.setOnCheckedChangeListener { _, checked ->
-            updateDay("Sun", checked)
-        }
+        binding.chipMon.setOnCheckedChangeListener { _, checked -> updateDay("Mon", checked) }
+        binding.chipTue.setOnCheckedChangeListener { _, checked -> updateDay("Tue", checked) }
+        binding.chipWed.setOnCheckedChangeListener { _, checked -> updateDay("Wed", checked) }
+        binding.chipThu.setOnCheckedChangeListener { _, checked -> updateDay("Thu", checked) }
+        binding.chipFri.setOnCheckedChangeListener { _, checked -> updateDay("Fri", checked) }
+        binding.chipSat.setOnCheckedChangeListener { _, checked -> updateDay("Sat", checked) }
+        binding.chipSun.setOnCheckedChangeListener { _, checked -> updateDay("Sun", checked) }
     }
 
     private fun updateDay(day: String, checked: Boolean) {
@@ -160,6 +148,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.chipSun.isChecked = false
     }
 
+    // ---------------- SPINNER ----------------
+
     private fun setupSpinner() {
 
         val types = listOf(
@@ -178,20 +168,25 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.spinnerType.adapter = adapter
     }
 
+    // ---------------- PET SELECTION ----------------
+
     private fun setupPetSelection() {
 
         binding.petSection.setOnClickListener {
 
             val fragment = PetSelectionFragment().apply {
+
                 arguments = Bundle().apply {
+
                     putSerializable("mode", SelectionMode.MULTIPLE)
                     putString("source_tag", Constants.TAG_FEEDING_ALARM)
+
                 }
             }
 
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(Constants.TAG_FEEDING_ALARM)   // ต้องมี
+                .addToBackStack(Constants.TAG_FEEDING_ALARM)
                 .commit()
         }
     }
@@ -214,37 +209,42 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         petAdapter.submitList(baseActivity.selectedPets)
     }
 
+    // ---------------- SAVE ----------------
+
     private fun setupSaveButton() {
 
         binding.btnSave.setOnClickListener {
 
-            val hourText = binding.etHour.text.toString()
-            val minuteText = binding.etMinute.text.toString()
+            val hour = binding.etHour.text.toString().toIntOrNull()
+            val minute = binding.etMinute.text.toString().toIntOrNull()
 
-            if (hourText.isEmpty() || minuteText.isEmpty()) {
+            if (hour == null || minute == null) {
 
                 Toast.makeText(requireContext(), "Please enter time", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
-
             }
-
-            var hour = hourText.toInt()
-            val minute = minuteText.toInt()
 
             if (hour !in 1..12 || minute !in 0..59) {
 
                 Toast.makeText(requireContext(), "Invalid time", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
-
             }
+
+            if (repeatType == "custom" && selectedDays.isEmpty()) {
+
+                baseActivity.showToast("Please select days")
+                return@setOnClickListener
+            }
+
+            var finalHour = hour
 
             if (isAm) {
 
-                if (hour == 12) hour = 0
+                if (finalHour == 12) finalHour = 0
 
             } else {
 
-                if (hour != 12) hour += 12
+                if (finalHour != 12) finalHour += 12
 
             }
 
@@ -253,13 +253,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
             val type = binding.spinnerType.selectedItem?.toString() ?: ""
 
             val userId = baseActivity.getCurrentUserIdSafe()
-
-            if (userId == null) {
-
-                baseActivity.showToast("User not logged in")
-                return@setOnClickListener
-
-            }
+                ?: return@setOnClickListener
 
             val petIds = baseActivity.getSelectedPetIds()
 
@@ -267,7 +261,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
                 baseActivity.showToast("Please select pet")
                 return@setOnClickListener
-
             }
 
             val scheduleData = hashMapOf(
@@ -275,7 +268,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 "title" to title,
                 "note" to note,
                 "type" to type,
-                "hour" to hour,
+                "hour" to finalHour,
                 "minute" to minute,
                 "repeatType" to repeatType,
                 "days" to selectedDays,
@@ -285,6 +278,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
             )
 
+            println("Saving schedule: $scheduleData")
+
             baseActivity.db
                 .collection("users")
                 .document(userId)
@@ -292,7 +287,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 .add(scheduleData)
                 .addOnSuccessListener {
 
-                    scheduleAlarm(hour, minute)
+                    scheduleAlarm(finalHour, minute)
 
                     baseActivity.showToast("Feeding alarm saved")
 
@@ -307,19 +302,22 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
+    // ---------------- ALARM ----------------
 
     private fun scheduleAlarm(hour: Int, minute: Int) {
 
         val pets = baseActivity.selectedPets
 
-        if (pets.isEmpty()) {
-
-            Toast.makeText(requireContext(), "No pet selected", Toast.LENGTH_SHORT).show()
-            return
-
-        }
+        if (pets.isEmpty()) return
 
         pets.forEach { pet ->
+
+            ReminderManager.cancelFeedingReminder(
+                requireContext(),
+                pet.petId,
+                hour,
+                minute
+            )
 
             ReminderManager.scheduleFeedingReminder(
                 requireContext(),
@@ -329,8 +327,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 minute
             )
         }
-
-        Toast.makeText(requireContext(), "Feeding reminder set", Toast.LENGTH_SHORT).show()
     }
 
     private fun loadSelectedPets() {
