@@ -14,34 +14,12 @@ class FeedingReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
         val petName = intent.getStringExtra("pet_name") ?: "Your pet"
-
         val channelId = "feeding_channel"
 
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val channel = NotificationChannel(
-            channelId,
-            "Feeding Reminder",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-
-        notificationManager.createNotificationChannel(channel)
-
-        val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Feeding Time")
-            .setContentText("Time to feed $petName")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-
-        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
-        val petName = intent.getStringExtra("pet_name") ?: "your pet"
-        val channelId = "feeding_channel"
-
-        val manager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+        // Create channel for Android 8+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             val channel = NotificationChannel(
@@ -50,7 +28,7 @@ class FeedingReminderReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_HIGH
             )
 
-            manager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channel)
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
@@ -61,6 +39,6 @@ class FeedingReminderReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
             .build()
 
-        manager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
     }
 }
