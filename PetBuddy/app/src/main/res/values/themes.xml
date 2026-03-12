@@ -1,9 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.PetBuddy" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- Android 12 Splash -->
+        <item name="android:windowSplashScreenBackground"
+            tools:targetApi="31">@android:color/white</item>
+
+        <item name="android:windowSplashScreenAnimatedIcon"
+            tools:targetApi="31">@mipmap/ic_launcher</item>
+
+        <item name="android:windowSplashScreenIconBackgroundColor"
+            tools:targetApi="31">@android:color/transparent</item>
+
     </style>
 
-    <style name="Theme.PetBuddy" parent="Base.Theme.PetBuddy" />
+    <style name="Theme.PetBuddy" parent="Base.Theme.PetBuddy"/>
+
 </resources>
