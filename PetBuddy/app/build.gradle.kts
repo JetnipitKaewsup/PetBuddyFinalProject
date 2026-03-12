@@ -91,4 +91,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.8.0")
 
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+
+    //calendar
+    implementation("com.kizitonwose.calendar:view:2.9.0")
 }
