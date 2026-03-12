@@ -382,4 +382,26 @@ abstract class BaseActivity : AppCompatActivity() {
         } ?: callback(emptyList())
     }
 
+    fun deleteFeedingSchedule(scheduleId: String) {
+
+        val userId = mAuth.currentUser?.uid ?: return
+
+        db.collection("users")
+            .document(userId)
+            .collection("feeding_schedules")
+            .document(scheduleId)
+            .delete()
+            .addOnSuccessListener {
+
+                showToast("Schedule deleted")
+
+            }
+            .addOnFailureListener {
+
+                showToast("Delete failed")
+
+            }
+    }
+
+
 }

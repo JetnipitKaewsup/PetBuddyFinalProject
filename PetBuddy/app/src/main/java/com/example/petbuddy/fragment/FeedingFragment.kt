@@ -100,6 +100,14 @@ class FeedingFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        binding.showFeedingSchedules.setOnClickListener {
+            val fragment = SettingFeedingFragment()
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment).addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun loadData() {
