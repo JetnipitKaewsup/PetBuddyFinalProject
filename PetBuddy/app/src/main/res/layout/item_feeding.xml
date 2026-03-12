@@ -50,7 +50,7 @@
                 android:id="@+id/rvPets"
                 android:layout_width="100dp"
                 android:contentDescription="Selected pets"
-                android:layout_height="28dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
                 tools:listitem="@layout/item_pet_icon"
                 app:layout_constraintEnd_toEndOf="parent"

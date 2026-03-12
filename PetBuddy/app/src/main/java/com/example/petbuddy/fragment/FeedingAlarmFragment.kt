@@ -1,9 +1,9 @@
 package com.example.petbuddy.fragment
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.R
@@ -14,6 +14,7 @@ import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.notifications.ReminderManager
 import com.example.petbuddy.util.Constants
 import com.google.firebase.firestore.FieldValue
+import java.util.Calendar
 
 class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
@@ -25,17 +26,16 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
     private var repeatType: String = "once"
     private val selectedDays = mutableListOf<String>()
 
-    private var isAm = true
-
     private lateinit var petAdapter: PetIconAdapter
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentFeedingAlarmBinding.bind(view)
 
-        setupAmPmButtons()
+        setDefaultTime()
+
+        setupTimePicker()
         setupRepeatButtons()
         setupDayChips()
         setupSpinner()
@@ -54,23 +54,45 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-    // ---------------- AM PM ----------------
+    // ---------------- DEFAULT TIME ----------------
 
-    private fun setupAmPmButtons() {
+    private fun setDefaultTime() {
 
-        binding.btnAm.isEnabled = false
-        binding.btnPm.isEnabled = true
+        val calendar = Calendar.getInstance()
 
-        binding.btnAm.setOnClickListener {
-            isAm = true
-            binding.btnAm.isEnabled = false
-            binding.btnPm.isEnabled = true
-        }
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
 
-        binding.btnPm.setOnClickListener {
-            isAm = false
-            binding.btnAm.isEnabled = true
-            binding.btnPm.isEnabled = false
+        val time = String.format("%02d:%02d", hour, minute)
+
+        binding.tvTime.text = time
+    }
+
+    // ---------------- TIME PICKER ----------------
+
+    private fun setupTimePicker() {
+
+        binding.tvTime.setOnClickListener {
+
+            val calendar = Calendar.getInstance()
+
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            val dialog = TimePickerDialog(
+                requireContext(),
+                { _, selectedHour, selectedMinute ->
+
+                    val time = String.format("%02d:%02d", selectedHour, selectedMinute)
+                    binding.tvTime.text = time
+
+                },
+                hour,
+                minute,
+                true
+            )
+
+            dialog.show()
         }
     }
 
@@ -82,6 +104,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
             repeatType = "once"
             binding.chipDays.visibility = View.GONE
+
             selectedDays.clear()
             clearDayChips()
         }
@@ -215,37 +238,15 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.btnSave.setOnClickListener {
 
-            val hour = binding.etHour.text.toString().toIntOrNull()
-            val minute = binding.etMinute.text.toString().toIntOrNull()
+            val timeParts = binding.tvTime.text.toString().split(":")
 
-            if (hour == null || minute == null) {
-
-                Toast.makeText(requireContext(), "Please enter time", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (hour !in 1..12 || minute !in 0..59) {
-
-                Toast.makeText(requireContext(), "Invalid time", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            val hour = timeParts[0].toInt()
+            val minute = timeParts[1].toInt()
 
             if (repeatType == "custom" && selectedDays.isEmpty()) {
 
                 baseActivity.showToast("Please select days")
                 return@setOnClickListener
-            }
-
-            var finalHour = hour
-
-            if (isAm) {
-
-                if (finalHour == 12) finalHour = 0
-
-            } else {
-
-                if (finalHour != 12) finalHour += 12
-
             }
 
             val title = binding.etTitle.text.toString()
@@ -268,17 +269,15 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 "title" to title,
                 "note" to note,
                 "type" to type,
-                "hour" to finalHour,
+                "hour" to hour,
                 "minute" to minute,
                 "repeatType" to repeatType,
-                "days" to selectedDays,
+                "days" to selectedDays.toList(),
                 "petIds" to petIds,
                 "isActive" to true,
                 "createdAt" to FieldValue.serverTimestamp()
 
             )
-
-            println("Saving schedule: $scheduleData")
 
             baseActivity.db
                 .collection("users")
@@ -287,7 +286,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 .add(scheduleData)
                 .addOnSuccessListener {
 
-                    scheduleAlarm(finalHour, minute)
+                    scheduleAlarm(hour, minute)
 
                     baseActivity.showToast("Feeding alarm saved")
 
@@ -316,7 +315,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 requireContext(),
                 pet.petId,
                 hour,
-                minute
+                minute,
+                selectedDays
             )
 
             ReminderManager.scheduleFeedingReminder(
@@ -324,7 +324,9 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 pet.petId,
                 pet.petName,
                 hour,
-                minute
+                minute,
+                repeatType,
+                selectedDays.toList()
             )
         }
     }

@@ -18,7 +18,7 @@ data class FeedingSchedule(
 
     val petIds: List<String> = emptyList(),
 
-    val isActive: Boolean = true,
+    var isActive: Boolean = true,
 
     val createdAt: Timestamp? = null
 )

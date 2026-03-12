@@ -62,23 +62,8 @@
                     android:textSize="16sp"
                     android:textStyle="bold"/>
 
-                <!-- Hour -->
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    app:boxBackgroundMode="outline">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etHour"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:maxLength="2"
-                        android:text="08"/>
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -89,48 +74,18 @@
 
                 <!-- Minute -->
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    app:boxBackgroundMode="outline">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMinute"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:maxLength="2"
-                        android:text="30"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="08:30 AM"
+                    android:textSize="18sp"
+                    android:background="@drawable/background_input_field"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
                 <!-- AM PM -->
-
-                <LinearLayout
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnAm"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="AM"
-                        android:textAllCaps="false"
-                        android:backgroundTint="@color/brown"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnPm"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="4dp"
-                        android:text="PM"
-                        android:textAllCaps="false"
-                        android:backgroundTint="@color/brown"/>
-
-                </LinearLayout>
 
             </LinearLayout>
 

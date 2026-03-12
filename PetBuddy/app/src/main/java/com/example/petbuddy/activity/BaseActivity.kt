@@ -5,12 +5,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.SelectionMode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.example.petbuddy.model.FeedingRecord
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -308,5 +310,76 @@ abstract class BaseActivity : AppCompatActivity() {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 
+    fun loadFeedingSchedules(callback: (List<FeedingSchedule>) -> Unit) {
+
+        currentUserId?.let { uid ->
+
+            db.collection("users")
+                .document(uid)
+                .collection("feeding_schedules")
+                .get()
+                .addOnSuccessListener { snapshot ->
+
+                    val schedules = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(FeedingSchedule::class.java)?.copy(id = doc.id)
+                    }
+
+                    callback(schedules)
+                }
+                .addOnFailureListener {
+                    callback(emptyList())
+                }
+
+        } ?: callback(emptyList())
+    }
+
+    fun saveFeedingRecord(record: FeedingRecord) {
+
+        currentUserId?.let { uid ->
+
+            db.collection("users")
+                .document(uid)
+                .collection("feeding_records")
+                .add(record)
+                .addOnSuccessListener {
+
+                    println("Feeding record saved")
+
+                }
+                .addOnFailureListener {
+
+                    println("Failed to save feeding record")
+
+                }
+
+        }
+    }
+
+    fun loadFeedingRecords(callback: (List<FeedingRecord>) -> Unit) {
+
+        currentUserId?.let { uid ->
+
+            db.collection("users")
+                .document(uid)
+                .collection("feeding_records")
+                .get()
+                .addOnSuccessListener { result ->
+
+                    val records = result.documents.mapNotNull {
+
+                        it.toObject(FeedingRecord::class.java)
+
+                    }
+
+                    callback(records)
+                }
+                .addOnFailureListener {
+
+                    callback(emptyList())
+
+                }
+
+        } ?: callback(emptyList())
+    }
 
 }

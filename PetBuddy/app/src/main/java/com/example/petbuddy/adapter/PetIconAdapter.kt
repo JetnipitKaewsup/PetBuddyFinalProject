@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.petbuddy.R
 import com.example.petbuddy.databinding.ItemPetIconBinding
 import com.example.petbuddy.model.Pet
 
@@ -41,8 +42,9 @@ class PetIconAdapter(
 
         fun bind(pet: Pet) {
 
-            // ถ้ามี pet image URL
-             Glide.with(binding.imgPet).load(pet.imagePath).into(binding.imgPet)
+            Glide.with(binding.root.context)
+                .load(pet.imagePath)
+                .into(binding.imgPet)
 
             binding.root.setOnClickListener {
                 onPetClick(pet.petId)

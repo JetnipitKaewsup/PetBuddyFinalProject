@@ -1,16 +1,13 @@
 package com.example.petbuddy.model
 
-import java.security.Timestamp
+data class FeedingRecord(
 
-data class FeedingRecords(
-
-    val id: String = "",
+    val foodName: String = "",
+    val foodType: String = "",
+    val petIds: List<String> = emptyList(),
 
     val scheduleId: String = "",
-    val petId: String = "",
+    val fedAt: Long = 0,
+    val dateTime: String = ""
 
-    val foodType: String = "",
-    val note: String = "",
-
-    val fedAt: Timestamp? = null
 )

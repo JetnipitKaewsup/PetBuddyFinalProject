@@ -8,7 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
+import com.example.petbuddy.adapter.FeedingRecordAdapter
+import com.example.petbuddy.adapter.FeedingTodayAdapter
 import com.example.petbuddy.databinding.FragmentFeedingBinding
+import com.example.petbuddy.model.FeedingRecord
+import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.Pet
 
 class FeedingFragment : Fragment() {
@@ -17,7 +21,12 @@ class FeedingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var baseActivity: BaseActivity
-    private var selectedPets: List<Pet> = emptyList()
+
+    private lateinit var feedingAdapter: FeedingTodayAdapter
+    private lateinit var recordAdapter: FeedingRecordAdapter
+
+    private var feedingSchedules: List<FeedingSchedule> = emptyList()
+    private var petMap: Map<String, Pet> = emptyMap()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,26 +42,51 @@ class FeedingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         baseActivity = activity as BaseActivity
-        selectedPets = baseActivity.selectedPets
 
         setupToolbar()
         setupRecyclerView()
         setupButtons()
+
+        loadData()
     }
 
     private fun setupToolbar() {
-
         binding.toolbar.setNavigationOnClickListener {
             baseActivity.onBackPressedDispatcher.onBackPressed()
         }
-
     }
 
     private fun setupRecyclerView() {
 
-        binding.showFeeding.layoutManager = LinearLayoutManager(requireContext())
-        binding.showRecords.layoutManager = LinearLayoutManager(requireContext())
+        feedingAdapter = FeedingTodayAdapter(
+            feedingList = emptyList(),
+            petMap = emptyMap(),
 
+            onDoneClick = { schedule ->
+                onFeedingDone(schedule)
+            },
+
+            onPetClick = { petId ->
+                baseActivity.showToast("Pet clicked: $petId")
+            }
+        )
+
+        binding.showFeeding.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        binding.showFeeding.setHasFixedSize(true)
+
+        binding.showFeeding.adapter = feedingAdapter
+
+
+        recordAdapter = FeedingRecordAdapter(petMap) { petId ->
+            baseActivity.showToast("Pet clicked: $petId")
+        }
+
+        binding.showRecords.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        binding.showRecords.adapter = recordAdapter
     }
 
     private fun setupButtons() {
@@ -65,9 +99,77 @@ class FeedingFragment : Fragment() {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    private fun loadData() {
+
+        baseActivity.loadAllPets { pets ->
+
+            petMap = pets.associateBy { it.petId }
+
+            feedingAdapter.updatePetMap(petMap)
+            recordAdapter.updatePetMap(petMap)
+
+            baseActivity.loadFeedingSchedules { schedules ->
+
+                // Debug log
+                schedules.forEach {
+                    println("Schedule ${it.title} active=${it.isActive}")
+                }
+
+                // ⭐ show only active schedules
+                feedingSchedules = schedules.filter { it.isActive }
+
+                feedingAdapter.submitList(feedingSchedules)
+
+            }
+
+            loadFeedingRecords()
+        }
+    }
+
+    private fun loadFeedingRecords() {
+
+        baseActivity.loadFeedingRecords { records ->
+
+            recordAdapter.submitList(records)
 
         }
+    }
 
+    private fun onFeedingDone(schedule: FeedingSchedule) {
+
+        val record = FeedingRecord(
+            scheduleId = schedule.id,
+            foodName = schedule.title,
+            foodType = schedule.type,
+            petIds = schedule.petIds,
+            fedAt = System.currentTimeMillis()
+        )
+
+        val userId = baseActivity.mAuth.currentUser?.uid ?: return
+
+        // Save feeding record
+        baseActivity.saveFeedingRecord(record)
+
+        // Update Firestore schedule
+        baseActivity.db.collection("users").document(userId)
+            .collection("feeding_schedules")
+            .document(schedule.id)
+            .update("isActive", false)
+            .addOnSuccessListener {
+
+                baseActivity.showToast("Feeding recorded")
+
+                // ⭐ Remove from current UI list immediately
+                feedingSchedules = feedingSchedules.filter { it.id != schedule.id }
+
+                feedingAdapter.submitList(feedingSchedules)
+
+                // Reload feeding history
+                loadFeedingRecords()
+            }
     }
 
     override fun onDestroyView() {
