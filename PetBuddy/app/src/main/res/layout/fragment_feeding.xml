@@ -25,6 +25,15 @@
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="Feeding"
         app:titleTextColor="@color/brown" />
+        app:title="Feeding"
+        app:titleTextColor="@color/brown"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <!-- Active Feeding Schedule -->
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardActiveFeeding"
@@ -84,6 +93,7 @@
 
 
     <!-- Today Feeding Card -->
+    <!-- Highlight Card for Today's Feeding -->
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardTodayFeeding"
@@ -161,6 +171,16 @@
 
 
     <!-- Feeding Records RecyclerView -->
+        android:layout_height="wrap_content"
+        android:text="Feeding Records"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/cardTodayFeeding"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <!-- RecyclerView Feeding Records -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/showRecords"
@@ -172,6 +192,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_feeding_record"/>
+        app:layout_constraintTop_toBottomOf="@id/tvFeedingRecords"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
     <!-- Floating Add Button -->

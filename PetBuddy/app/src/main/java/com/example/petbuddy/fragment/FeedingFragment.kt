@@ -11,6 +11,9 @@ import com.example.petbuddy.databinding.FragmentFeedingBinding
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.SelectionMode
+import com.example.petbuddy.model.SelectionMode
+import com.example.petbuddy.notifications.ReminderManager
+import com.example.petbuddy.util.Constants
 
 class FeedingFragment : Fragment() {
 
@@ -40,6 +43,16 @@ class FeedingFragment : Fragment() {
         setupToolbar()
         setupRecyclerView()
         setupButtons()
+        setupToolbar()
+        setupRecyclerView()
+        setupButtons()
+
+        ReminderManager.scheduleFeedingReminder(
+            requireContext(),
+            "Luna",
+            18,
+            30
+        )
     }
 
     private fun setupToolbar() {
@@ -47,6 +60,7 @@ class FeedingFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             baseActivity.onBackPressedDispatcher.onBackPressed()
         }
+
     }
 
     private fun setupRecyclerView() {
@@ -88,6 +102,29 @@ class FeedingFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+        }
+
+        binding.showRecords.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+        }
+
+    }
+
+    private fun setupButtons() {
+
+        binding.btnAddFeeding.setOnClickListener {
+
+            parentFragmentManager.beginTransaction()
+                .replace(
+                    com.example.petbuddy.R.id.fragment_container,
+                    PetSelectionFragment()
+                )
+                .addToBackStack(null)
+                .commit()
+
+        }
+
     }
 
     override fun onDestroyView() {

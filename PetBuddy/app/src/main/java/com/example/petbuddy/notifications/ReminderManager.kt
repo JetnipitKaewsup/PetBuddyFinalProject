@@ -34,6 +34,12 @@ object ReminderManager {
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCode,
+        val intent = Intent(context, FeedingReminderReceiver::class.java)
+        intent.putExtra("pet_name", petName)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            petName.hashCode(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

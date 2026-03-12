@@ -18,3 +18,15 @@
         app:shapeAppearanceOverlay="@style/CircleImage"/>
 
 </FrameLayout>
+=======
+<com.google.android.material.imageview.ShapeableImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/imgPet"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_marginStart="4dp"
+    android:scaleType="centerCrop"
+    android:src="@drawable/corgi"
+    app:shapeAppearanceOverlay="@style/CircleImage"/>
+>>>>>>> Stashed changes
