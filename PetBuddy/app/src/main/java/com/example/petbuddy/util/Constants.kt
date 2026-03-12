@@ -11,5 +11,6 @@ object Constants {
     const val TAG_WEIGHT = "WEIGHT"
     const val TAG_VACCINATION = "VACCINATION"
     const val TAG_SCHEDULE = "SCHEDULE"
+    const val TAG_ADD_EVENT = "ADD_EVENT"
     const val TAG_PROFILE = "PROFILE"
 }

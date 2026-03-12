@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
+import com.example.petbuddy.adapter.EventAdapter
 import com.example.petbuddy.databinding.FragmentScheduleBinding
+import com.example.petbuddy.model.Event
 import com.example.petbuddy.navigation.MainNavigator
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
@@ -24,6 +27,8 @@ import com.kizitonwose.calendar.view.ViewContainer
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ScheduleFragment : Fragment() {
@@ -36,7 +41,11 @@ class ScheduleFragment : Fragment() {
     // เก็บวันที่เลือก
     private var selectedDate = java.time.LocalDate.now()
     private var currentMonth = YearMonth.now()
-    private var calendarHeaderFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+    private var calendarHeaderFormatter =
+        DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+
+    private var events: List<Event> = listOf()
+    private lateinit var eventAdapter: EventAdapter
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
@@ -56,6 +65,11 @@ class ScheduleFragment : Fragment() {
         setupCalendar()
         setupToolbar()
         setupMonthNavigation()
+        setupRecyclerView()
+        loadEvents()
+        binding.fabAddEvent.setOnClickListener {
+            navigator.navigateToAddEvent(selectedDate)
+        }
     }
 
     private fun setupToolbar() {
@@ -130,7 +144,8 @@ class ScheduleFragment : Fragment() {
                             .map { it as TextView }
                             .forEachIndexed { index, textView ->
                                 val dayOfWeek = daysOfWeek[index]
-                                val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                                val title =
+                                    dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
                                 textView.text = title
                             }
                     }
@@ -139,10 +154,56 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    private fun setupRecyclerView() {
+        // สร้าง EventAdapter สำหรับแสดงรายการ events
+        eventAdapter = EventAdapter { event ->
+            // คลิกเพื่อแก้ไข event
+            //navigator.navigateToEditEvent(event)
+        }
+        binding.rvEvents.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvEvents.adapter = eventAdapter
+    }
+
+    private fun loadEvents() {
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
+        baseActivity.db.collection("users")
+            .document(userId)
+            .collection("events")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                events = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Event::class.java)?.copy(eventId = doc.id)
+                }
+                // รีเฟรชปฏิทินเพื่อแสดงจุด
+                binding.calendarView.notifyCalendarChanged()
+                // โหลด events ของวันที่เลือก
+                loadEventsForSelectedDate()
+            }
+    }
+
+    private fun loadEventsForSelectedDate() {
+        val eventsForDay = events.filter { event ->
+            isSameDay(event.startDate.toDate(), selectedDate)
+        }
+        // อัพเดท RecyclerView
+        eventAdapter.submitList(eventsForDay)
+
+        binding.tvNoEvents.visibility = if (eventsForDay.isEmpty()) View.VISIBLE else View.GONE
+        binding.rvEvents.visibility = if (eventsForDay.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    private fun isSameDay(date1: Date, date2: java.time.LocalDate): Boolean {
+        val cal1 = Calendar.getInstance().apply { time = date1 }
+        return cal1.get(Calendar.YEAR) == date2.year &&
+                cal1.get(Calendar.DAY_OF_YEAR) == date2.dayOfYear
+    }
+
     // ViewContainer สำหรับแต่ละวัน
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         val textView = view.findViewById<TextView>(R.id.calendarDayText)
         private var currentDay: CalendarDay? = null
+
         init {
             view.setOnClickListener {
                 currentDay?.let { day ->
@@ -152,6 +213,7 @@ class ScheduleFragment : Fragment() {
                 }
             }
         }
+
         fun bind(day: CalendarDay) {
             currentDay = day
             textView.text = day.date.dayOfMonth.toString()
@@ -162,19 +224,23 @@ class ScheduleFragment : Fragment() {
                     textView.alpha = 1f
                     textView.isEnabled = true
                 }
+
                 else -> {
                     textView.alpha = 0.3f
                     textView.isEnabled = false
                 }
             }
 
-            // ไฮไลท์วันที่ถูกเลือก (ถ้ามี)
+            // ไฮไลท์วันที่ถูกเลือก
             if (day.position == DayPosition.MonthDate && day.date == selectedDate) {
                 textView.setBackgroundResource(R.drawable.brown_oval_bg)
                 textView.setTextColor(android.graphics.Color.WHITE)
             } else {
                 textView.background = null
                 textView.setTextColor(android.graphics.Color.BLACK)
+            }
+            val hasEvent = events.any {
+                isSameDay(it.startDate.toDate(), day.date)
             }
         }
     }
@@ -193,6 +259,7 @@ class ScheduleFragment : Fragment() {
         binding.calendarView.notifyDateChanged(selectedDate)
 
         // TODO: โหลด events ของวันที่เลือก
+        loadEventsForSelectedDate()
     }
 
     override fun onDestroyView() {

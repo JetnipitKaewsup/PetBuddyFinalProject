@@ -26,7 +26,8 @@ class PetSelectionFragment : Fragment() {
     private lateinit var adapter: PetAdapter
 
     private var sourceTag: String? = null
-
+    private var requestKey: String? = null
+    private var initialSelectedIds: List<String> = emptyList()
     // ข้อมูลตัวอย่าง (จริงๆ ต้องโหลดจาก Firebase)
     private val mockPets = listOf(
         Pet("1", "ทองต้วน", "dog", "โกลเด้น", "dog", null),
@@ -45,6 +46,15 @@ class PetSelectionFragment : Fragment() {
         } ?: SelectionMode.SINGLE
 
         sourceTag = arguments?.getString("source_tag")
+        requestKey = arguments?.getString("request_key")
+
+        // รับรายการสัตว์ที่เลือกไว้แล้ว (ถ้ามี)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            initialSelectedIds = arguments?.getStringArrayList("selected_pet_ids") ?: emptyList()
+        } else {
+            @Suppress("DEPRECATION")
+            initialSelectedIds = arguments?.getStringArrayList("selected_pet_ids") ?: emptyList()
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -142,7 +152,32 @@ class PetSelectionFragment : Fragment() {
                 }
                 Constants.TAG_SCHEDULE -> {
                     // กลับไป ScheduleFragment
-                    parentFragmentManager.popBackStack(Constants.TAG_SCHEDULE, 0)
+                    //parentFragmentManager.popBackStack(Constants.TAG_SCHEDULE, 0)
+                    val selectedPets = adapter.getSelectedPets()
+                    if (selectedPets.isNotEmpty()) {
+                        // ตรวจสอบ sourceTag
+                        when (sourceTag) {
+                            Constants.TAG_SCHEDULE -> {
+                                // ส่งข้อมูลกลับ via FragmentResult
+                                val result = Bundle().apply {
+                                    putStringArrayList("selected_pet_ids", ArrayList(selectedPets.map { it.petId }))
+                                }
+                                parentFragmentManager.setFragmentResult(requestKey ?: "pets_selected", result)
+                                parentFragmentManager.popBackStack()
+                            }
+                            Constants.TAG_FEEDING_ALARM -> {
+                                baseActivity.selectPets(selectedPets)
+                                parentFragmentManager.popBackStack()
+                            }
+                            else -> {
+                                baseActivity.selectPets(selectedPets)
+                                parentFragmentManager.popBackStack()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "กรุณาเลือกสัตว์เลี้ยง", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
                 Constants.TAG_HEALTH_DASHBOARD -> {
                     // กลับไป HealthDashboard
@@ -163,6 +198,9 @@ class PetSelectionFragment : Fragment() {
         baseActivity.loadAllPets { pets ->
             if (pets.isNotEmpty()) {
                 adapter.submitList(pets)
+                if (initialSelectedIds.isNotEmpty()) {
+                    adapter.setInitialSelection(initialSelectedIds)
+                }
             } else {
                 // ถ้าไม่มีข้อมูล ให้ใช้ mock data
                 adapter.submitList(mockPets)
@@ -176,3 +214,5 @@ class PetSelectionFragment : Fragment() {
         _binding = null
     }
 }
+
+

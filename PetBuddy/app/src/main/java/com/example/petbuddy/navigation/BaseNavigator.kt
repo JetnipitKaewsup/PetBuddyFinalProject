@@ -3,8 +3,11 @@ package com.example.petbuddy.navigation
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.petbuddy.R
+import com.example.petbuddy.fragment.AddEventFragment
+import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.model.VaccinationRecord
 import com.example.petbuddy.model.WeightRecord
+import java.time.LocalDate
 
 abstract class BaseNavigator(protected val activity: FragmentActivity) {
 
@@ -39,6 +42,25 @@ abstract class BaseNavigator(protected val activity: FragmentActivity) {
         navigator.navigateTo(fragment, "pet_selection")
     }
 
+    fun navigateToPetSelectionForEvent(
+        mode: SelectionMode,
+        sourceTag: String,
+        requestKey: String,
+        selectedPetIds: List<String> = emptyList()
+    ) {
+        val fragment = com.example.petbuddy.fragment.PetSelectionFragment().apply {
+            arguments = android.os.Bundle().apply {
+                putSerializable("mode", mode)
+                putString("source_tag", sourceTag)
+                putString("request_key", requestKey)
+                if (selectedPetIds.isNotEmpty()) {
+                    putStringArrayList("selected_pet_ids", ArrayList(selectedPetIds))
+                }
+            }
+        }
+        navigator.navigateTo(fragment, "pet_selection")
+    }
+
     fun navigateToEditPetProfile(pet: com.example.petbuddy.model.Pet) {
         val fragment = com.example.petbuddy.fragment.EditPetProfileFragment(pet)
         navigator.navigateTo(fragment, "edit_pet_profile")
@@ -63,6 +85,14 @@ abstract class BaseNavigator(protected val activity: FragmentActivity) {
         navigator.navigateTo(fragment, "add_vaccination")
     }
 
+    fun navigateToAddEvent(selectedDate: LocalDate? = null) {
+        val fragment = AddEventFragment.newInstance(
+            selectedDate = selectedDate?.let {
+                java.util.Date.from(it.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())
+            }
+        )
+        navigator.navigateTo(fragment, "add_event")
+    }
     // Utility methods
     fun goBack(): Boolean = navigator.goBack()
 

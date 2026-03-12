@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
+import com.example.petbuddy.adapter.WeightRecordAdapter
 import com.example.petbuddy.databinding.FragmentWeightBinding
 import com.example.petbuddy.databinding.ItemWeightRecordBinding
 import com.example.petbuddy.model.WeightRecord
@@ -275,60 +276,60 @@ class WeightFragment : Fragment() {
 }
 
 // Adapter แยกไว้ต่างหาก
-class WeightRecordAdapter(
-    private val onItemClick: (WeightRecord) -> Unit,
-    private val onItemLongClick: (WeightRecord) -> Unit
-) : ListAdapter<WeightRecord, WeightRecordAdapter.WeightRecordViewHolder>(WeightRecordDiffCallback()) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeightRecordViewHolder {
-        val binding = ItemWeightRecordBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return WeightRecordViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: WeightRecordViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-
-    inner class WeightRecordViewHolder(
-        private val binding: ItemWeightRecordBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(record: WeightRecord) {
-            binding.apply {
-                txtWeightDate.text = record.dateString
-                txtWeightValue.text = String.format("%.1f", record.weight)
-                txtWeightTime.text = record.timeString
-
-                if (!record.note.isNullOrEmpty()) {
-                    txtNote.visibility = View.VISIBLE
-                    txtNote.text = record.note
-                } else {
-                    txtNote.visibility = View.GONE
-                }
-
-                root.setOnClickListener {
-                    onItemClick(record)
-                }
-
-                root.setOnLongClickListener {
-                    onItemLongClick(record)
-                    true
-                }
-            }
-        }
-    }
-
-    class WeightRecordDiffCallback : DiffUtil.ItemCallback<WeightRecord>() {
-        override fun areItemsTheSame(oldItem: WeightRecord, newItem: WeightRecord): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: WeightRecord, newItem: WeightRecord): Boolean {
-            return oldItem == newItem
-        }
-    }
-}
+//class WeightRecordAdapter(
+//    private val onItemClick: (WeightRecord) -> Unit,
+//    private val onItemLongClick: (WeightRecord) -> Unit
+//) : ListAdapter<WeightRecord, WeightRecordAdapter.WeightRecordViewHolder>(WeightRecordDiffCallback()) {
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeightRecordViewHolder {
+//        val binding = ItemWeightRecordBinding.inflate(
+//            LayoutInflater.from(parent.context),
+//            parent,
+//            false
+//        )
+//        return WeightRecordViewHolder(binding)
+//    }
+//
+//    override fun onBindViewHolder(holder: WeightRecordViewHolder, position: Int) {
+//        holder.bind(getItem(position))
+//    }
+//
+//    inner class WeightRecordViewHolder(
+//        private val binding: ItemWeightRecordBinding
+//    ) : RecyclerView.ViewHolder(binding.root) {
+//
+//        fun bind(record: WeightRecord) {
+//            binding.apply {
+//                txtWeightDate.text = record.dateString
+//                txtWeightValue.text = String.format("%.1f", record.weight)
+//                txtWeightTime.text = record.timeString
+//
+//                if (!record.note.isNullOrEmpty()) {
+//                    txtNote.visibility = View.VISIBLE
+//                    txtNote.text = record.note
+//                } else {
+//                    txtNote.visibility = View.GONE
+//                }
+//
+//                root.setOnClickListener {
+//                    onItemClick(record)
+//                }
+//
+//                root.setOnLongClickListener {
+//                    onItemLongClick(record)
+//                    true
+//                }
+//            }
+//        }
+//    }
+//
+//    class WeightRecordDiffCallback : DiffUtil.ItemCallback<WeightRecord>() {
+//        override fun areItemsTheSame(oldItem: WeightRecord, newItem: WeightRecord): Boolean {
+//            return oldItem.id == newItem.id
+//        }
+//
+//        override fun areContentsTheSame(oldItem: WeightRecord, newItem: WeightRecord): Boolean {
+//            return oldItem == newItem
+//        }
+//    }
+//}

@@ -48,7 +48,13 @@ class PetAdapter (
         return pets.size
     }
 
-
+    fun setInitialSelection(petIds: List<String>) {
+        // ตั้งค่า initial selection
+        selectedPets.clear()
+        selectedPets.addAll(pets.filter { it.petId in petIds })
+        notifyDataSetChanged()
+        onSelectionChanged(selectedPets.size)
+    }
     inner class PetViewHolder(
         private val binding: ItemPetBinding
     ) : RecyclerView.ViewHolder(binding.root) {

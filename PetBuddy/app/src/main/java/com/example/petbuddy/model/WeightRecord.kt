@@ -1,7 +1,9 @@
 package com.example.petbuddy.model
 
 import java.io.Serializable
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 data class WeightRecord(
     val id: String = "",              // document id ใน Firestore
@@ -18,19 +20,19 @@ data class WeightRecord(
 
     val dateString: String
         get() {
-            val format = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             return format.format(Date(timestamp))
         }
 
     val timeString: String
         get() {
-            val format = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+            val format = SimpleDateFormat("HH:mm", Locale.getDefault())
             return format.format(Date(timestamp))
         }
 
     val dateTimeString: String
         get() {
-            val format = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
+            val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
             return format.format(Date(timestamp))
         }
 }

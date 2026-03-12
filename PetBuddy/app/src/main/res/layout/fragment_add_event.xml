@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Add Event"
+        app:titleTextColor="@color/brown" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_brown_bg"
+            android:hint="Enter event title"
+            android:paddingHorizontal="12dp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Tag / Category -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tag"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <Spinner
+            android:id="@+id/spinnerTag"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_brown_bg"
+            android:layout_marginTop="4dp" />
+
+        <!-- All Day Checkbox -->
+        <Switch
+            android:id="@+id/swAllDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="All Day"
+            android:layout_marginTop="8dp" />
+
+        <!-- Date and Time -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/layoutDate"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:background="@drawable/light_brown_bg"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="29/03/2025"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/btnDatePicker"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:tint="@color/brown" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textSize="14sp"
+                android:layout_marginHorizontal="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutTime"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:background="@drawable/light_brown_bg"
+                android:layout_marginStart="4dp">
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="10:00"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/btnTimePicker"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_clock"
+                    android:tint="@color/brown" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Place -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Place"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etPlace"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_brown_bg"
+            android:hint="Enter place"
+            android:paddingHorizontal="12dp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Note -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etNote"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/light_brown_bg"
+            android:hint="Enter note"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:layout_marginTop="4dp" />
+
+        <!-- Pets Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pets"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/btnSelectPets"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Select Pets"
+            android:backgroundTint="@color/brown"
+            android:layout_marginTop="4dp" />
+
+        <!-- Selected Pets Preview (Horizontal Scroll) -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:id="@+id/horizontalScrollView">
+
+            <LinearLayout
+                android:id="@+id/layoutSelectedPets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/tvNoPetsSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No pets selected"
+            android:textSize="14sp"
+            android:textColor="@color/brown"
+            android:layout_marginTop="4dp" />
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Save Event"
+            android:backgroundTint="@color/brown"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+    </LinearLayout>
+</ScrollView>
