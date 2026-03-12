@@ -47,13 +47,15 @@ class MainActivity : BaseActivity() {
         init()
 
         // โหลดข้อมูล user
-        loadUserInfo()
+
         setupBottomNavigation()
 
         if (savedInstanceState == null) {
             navigator.navigateToHome()
             binding.bottomNavigation.selectedItemId = R.id.nav_home
         }
+
+        loadUserInfo()
     }
 
     override fun onResume() {
@@ -153,7 +155,9 @@ class MainActivity : BaseActivity() {
     }
 
     private fun loadUserInfo() {
+
         val userId = currentUserId
+
         if (userId == null) {
             showToast("ไม่พบข้อมูลผู้ใช้")
             return
@@ -165,26 +169,41 @@ class MainActivity : BaseActivity() {
             .document("profile")
             .get()
             .addOnSuccessListener { document ->
+
                 if (document.exists()) {
-                    val userName = document.getString("username") ?: "Unknown User"
+
+                    val userName =
+                        document.getString("username") ?: "Unknown User"
+
                     binding.tvUserName.text = userName
 
-                    val profileImageUrl = document.getString("profileImage")
+                    val profileImageUrl =
+                        document.getString("profileImage")
+
                     loadProfileImage(profileImageUrl)
+
                 } else {
+
                     showToast("ไม่พบข้อมูลโปรไฟล์")
+
                 }
+
             }
             .addOnFailureListener { e ->
+
                 Log.e("MainActivity", "Error loading user info", e)
+
                 showToast("ไม่สามารถโหลดข้อมูลผู้ใช้ได้")
+
             }
     }
 
     private fun loadProfileImage(imageUrl: String?) {
+
         val imageView = binding.ivUserProfile
 
         if (!imageUrl.isNullOrEmpty()) {
+
             Glide.with(this)
                 .load(imageUrl)
                 .apply(
@@ -194,7 +213,9 @@ class MainActivity : BaseActivity() {
                         .circleCrop()
                 )
                 .into(imageView)
+
         } else {
+
             Glide.with(this)
                 .load(R.drawable.user_placeholder)
                 .apply(RequestOptions.circleCropTransform())

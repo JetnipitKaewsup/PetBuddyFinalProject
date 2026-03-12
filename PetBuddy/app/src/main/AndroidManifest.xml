@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -15,27 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PetBuddy">
-
         <activity
-            android:name=".activity.PetResult"
-            android:exported="false" />
-
-        <activity
-            android:name=".activity.CreatePetProfile"
-            android:exported="false" />
-
-        <activity
-            android:name=".activity.RegisterActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activity.LoginActivity"
-            android:exported="false" />
-
-        <!-- MAIN ACTIVITY -->
-        <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:name=".activity.SplashActivity"
             android:exported="true">
 
             <intent-filter>
@@ -44,23 +25,32 @@
             </intent-filter>
 
         </activity>
-
-        <!-- Firebase -->
+        <activity
+            android:name=".activity.PetResult"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CreatePetProfile"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:exported="false" /> <!-- MAIN ACTIVITY -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
-
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
-        </service>
-
-        <!-- Local Notification Receiver -->
+        </service> <!-- Local Notification Receiver -->
         <receiver
             android:name=".notifications.FeedingReminderReceiver"
-            android:exported="false"/>
-
+            android:exported="false" />
     </application>
 
 </manifest>

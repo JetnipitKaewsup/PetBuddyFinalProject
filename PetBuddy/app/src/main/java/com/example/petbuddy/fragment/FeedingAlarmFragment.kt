@@ -183,18 +183,15 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.petSection.setOnClickListener {
 
             val fragment = PetSelectionFragment().apply {
-
                 arguments = Bundle().apply {
-
                     putSerializable("mode", SelectionMode.MULTIPLE)
-                    putString("source_tag", Constants.TAG_FEEDING)
-
+                    putString("source_tag", Constants.TAG_FEEDING_ALARM)
                 }
             }
 
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(Constants.TAG_FEEDING)
+                .addToBackStack(Constants.TAG_FEEDING_ALARM)   // ต้องมี
                 .commit()
         }
     }

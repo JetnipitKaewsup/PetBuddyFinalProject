@@ -36,7 +36,14 @@ class PetSelectionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mode = arguments?.getSerializable("mode", SelectionMode::class.java) ?: SelectionMode.SINGLE
+
+        mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable("mode", SelectionMode::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getSerializable("mode") as? SelectionMode
+        } ?: SelectionMode.SINGLE
+
         sourceTag = arguments?.getString("source_tag")
     }
 
@@ -130,9 +137,8 @@ class PetSelectionFragment : Fragment() {
 
             // ตรวจสอบ sourceTag เพื่อกลับไปหน้าถูกต้อง
             when (sourceTag) {
-                Constants.TAG_FEEDING -> {
-                    // กลับไป FeedingFragment
-                    parentFragmentManager.popBackStack(Constants.TAG_FEEDING, 0)
+                Constants.TAG_FEEDING_ALARM -> {
+                    parentFragmentManager.popBackStack()
                 }
                 Constants.TAG_SCHEDULE -> {
                     // กลับไป ScheduleFragment
