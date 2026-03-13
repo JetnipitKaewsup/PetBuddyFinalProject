@@ -17,7 +17,10 @@ data class Event(
     val note: String? = null,
     val petIds: List<String> = emptyList(),
     val createdAt: Timestamp = Timestamp.now(),
-    val updatedAt: Timestamp = Timestamp.now()
+    val updatedAt: Timestamp = Timestamp.now(),
+    val reminderBefore: Int = 0,
+    val reminderEnabled: Boolean = false,
+    val notificationId: Int = 0
 ) : Serializable {
     val startDateString: String
         get() {

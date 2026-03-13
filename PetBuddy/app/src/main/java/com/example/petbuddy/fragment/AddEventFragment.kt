@@ -1,5 +1,6 @@
 package com.example.petbuddy.fragment
 
+
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -8,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +29,7 @@ import com.example.petbuddy.model.Event
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.navigation.MainNavigator
+import com.example.petbuddy.notifications.ReminderManager
 import com.example.petbuddy.util.Constants
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
@@ -48,7 +52,20 @@ class AddEventFragment : Fragment() {
     private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     // Tag options
-    private val tagOptions = arrayOf("General", "Vet Visit", "Grooming", "Medication", "Play Date", "Training", "Other")
+    private val tagOptions =
+        arrayOf("General", "Vet Visit", "Grooming", "Medication", "Play Date", "Training", "Other")
+    private val reminderOptions = arrayOf(
+        "At time of event",
+        "5 minutes before",
+        "15 minutes before",
+        "30 minutes before",
+        "1 hour before",
+        "2 hours before",
+        "1 day before",
+        "2 days before"
+    )
+
+    private val reminderValues = arrayOf(0, 5, 15, 30, 60, 120, 1440, 2880)
 
     companion object {
         private const val ARG_EVENT = "event"
@@ -56,7 +73,10 @@ class AddEventFragment : Fragment() {
         private const val REQUEST_KEY_PETS = "pets_selected"  // ประกาศตรงนี้!
         private const val RESULT_PET_IDS = "selected_pet_ids"
 
-        fun newInstance(existingEvent: Event? = null, selectedDate: Date? = null): AddEventFragment {
+        fun newInstance(
+            existingEvent: Event? = null,
+            selectedDate: Date? = null
+        ): AddEventFragment {
             return AddEventFragment().apply {
                 arguments = Bundle().apply {
                     if (existingEvent != null) {
@@ -80,20 +100,22 @@ class AddEventFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // โหลด existing event ถ้ามี
-        existingEvent = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getSerializable(ARG_EVENT, Event::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            arguments?.getSerializable(ARG_EVENT) as? Event
-        }
+        existingEvent =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable(ARG_EVENT, Event::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                arguments?.getSerializable(ARG_EVENT) as? Event
+            }
 
         // ถ้ามีวันที่ส่งมา (จาก ScheduleFragment)
-        val selectedDate = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getSerializable(ARG_SELECTED_DATE, Date::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            arguments?.getSerializable(ARG_SELECTED_DATE) as? Date
-        }
+        val selectedDate =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable(ARG_SELECTED_DATE, Date::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                arguments?.getSerializable(ARG_SELECTED_DATE) as? Date
+            }
 
         selectedStartDate = selectedDate ?: Date()
     }
@@ -120,6 +142,8 @@ class AddEventFragment : Fragment() {
         if (existingEvent != null) {
             loadExistingData()
         } else {
+//            val now = Calendar.getInstance()
+//            selectedStartDate = now.time
             updateDateTimeDisplay(selectedStartDate)
         }
     }
@@ -133,9 +157,19 @@ class AddEventFragment : Fragment() {
 
     private fun setupSpinners() {
         // Tag Spinner
-        val tagAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tagOptions)
+        val tagAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tagOptions)
         tagAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerTag.adapter = tagAdapter
+
+        // Reminder
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, reminderOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerReminder.adapter = adapter
+
+        binding.cbEnableReminder.setOnCheckedChangeListener { _, isChecked ->
+            binding.spinnerReminder.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
     }
 
     private fun setupDatePickers() {
@@ -211,6 +245,7 @@ class AddEventFragment : Fragment() {
             }
         }
     }
+
     private fun updateDateTimeDisplay(date: Date) {
         binding.tvDate.text = dateFormatter.format(date)
         binding.tvTime.text = timeFormatter.format(date)
@@ -226,6 +261,12 @@ class AddEventFragment : Fragment() {
         binding.btnSave.setOnClickListener {
             saveEvent()
         }
+
+        // เคลียร์สัตว์เลี้ยง
+        binding.btnClearAllPets.setOnClickListener {
+            showClearAllPetsDialog()
+        }
+
     }
 
     private fun loadPets() {
@@ -290,22 +331,44 @@ class AddEventFragment : Fragment() {
     private fun updateSelectedPetsDisplay() {
         if (selectedPets.isEmpty()) {
             binding.horizontalScrollView.visibility = View.GONE
-            binding.tvNoPetsSelected.visibility = View.VISIBLE
+            //binding.tvNoPetsSelected.visibility = View.VISIBLE
+            binding.btnClearAllPets.visibility = View.GONE
+            binding.tvSelectedPetsCount.text = "No pets selected"
         } else {
             binding.horizontalScrollView.visibility = View.VISIBLE
-            binding.tvNoPetsSelected.visibility = View.GONE
-
+            //binding.tvNoPetsSelected.visibility = View.GONE
+            binding.btnClearAllPets.visibility = View.VISIBLE
+            binding.tvSelectedPetsCount.text = "${selectedPets.size} pets selected"
             val container = binding.layoutSelectedPets
             container.removeAllViews()
 
             selectedPets.forEach { pet ->
-                val imageView = ImageView(requireContext()).apply {
+                val frameLayout = FrameLayout(requireContext()).apply {
                     layoutParams = ViewGroup.LayoutParams(200, 200)
+                }
+                val imageView = ImageView(requireContext()).apply {
+                    layoutParams = FrameLayout.LayoutParams(180, 180).apply {
+                        gravity = android.view.Gravity.CENTER
+                    }
                     scaleType = ImageView.ScaleType.CENTER_CROP
-                    setPadding(4, 4, 4, 4)
+                }
+                val removeButton = ImageView(requireContext()).apply {
+                    layoutParams = FrameLayout.LayoutParams(40, 40).apply {
+                        gravity = android.view.Gravity.TOP or android.view.Gravity.END
+                    }
+                    setImageResource(R.drawable.ic_remove)
+                    //setColorFilter(ContextCompat.getColor(requireContext(), R.color.red))
+                    scaleType = ImageView.ScaleType.CENTER_INSIDE
+
+                    // คลิกที่ปุ่มลบ
                     setOnClickListener {
                         showRemovePetDialog(pet)
                     }
+                }
+
+                // คลิกที่รูป (ก็ลบเหมือนกัน หรือจะทำอย่างอื่นก็ได้)
+                imageView.setOnClickListener {
+                    showRemovePetDialog(pet)
                 }
 
                 if (!pet.imagePath.isNullOrEmpty()) {
@@ -322,9 +385,23 @@ class AddEventFragment : Fragment() {
                     imageView.setImageResource(R.drawable.pet_placeholder)
                 }
 
-                container.addView(imageView)
+                frameLayout.addView(imageView)
+                frameLayout.addView(removeButton)
+                container.addView(frameLayout)
             }
         }
+    }
+
+    private fun showClearAllPetsDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Clear All Pets")
+            .setMessage("Remove all pets from this event?")
+            .setPositiveButton("Clear All") { _, _ ->
+                selectedPets.clear()
+                updateSelectedPetsDisplay()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showRemovePetDialog(pet: Pet) {
@@ -344,6 +421,22 @@ class AddEventFragment : Fragment() {
         if (title.isEmpty()) {
             Toast.makeText(requireContext(), "Please enter event title", Toast.LENGTH_SHORT).show()
             return
+        }
+        val reminderBefore = if (binding.cbEnableReminder.isChecked) {
+            reminderValues[binding.spinnerReminder.selectedItemPosition]
+        } else 0
+
+        // ตรวจสอบว่าเวลาที่จะตั้งแจ้งเตือนไม่ใช่อดีต
+        if (reminderBefore > 0) {
+            val reminderTime = selectedStartDate.time - (reminderBefore * 60 * 1000)
+            if (reminderTime <= System.currentTimeMillis()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Reminder time is in the past. Please select a future time.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
         }
 
         val now = Timestamp.now()
@@ -374,7 +467,10 @@ class AddEventFragment : Fragment() {
             note = binding.etNote.text.toString().ifEmpty { null },
             petIds = selectedPets.map { it.petId },
             createdAt = existingEvent?.createdAt ?: now,
-            updatedAt = now
+            updatedAt = now,
+            reminderBefore = reminderBefore,
+            reminderEnabled = binding.cbEnableReminder.isChecked,
+            notificationId = UUID.randomUUID().hashCode()
         )
 
         saveToFirebase(event)
@@ -383,6 +479,16 @@ class AddEventFragment : Fragment() {
     private fun saveToFirebase(event: Event) {
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
 
+        // ถ้าเป็นการแก้ไข event ที่มี alarm เก่า ให้ยกเลิกก่อน
+        existingEvent?.let { oldEvent ->
+            if (oldEvent.reminderEnabled && oldEvent.reminderBefore > 0) {
+                ReminderManager.cancelEventReminder(
+                    context = requireContext(),
+                    eventId = oldEvent.eventId,
+                    reminderBeforeMinutes = oldEvent.reminderBefore
+                )
+            }
+        }
         baseActivity.db.collection("users")
             .document(userId)
             .collection("events")
@@ -394,15 +500,29 @@ class AddEventFragment : Fragment() {
                     if (existingEvent == null) "Event saved successfully" else "Event updated successfully",
                     Toast.LENGTH_SHORT
                 ).show()
+                if (event.reminderEnabled && event.reminderBefore > 0) {
+                    ReminderManager.scheduleEventReminder(
+                        context = requireContext(),
+                        eventId = event.eventId,
+                        eventTitle = event.title,
+                        eventTimeInMillis = event.startDate.toDate().time,
+                        reminderBeforeMinutes = event.reminderBefore,
+                        notificationId = event.notificationId
+                    )
+                }
                 parentFragmentManager.popBackStack()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
+
 }

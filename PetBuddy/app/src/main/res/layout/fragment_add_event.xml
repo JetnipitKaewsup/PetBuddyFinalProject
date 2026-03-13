@@ -183,7 +183,36 @@
             android:gravity="top"
             android:inputType="textMultiLine"
             android:layout_marginTop="4dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reminder"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+
+            <Switch
+                android:id="@+id/cbEnableReminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable reminder" />
+
+            <Spinner
+                android:id="@+id/spinnerReminder"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_input_field"
+                android:visibility="gone" />
+        </LinearLayout>
         <!-- Pets Section -->
         <TextView
             android:layout_width="wrap_content"
@@ -192,14 +221,14 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
-        <TextView
-            android:id="@+id/tvNoPetsSelected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No pets selected"
-            android:textSize="14sp"
-            android:textColor="@color/brown"
-            android:layout_marginTop="4dp" />
+<!--        <TextView-->
+<!--            android:id="@+id/tvNoPetsSelected"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="No pets selected"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="@color/brown"-->
+<!--            android:layout_marginTop="4dp" />-->
         <!-- Selected Pets Preview (Horizontal Scroll) -->
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -214,6 +243,32 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" />
         </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tvSelectedPetsCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0 pets selected"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <Button
+                android:id="@+id/btnClearAllPets"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Clear All"
+                android:textSize="12sp"
+                android:backgroundTint="@color/red"
+                android:visibility="gone" />
+        </LinearLayout>
         <Button
             android:id="@+id/btnSelectPets"
             android:layout_width="match_parent"

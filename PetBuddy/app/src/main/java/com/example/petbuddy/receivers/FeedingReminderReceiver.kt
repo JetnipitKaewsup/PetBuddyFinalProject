@@ -1,8 +1,9 @@
-package com.example.petbuddy.notifications
+package com.example.petbuddy.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.example.petbuddy.notifications.NotificationHelper
 
 class FeedingReminderReceiver : BroadcastReceiver() {
 

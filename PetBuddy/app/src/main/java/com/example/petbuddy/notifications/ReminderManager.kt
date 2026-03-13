@@ -5,7 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.example.petbuddy.receivers.EventReminderReceiver
+import com.example.petbuddy.receivers.FeedingReminderReceiver
 import java.util.Calendar
+import java.util.Date
 
 object ReminderManager {
 
@@ -18,77 +21,43 @@ object ReminderManager {
         repeatType: String,
         days: List<String>
     ) {
-
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         when (repeatType) {
-
-            // ---------- ONCE ----------
-            "once" -> {
-
-                val calendar = Calendar.getInstance()
-
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
+            "once", "everyday" -> {
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minute)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
 
                 if (calendar.timeInMillis <= System.currentTimeMillis()) {
                     calendar.add(Calendar.DAY_OF_MONTH, 1)
                 }
 
-                scheduleExactAlarm(
-                    context,
-                    alarmManager,
-                    petId,
-                    petName,
-                    hour,
-                    minute,
-                    calendar
+                scheduleFeedingAlarm(
+                    context = context,
+                    alarmManager = alarmManager,
+                    petId = petId,
+                    petName = petName,
+                    hour = hour,
+                    minute = minute,
+                    calendar = calendar
                 )
             }
 
-            // ---------- EVERYDAY ----------
-            "everyday" -> {
-
-                val calendar = Calendar.getInstance()
-
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-
-                if (calendar.timeInMillis <= System.currentTimeMillis()) {
-                    calendar.add(Calendar.DAY_OF_MONTH, 1)
-                }
-
-                scheduleExactAlarm(
-                    context,
-                    alarmManager,
-                    petId,
-                    petName,
-                    hour,
-                    minute,
-                    calendar
-                )
-            }
-
-            // ---------- CUSTOM DAYS ----------
             "custom" -> {
-
                 days.forEach { day ->
-
-                    val calendar = Calendar.getInstance()
-
-                    calendar.set(Calendar.HOUR_OF_DAY, hour)
-                    calendar.set(Calendar.MINUTE, minute)
-                    calendar.set(Calendar.SECOND, 0)
-                    calendar.set(Calendar.MILLISECOND, 0)
+                    val calendar = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, hour)
+                        set(Calendar.MINUTE, minute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }
 
                     val targetDay = getDayOfWeek(day)
                     val today = calendar.get(Calendar.DAY_OF_WEEK)
-
                     var diff = targetDay - today
                     if (diff < 0) diff += 7
 
@@ -98,22 +67,22 @@ object ReminderManager {
                         calendar.add(Calendar.WEEK_OF_YEAR, 1)
                     }
 
-                    scheduleExactAlarm(
-                        context,
-                        alarmManager,
-                        petId,
-                        petName,
-                        hour,
-                        minute,
-                        calendar,
-                        day
+                    scheduleFeedingAlarm(
+                        context = context,
+                        alarmManager = alarmManager,
+                        petId = petId,
+                        petName = petName,
+                        hour = hour,
+                        minute = minute,
+                        calendar = calendar,
+                        day = day
                     )
                 }
             }
         }
     }
 
-    private fun scheduleExactAlarm(
+    private fun scheduleFeedingAlarm(
         context: Context,
         alarmManager: AlarmManager,
         petId: String,
@@ -123,20 +92,17 @@ object ReminderManager {
         calendar: Calendar,
         day: String = ""
     ) {
-
-        val intent = Intent(context, FeedingReminderReceiver::class.java)
-        intent.putExtra("pet_name", petName)
+        val intent = Intent(context, FeedingReminderReceiver::class.java).apply {
+            putExtra(ReminderConstants.EXTRA_TYPE, ReminderConstants.TYPE_FEEDING)
+            putExtra(ReminderConstants.EXTRA_PET_ID, petId)
+            putExtra(ReminderConstants.EXTRA_PET_NAME, petName)
+        }
 
         val requestCode = (petId + hour + minute + day).hashCode()
 
-        val existingIntent = PendingIntent.getBroadcast(
-            context,
-            requestCode,
-            intent,
-            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        if (existingIntent != null) return
+        if (isAlarmScheduled(context, requestCode, FeedingReminderReceiver::class.java)) {
+            return
+        }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -145,61 +111,7 @@ object ReminderManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        try {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-
-                if (alarmManager.canScheduleExactAlarms()) {
-
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        pendingIntent
-                    )
-
-                } else {
-
-                    alarmManager.set(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        pendingIntent
-                    )
-
-                }
-
-            } else {
-
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-
-            }
-
-        } catch (_: SecurityException) {
-
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-
-        }
-    }
-
-    private fun getDayOfWeek(day: String): Int {
-
-        return when (day) {
-            "Mon" -> Calendar.MONDAY
-            "Tue" -> Calendar.TUESDAY
-            "Wed" -> Calendar.WEDNESDAY
-            "Thu" -> Calendar.THURSDAY
-            "Fri" -> Calendar.FRIDAY
-            "Sat" -> Calendar.SATURDAY
-            "Sun" -> Calendar.SUNDAY
-            else -> Calendar.MONDAY
-        }
+        scheduleExactAlarm(alarmManager, calendar.timeInMillis, pendingIntent)
     }
 
     fun cancelFeedingReminder(
@@ -209,44 +121,163 @@ object ReminderManager {
         minute: Int,
         days: List<String>
     ) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // ถ้าไม่มี custom days
         if (days.isEmpty()) {
+            cancelAlarm(context, alarmManager, petId + hour + minute, FeedingReminderReceiver::class.java)
+        } else {
+            days.forEach { day ->
+                cancelAlarm(context, alarmManager, petId + hour + minute + day, FeedingReminderReceiver::class.java)
+            }
+        }
+    }
 
-            val intent = Intent(context, FeedingReminderReceiver::class.java)
+    // ========== ฟังก์ชันใหม่สำหรับ Event ==========
 
-            val requestCode = (petId + hour + minute).hashCode()
+    fun scheduleEventReminder(
+        context: Context,
+        eventId: String,
+        eventTitle: String,
+        eventTimeInMillis: Long,
+        reminderBeforeMinutes: Int,
+        notificationId: Int
+    ) {
 
-            val pendingIntent = PendingIntent.getBroadcast(
-                context,
-                requestCode,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
+        if (reminderBeforeMinutes <= 0) return
 
-            alarmManager.cancel(pendingIntent)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+        // คำนวณเวลาที่จะแจ้งเตือน
+        val reminderTime = eventTimeInMillis - (reminderBeforeMinutes * 60 * 1000)
+
+        // ถ้าเวลาผ่านไปแล้ว ไม่ต้องตั้ง
+        if (reminderTime <= System.currentTimeMillis()) return
+
+        val intent = Intent(context, EventReminderReceiver::class.java).apply {
+            putExtra(ReminderConstants.EXTRA_TYPE, ReminderConstants.TYPE_EVENT)
+            putExtra(ReminderConstants.EXTRA_EVENT_ID, eventId)
+            putExtra(ReminderConstants.EXTRA_EVENT_TITLE, eventTitle)
+            putExtra("notification_id", notificationId)
+        }
+
+        val requestCode = (eventId + reminderBeforeMinutes).hashCode()
+
+        if (isAlarmScheduled(context, requestCode, EventReminderReceiver::class.java)) {
             return
         }
 
-        // ถ้ามีหลายวัน
-        days.forEach { day ->
+        android.util.Log.d("ReminderManager", "=== scheduleEventReminder ===")
+        android.util.Log.d("ReminderManager", "eventId: $eventId")
+        android.util.Log.d("ReminderManager", "eventTitle: $eventTitle")
+        android.util.Log.d("ReminderManager", "eventTime: ${Date(eventTimeInMillis)}")
+        android.util.Log.d("ReminderManager", "reminderBefore: $reminderBeforeMinutes minutes")
+        android.util.Log.d("ReminderManager", "reminderTime: ${Date(reminderTime)}")
+        android.util.Log.d("ReminderManager", "notificationId: $notificationId")
 
-            val intent = Intent(context, FeedingReminderReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
-            val requestCode = (petId + hour + minute + day).hashCode()
+        scheduleExactAlarm(alarmManager, reminderTime, pendingIntent)
 
-            val pendingIntent = PendingIntent.getBroadcast(
-                context,
-                requestCode,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE
+
+    }
+
+    fun cancelEventReminder(
+        context: Context,
+        eventId: String,
+        reminderBeforeMinutes: Int
+    ) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val requestCode = (eventId + reminderBeforeMinutes).hashCode()
+
+        cancelAlarm(context, alarmManager, requestCode.toString(), EventReminderReceiver::class.java)
+    }
+
+    // ========== ฟังก์ชันร่วม ==========
+
+    private fun scheduleExactAlarm(
+        alarmManager: AlarmManager,
+        triggerTime: Long,
+        pendingIntent: PendingIntent
+    ) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                } else {
+                    alarmManager.set(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime,
+                    pendingIntent
+                )
+            }
+        } catch (_: SecurityException) {
+            alarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
             )
+        }
+    }
 
-            alarmManager.cancel(pendingIntent)
+    private fun <T> isAlarmScheduled(
+        context: Context,
+        requestCode: Int,
+        receiverClass: Class<T>
+    ): Boolean {
+        val intent = Intent(context, receiverClass)
+        return PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        ) != null
+    }
+
+    private fun cancelAlarm(
+        context: Context,
+        alarmManager: AlarmManager,
+        key: String,
+        receiverClass: Class<*>
+    ) {
+        val intent = Intent(context, receiverClass)
+        val requestCode = key.hashCode()
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.cancel(pendingIntent)
+    }
+
+    private fun getDayOfWeek(day: String): Int {
+        return when (day) {
+            "Mon" -> Calendar.MONDAY
+            "Tue" -> Calendar.TUESDAY
+            "Wed" -> Calendar.WEDNESDAY
+            "Thu" -> Calendar.THURSDAY
+            "Fri" -> Calendar.FRIDAY
+            "Sat" -> Calendar.SATURDAY
+            "Sun" -> Calendar.SUNDAY
+            else -> Calendar.MONDAY
         }
     }
 }
