@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivPetThumbnail"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/pet_placeholder"
+        app:shapeAppearanceOverlay="@style/CircleImage"
+        app:strokeColor="@color/brown"
+        app:strokeWidth="2dp" />
+
+    <TextView
+        android:id="@+id/tvPetName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="4dp" />
+
+</LinearLayout>

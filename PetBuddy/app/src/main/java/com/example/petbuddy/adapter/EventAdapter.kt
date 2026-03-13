@@ -60,7 +60,7 @@ class EventAdapter(
                 // จำนวนสัตว์เลี้ยงที่เกี่ยวข้อง
                 if (event.petIds.isNotEmpty()) {
                     tvPetCount.visibility = android.view.View.VISIBLE
-                    tvPetCount.text = "${event.petIds.size} pets"
+                    tvPetCount.text = "${event.petIds.size} pet${if (event.petIds.size > 1) "s" else ""}"
                 } else {
                     tvPetCount.visibility = android.view.View.GONE
                 }

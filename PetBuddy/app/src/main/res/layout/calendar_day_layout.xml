@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/calendarDayText"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:textSize="16sp"
-    tools:text="22">
+    android:padding="4dp">
 
-</TextView>
+    <TextView
+        android:id="@+id/calendarDayText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/black" />
+
+    <!-- Event Dot -->
+    <View
+        android:id="@+id/eventDot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/event_color_dot"
+        android:visibility="gone" />
+
+</FrameLayout>

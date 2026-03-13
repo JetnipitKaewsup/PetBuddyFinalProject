@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true"
+    tools:context=".fragment.EventDetailFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Toolbar -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Event Details"
+            app:titleTextColor="@color/brown" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Tag -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tag"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/tvTag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:background="@drawable/brown_bg"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Date and Time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textSize="14sp"
+                        android:textColor="@color/brown" />
+
+                    <TextView
+                        android:id="@+id/tvDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="16sp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textSize="14sp"
+                        android:textColor="@color/brown" />
+
+                    <TextView
+                        android:id="@+id/tvTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="16sp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Place -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Place"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/tvPlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Note -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Note"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/tvNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Reminder -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reminder"
+                android:textSize="14sp"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/tvReminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Related Pets -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Related Pets"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/tvNoPets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No pets associated with this event"
+                android:textSize="14sp"
+                android:textColor="@color/brown"
+                android:gravity="center"
+                android:padding="16dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/petsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="8dp"
+                android:visibility="gone" />
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/btnEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Edit"
+                    android:backgroundTint="@color/brown" />
+
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Delete"
+                    android:backgroundTint="@color/red" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -42,7 +42,7 @@ class ScheduleFragment : Fragment() {
     private var selectedDate = java.time.LocalDate.now()
     private var currentMonth = YearMonth.now()
     private var calendarHeaderFormatter =
-        DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+        DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
 
     private var events: List<Event> = listOf()
     private lateinit var eventAdapter: EventAdapter
@@ -145,7 +145,7 @@ class ScheduleFragment : Fragment() {
                             .forEachIndexed { index, textView ->
                                 val dayOfWeek = daysOfWeek[index]
                                 val title =
-                                    dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                                    dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
                                 textView.text = title
                             }
                     }
@@ -157,8 +157,8 @@ class ScheduleFragment : Fragment() {
     private fun setupRecyclerView() {
         // สร้าง EventAdapter สำหรับแสดงรายการ events
         eventAdapter = EventAdapter { event ->
-            // คลิกเพื่อแก้ไข event
-            //navigator.navigateToEditEvent(event)
+
+            navigator.navigateToEventDetail(event)
         }
         binding.rvEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEvents.adapter = eventAdapter
@@ -202,6 +202,7 @@ class ScheduleFragment : Fragment() {
     // ViewContainer สำหรับแต่ละวัน
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         val textView = view.findViewById<TextView>(R.id.calendarDayText)
+        val eventDot = view.findViewById<View>(R.id.eventDot)
         private var currentDay: CalendarDay? = null
 
         init {
@@ -242,6 +243,7 @@ class ScheduleFragment : Fragment() {
             val hasEvent = events.any {
                 isSameDay(it.startDate.toDate(), day.date)
             }
+            eventDot.visibility = if (hasEvent) View.VISIBLE else View.GONE
         }
     }
 

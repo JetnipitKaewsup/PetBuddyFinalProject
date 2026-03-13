@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.fragment.AddEventFragment
 import com.example.petbuddy.fragment.EditUserProfileFragment
+import com.example.petbuddy.fragment.EventDetailFragment
+import com.example.petbuddy.model.Event
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.model.VaccinationRecord
 import com.example.petbuddy.model.WeightRecord
@@ -92,6 +94,15 @@ abstract class BaseNavigator(protected val activity: FragmentActivity) {
                 java.util.Date.from(it.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())
             }
         )
+        navigator.navigateTo(fragment, "add_event")
+    }
+    fun navigateToEventDetail(event: Event) {
+        val fragment = EventDetailFragment.newInstance(event)
+        navigator.navigateTo(fragment, "event_detail")
+    }
+
+    fun navigateToEditEvent(event: Event) {
+        val fragment = AddEventFragment.newInstance(existingEvent = event)
         navigator.navigateTo(fragment, "add_event")
     }
     // Utility methods
