@@ -1,11 +1,13 @@
-package com.example.petbuddy.fragments.home
+package com.example.petbuddy.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.petbuddy.R
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import com.example.petbuddy.databinding.FragmentHomeBinding
 
 /**
@@ -23,8 +25,9 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // สร้าง Binding
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        setUpDate()
         return binding.root
     }
 
@@ -32,12 +35,16 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // TODO: โหลดข้อมูลสำหรับหน้า Home
-        setupUI()
+
     }
 
-    private fun setupUI() {
-        binding.tvTitle.text = "ยินดีต้อนรับสู่ PetBuddy"
-        // TODO: เพิ่มการทำงานอื่นๆ
+    private fun setUpDate(){
+        val calendar = Calendar.getInstance()
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        val currentDate = formatter.format(calendar.time)
+
+        binding.homeDate.text = currentDate
     }
 
     override fun onDestroyView() {

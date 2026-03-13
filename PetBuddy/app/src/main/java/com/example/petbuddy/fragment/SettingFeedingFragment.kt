@@ -40,6 +40,10 @@ class SettingFeedingFragment : Fragment() {
         enableSwipeDelete()
         buttonNavigation()
 
+        binding.toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         return binding.root
     }
 
@@ -145,7 +149,7 @@ class SettingFeedingFragment : Fragment() {
                 direction: Int
             ) {
 
-                val position = viewHolder.adapterPosition
+                val position = viewHolder.bindingAdapterPosition
                 val schedule = adapter.getItem(position)
 
                 adapter.removeItem(position)

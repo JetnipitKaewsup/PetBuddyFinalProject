@@ -101,31 +101,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnOnce"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:text="Once"
-                    android:backgroundTint="@color/brown"/>
+                    android:background="@drawable/bg_frequency_button"
+                    app:backgroundTint="@null"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEveryday"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="Everyday"
-                    android:backgroundTint="@color/brown"/>
+                    android:background="@drawable/bg_frequency_button"
+                    app:backgroundTint="@null"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCustom"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="Custom"
-                    android:backgroundTint="@color/brown"/>
+                    android:background="@drawable/bg_frequency_button"
+                    app:backgroundTint="@null"/>
 
             </LinearLayout>
 
@@ -249,13 +252,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <TextView
-                    android:id="@+id/tvPet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pets"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvPet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Pets"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/btnEditPet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="edit"
+                        android:textColor="@color/brown"/>
+
+                </LinearLayout>
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/petRow"
@@ -266,7 +285,6 @@
                     tools:listitem="@layout/item_pet_icon"/>
 
             </LinearLayout>
-
             <!-- Note -->
 
             <TextView

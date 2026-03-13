@@ -9,7 +9,7 @@ import com.example.petbuddy.fragment.HealthDashboardFragment
 import com.example.petbuddy.fragment.PetSelectionFragment
 import com.example.petbuddy.fragment.ScheduleFragment
 import com.example.petbuddy.fragment.FeedingFragment
-import com.example.petbuddy.fragments.home.HomeFragment
+import com.example.petbuddy.fragment.HomeFragment
 import com.example.petbuddy.fragments.profile.ProfileFragment
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.SelectionMode

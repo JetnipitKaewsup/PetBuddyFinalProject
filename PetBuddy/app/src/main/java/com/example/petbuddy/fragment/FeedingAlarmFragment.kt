@@ -44,6 +44,12 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         setupSaveButton()
 
         loadSelectedPets()
+
+        binding.toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        selectRepeatButton(binding.btnOnce)
     }
 
     override fun onResume() {
@@ -54,7 +60,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-    // ---------------- DEFAULT TIME ----------------
 
     private fun setDefaultTime() {
 
@@ -68,7 +73,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.tvTime.text = time
     }
 
-    // ---------------- TIME PICKER ----------------
 
     private fun setupTimePicker() {
 
@@ -96,11 +100,12 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-    // ---------------- REPEAT ----------------
 
     private fun setupRepeatButtons() {
 
         binding.btnOnce.setOnClickListener {
+
+            selectRepeatButton(binding.btnOnce)
 
             repeatType = "once"
             binding.chipDays.visibility = View.GONE
@@ -110,6 +115,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
 
         binding.btnEveryday.setOnClickListener {
+
+            selectRepeatButton(binding.btnEveryday)
 
             repeatType = "everyday"
             binding.chipDays.visibility = View.GONE
@@ -124,6 +131,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.btnCustom.setOnClickListener {
 
+            selectRepeatButton(binding.btnCustom)
+
             repeatType = "custom"
             binding.chipDays.visibility = View.VISIBLE
 
@@ -132,7 +141,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-    // ---------------- DAY CHIPS ----------------
 
     private fun setupDayChips() {
 
@@ -171,7 +179,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.chipSun.isChecked = false
     }
 
-    // ---------------- SPINNER ----------------
 
     private fun setupSpinner() {
 
@@ -191,7 +198,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.spinnerType.adapter = adapter
     }
 
-    // ---------------- PET SELECTION ----------------
 
     private fun setupPetSelection() {
 
@@ -232,7 +238,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         petAdapter.submitList(baseActivity.selectedPets)
     }
 
-    // ---------------- SAVE ----------------
 
     private fun setupSaveButton() {
 
@@ -301,7 +306,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-    // ---------------- ALARM ----------------
 
     private fun scheduleAlarm(hour: Int, minute: Int) {
 
@@ -339,6 +343,23 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         println("Selected pets: ${pets.size}")
     }
+
+    private fun selectRepeatButton(selected: View) {
+
+        val buttons = listOf(
+            binding.btnOnce,
+            binding.btnEveryday,
+            binding.btnCustom
+        )
+
+        buttons.forEach {
+            it.isSelected = false
+        }
+
+        selected.isSelected = true
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
