@@ -61,7 +61,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-
     private fun setDefaultTime() {
 
         val calendar = Calendar.getInstance()
@@ -73,7 +72,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.tvTime.text = time
     }
-
 
     private fun setupTimePicker() {
 
@@ -100,7 +98,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
             dialog.show()
         }
     }
-
 
     private fun setupRepeatButtons() {
 
@@ -142,7 +139,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         }
     }
 
-
     private fun setupDayChips() {
 
         binding.chipMon.setOnCheckedChangeListener { _, checked -> updateDay("Mon", checked) }
@@ -180,7 +176,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.chipSun.isChecked = false
     }
 
-
     private fun setupSpinner() {
 
         val types = listOf(
@@ -198,7 +193,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.spinnerType.adapter = adapter
     }
-
 
     private fun setupPetSelection() {
 
@@ -238,7 +232,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         petAdapter.submitList(baseActivity.selectedPets)
     }
-
 
     private fun setupSaveButton() {
 
@@ -289,16 +282,14 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 .collection("users")
                 .document(userId)
                 .collection("feeding_schedules")
-                .get()
-                .addOnSuccessListener { result ->
+                .add(scheduleData)
+                .addOnSuccessListener {
 
-                    val schedules = result.map { doc ->
+                    scheduleAlarm(hour, minute)
 
-                        val schedule = doc.toObject(FeedingSchedule::class.java)
+                    baseActivity.showToast("Schedule saved")
 
-                        schedule.copy(id = doc.id)
-
-                    }
+                    parentFragmentManager.popBackStack()
 
                 }
                 .addOnFailureListener {
@@ -308,7 +299,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 }
         }
     }
-
 
     private fun scheduleAlarm(hour: Int, minute: Int) {
 
@@ -361,8 +351,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         selected.isSelected = true
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

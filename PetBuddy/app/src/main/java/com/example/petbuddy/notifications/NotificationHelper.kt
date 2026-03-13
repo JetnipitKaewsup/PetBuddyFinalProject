@@ -9,7 +9,6 @@ import com.example.petbuddy.R
 
 object NotificationHelper {
 
-    // ฟังก์ชันเดิม - ยังใช้ได้เหมือนเดิม
     fun showFeedingNotification(
         context: Context,
         petName: String
@@ -18,18 +17,17 @@ object NotificationHelper {
             context = context,
             channelId = ReminderConstants.CHANNEL_FEEDING,
             channelName = "Feeding Reminder",
-            notificationId = System.currentTimeMillis().toInt(),
+            notificationId = generateNotificationId(),
             title = "Feeding Time",
             content = "Time to feed $petName",
             icon = R.drawable.ic_launcher_foreground
         )
     }
 
-    // ฟังก์ชันใหม่สำหรับ Event
     fun showEventNotification(
         context: Context,
         eventTitle: String,
-        notificationId: Int = System.currentTimeMillis().toInt()
+        notificationId: Int = generateNotificationId()
     ) {
         showNotification(
             context = context,
@@ -38,11 +36,10 @@ object NotificationHelper {
             notificationId = notificationId,
             title = "Upcoming Event",
             content = "$eventTitle is coming up soon",
-            icon = R.drawable.ic_notification  // ใช้ icon ของ event โดยเฉพาะ
+            icon = R.drawable.ic_notification
         )
     }
 
-    // ฟังก์ชันหลักที่ใช้ร่วมกัน
     private fun showNotification(
         context: Context,
         channelId: String,
@@ -52,24 +49,27 @@ object NotificationHelper {
         content: String,
         icon: Int
     ) {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // สร้าง Notification Channel (Android O+)
+        val manager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
             val channel = NotificationChannel(
                 channelId,
                 channelName,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Reminders for $channelName"
+                description = "Reminder notification for $channelName"
                 enableLights(true)
                 enableVibration(true)
             }
+
             manager.createNotificationChannel(channel)
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(icon)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(content)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -79,9 +79,13 @@ object NotificationHelper {
         manager.notify(notificationId, notification)
     }
 
-    // ฟังก์ชันลบ notification (optional)
     fun cancelNotification(context: Context, notificationId: Int) {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val manager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.cancel(notificationId)
+    }
+
+    private fun generateNotificationId(): Int {
+        return (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
     }
 }

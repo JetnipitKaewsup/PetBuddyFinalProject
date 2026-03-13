@@ -13,6 +13,7 @@ import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.ActivityMainBinding
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.navigation.MainNavigator
+import com.example.petbuddy.notifications.NotificationHelper
 import com.example.petbuddy.util.Constants
 
 class MainActivity : BaseActivity() {
@@ -26,11 +27,15 @@ class MainActivity : BaseActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
-            requestPermissions(
-                arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                1
-            )
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
 
+                requestPermissions(
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1
+                )
+            }
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,7 +50,6 @@ class MainActivity : BaseActivity() {
         navigator = MainNavigator(this)
 
         init()
-
         // โหลดข้อมูล user
 
         setupBottomNavigation()

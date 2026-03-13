@@ -6,8 +6,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PetBuddy">
 
-        <!-- Splash Screen (App Entry Point) -->
+        <!-- Splash Screen -->
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true">
@@ -30,7 +31,7 @@
 
         </activity>
 
-        <!-- Main App Screens -->
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
@@ -63,19 +64,27 @@
 
         </service>
 
-        <!-- Feeding Reminder Notification -->
+        <!-- Feeding Reminder -->
         <receiver
             android:name=".receivers.FeedingReminderReceiver"
-            android:exported="false">
+            android:exported="false" />
+
+        <!-- Event Reminder -->
+        <receiver
+            android:name=".receivers.EventReminderReceiver"
+            android:exported="false" />
+
+        <!-- Boot Receiver (IMPORTANT) -->
+        <receiver
+            android:name=".receivers.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
 
         </receiver>
-        <receiver
-            android:name=".receivers.EventReminderReceiver"
-            android:exported="false" />
 
     </application>
 
