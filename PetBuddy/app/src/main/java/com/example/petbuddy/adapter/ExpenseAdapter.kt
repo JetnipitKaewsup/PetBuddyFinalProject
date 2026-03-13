@@ -8,7 +8,7 @@ import com.example.petbuddy.databinding.ItemExpenseBinding
 import com.example.petbuddy.model.ExpenseRecord
 
 class ExpenseAdapter(
-    private val list: List<ExpenseRecord>
+    private var list: List<ExpenseRecord>
 ) : RecyclerView.Adapter<ExpenseAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemExpenseBinding) :
@@ -32,19 +32,15 @@ class ExpenseAdapter(
         val item = list[position]
         val binding = holder.binding
 
-        // Expense type (Category)
         binding.textPetName.text = item.category.replaceFirstChar {
             it.uppercase()
         }
 
-        // Money
         val currencySymbol = if (item.currency == "THB") "฿" else "$"
         binding.textMoney.text = "$currencySymbol${item.amount}"
 
-        // Date
         binding.textDate.text = item.date
 
-        // Category icon
         val iconRes = when (item.category) {
 
             "food" -> R.drawable.pet_bowl
@@ -56,5 +52,10 @@ class ExpenseAdapter(
         }
 
         binding.iconCategory.setImageResource(iconRes)
+    }
+
+    fun submitList(newList: List<ExpenseRecord>) {
+        list = newList
+        notifyDataSetChanged()
     }
 }

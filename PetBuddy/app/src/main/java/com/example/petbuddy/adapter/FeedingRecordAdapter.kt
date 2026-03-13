@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.petbuddy.databinding.ItemFeedingRecordBinding
 import com.example.petbuddy.model.FeedingRecord
 import com.example.petbuddy.model.Pet
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class FeedingRecordAdapter(
     private var petMap: Map<String, Pet>,
@@ -49,7 +52,12 @@ class FeedingRecordAdapter(
 
             binding.tvFoodName.text = record.foodName
             binding.tvFoodType.text = "(${record.foodType})"
-            binding.tvDateTime.text = record.dateTime
+
+            // Convert timestamp -> readable time
+            val sdf = SimpleDateFormat("dd MMM yyyy  HH:mm", Locale.getDefault())
+            val dateTime = sdf.format(Date(record.fedAt))
+
+            binding.tvDateTime.text = dateTime
 
             val pets = record.petIds.mapNotNull { petMap[it] }
 

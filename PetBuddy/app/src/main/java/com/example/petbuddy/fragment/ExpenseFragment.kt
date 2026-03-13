@@ -1,5 +1,6 @@
 package com.example.petbuddy.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,8 @@ class ExpenseFragment : Fragment() {
 
     private val expenseList = mutableListOf<ExpenseRecord>()
 
+    private var currentFilter = "All"
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,12 +37,7 @@ class ExpenseFragment : Fragment() {
         _binding = FragmentExpenseBinding.inflate(inflater, container, false)
         baseActivity = activity as BaseActivity
 
-        adapter = ExpenseAdapter(expenseList)
-
-        binding.recyclerExpense.layoutManager =
-            LinearLayoutManager(requireContext())
-
-        binding.recyclerExpense.adapter = adapter
+        setupRecyclerView()
 
         return binding.root
     }
@@ -47,15 +45,12 @@ class ExpenseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         setupToolbar()
-        setupRecyclerView()
         setupAddButton()
+        setupFilterButton()
+
         loadExpenses()
         showCurrentMonth()
     }
-
-    // -----------------------------
-    // Toolbar
-    // -----------------------------
 
     private fun setupToolbar() {
 
@@ -66,10 +61,6 @@ class ExpenseFragment : Fragment() {
         }
     }
 
-    // -----------------------------
-    // RecyclerView
-    // -----------------------------
-
     private fun setupRecyclerView() {
 
         adapter = ExpenseAdapter(expenseList)
@@ -79,10 +70,92 @@ class ExpenseFragment : Fragment() {
 
         binding.recyclerExpense.adapter = adapter
     }
+    private fun setupFilterButton() {
+
+        binding.btnFilter.setOnClickListener {
+
+            val options = arrayOf(
+                "All",
+                "This Month",
+                "Last Month",
+                "Food",
+                "Medical",
+                "Toy",
+                "Other"
+            )
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Filter Expenses")
+                .setItems(options) { _, which ->
+
+                    currentFilter = options[which]
+
+                    applyFilter()
+
+                }
+                .show()
+        }
+    }
 
     // -----------------------------
-    // Add Expense Button
+    // Apply Filter
     // -----------------------------
+
+    private fun applyFilter() {
+
+        val calendar = Calendar.getInstance()
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+        val filtered = expenseList.filter { expense ->
+
+            try {
+
+                val date = dateFormat.parse(expense.date)
+
+                val cal = Calendar.getInstance()
+                if (date != null) cal.time = date
+
+                val month = cal.get(Calendar.MONTH)
+                val year = cal.get(Calendar.YEAR)
+
+                when (currentFilter) {
+
+                    "All" -> true
+
+                    "This Month" ->
+                        month == currentMonth && year == currentYear
+
+                    "Last Month" ->
+                        month == currentMonth - 1 && year == currentYear
+
+                    "Food" ->
+                        expense.category.lowercase() == "food"
+
+                    "Medical" ->
+                        expense.category.lowercase() == "medical"
+
+                    "Toy" ->
+                        expense.category.lowercase() == "toy"
+
+                    "Other" ->
+                        expense.category.lowercase() == "other"
+
+                    else -> true
+                }
+
+            } catch (e: Exception) {
+
+                true
+
+            }
+        }
+
+        adapter.submitList(filtered)
+    }
+
 
     private fun setupAddButton() {
 
@@ -98,10 +171,6 @@ class ExpenseFragment : Fragment() {
         }
     }
 
-    // -----------------------------
-    // Load Expenses
-    // -----------------------------
-
     private fun loadExpenses() {
 
         baseActivity.loadExpenses { list ->
@@ -109,15 +178,12 @@ class ExpenseFragment : Fragment() {
             expenseList.clear()
             expenseList.addAll(list)
 
-            adapter.notifyDataSetChanged()
+            adapter.submitList(expenseList)
 
             calculateMonthlyTotal()
         }
     }
 
-    // -----------------------------
-    // Show Current Month
-    // -----------------------------
 
     private fun showCurrentMonth() {
 
@@ -127,10 +193,6 @@ class ExpenseFragment : Fragment() {
 
         binding.tvMonth.text = format.format(calendar.time)
     }
-
-    // -----------------------------
-    // Calculate Monthly Total
-    // -----------------------------
 
     private fun calculateMonthlyTotal() {
 
@@ -165,9 +227,6 @@ class ExpenseFragment : Fragment() {
                 }
 
             } catch (e: Exception) {
-
-                // ignore parse error
-
             }
         }
 

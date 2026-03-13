@@ -1,9 +1,11 @@
 package com.example.petbuddy.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.R
@@ -28,6 +30,13 @@ class FeedingFragment : Fragment() {
     private var feedingSchedules: List<FeedingSchedule> = emptyList()
     private var petMap: Map<String, Pet> = emptyMap()
 
+    // All records for filtering
+    private var allRecords: List<FeedingRecord> = emptyList()
+
+    // Filter state
+    private var currentQuery: String = ""
+    private var dateFilter: String = "ALL"
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,6 +56,7 @@ class FeedingFragment : Fragment() {
         setupToolbar()
         setupRecyclerView()
         setupButtons()
+        setupSearch()
 
         loadData()
     }
@@ -60,7 +70,7 @@ class FeedingFragment : Fragment() {
 
     private fun setupRecyclerView() {
 
-        // Feeding schedules (today)
+        // Today's feeding schedules
         feedingAdapter = FeedingTodayAdapter(
             feedingList = emptyList(),
             petMap = emptyMap(),
@@ -84,7 +94,6 @@ class FeedingFragment : Fragment() {
         recordAdapter = FeedingRecordAdapter(
             petMap
         ) { petId ->
-
             baseActivity.showToast("Pet clicked: $petId")
         }
 
@@ -115,6 +124,79 @@ class FeedingFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        // Filter button
+        binding.btnFilter.setOnClickListener {
+            showFilterDialog()
+        }
+    }
+
+    // Search filter
+    private fun setupSearch() {
+
+        binding.etSearchFood.addTextChangedListener { text ->
+
+            currentQuery = text.toString().lowercase()
+
+            applyFilters()
+        }
+    }
+
+    // Filter dialog
+    private fun showFilterDialog() {
+
+        val options = arrayOf(
+            "All",
+            "Today",
+            "This Week"
+        )
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Filter by Date")
+            .setItems(options) { _, which ->
+
+                dateFilter = when (which) {
+                    1 -> "TODAY"
+                    2 -> "WEEK"
+                    else -> "ALL"
+                }
+
+                applyFilters()
+            }
+            .show()
+    }
+
+    // Apply search + date filters
+    private fun applyFilters() {
+
+        var filtered = allRecords
+
+        // Search filter
+        if (currentQuery.isNotEmpty()) {
+            filtered = filtered.filter {
+                it.foodName.lowercase().contains(currentQuery)
+            }
+        }
+
+        // Date filter
+        val now = System.currentTimeMillis()
+
+        filtered = when (dateFilter) {
+
+            "TODAY" -> {
+                val startOfDay = now - (24 * 60 * 60 * 1000)
+                filtered.filter { it.fedAt >= startOfDay }
+            }
+
+            "WEEK" -> {
+                val startOfWeek = now - (7 * 24 * 60 * 60 * 1000)
+                filtered.filter { it.fedAt >= startOfWeek }
+            }
+
+            else -> filtered
+        }
+
+        recordAdapter.submitList(filtered)
     }
 
     private fun loadData() {
@@ -134,12 +216,10 @@ class FeedingFragment : Fragment() {
 
         baseActivity.loadFeedingSchedules { schedules ->
 
-            // Debug log
             schedules.forEach {
                 println("Schedule ${it.title} active=${it.isActive}")
             }
 
-            // Show only active schedules
             feedingSchedules = schedules.filter { it.isActive }
 
             feedingAdapter.submitList(feedingSchedules)
@@ -152,7 +232,9 @@ class FeedingFragment : Fragment() {
 
         baseActivity.loadFeedingRecords { records ->
 
-            recordAdapter.submitList(records)
+            allRecords = records
+
+            applyFilters()
         }
     }
 
@@ -171,7 +253,7 @@ class FeedingFragment : Fragment() {
         // Save feeding record
         baseActivity.saveFeedingRecord(record)
 
-        // Update schedule in Firestore
+        // Update schedule
         baseActivity.db.collection("users")
             .document(userId)
             .collection("feeding_schedules")
@@ -181,17 +263,14 @@ class FeedingFragment : Fragment() {
 
                 baseActivity.showToast("Feeding recorded")
 
-                // Remove schedule from UI immediately
                 feedingSchedules =
                     feedingSchedules.filter { it.id != schedule.id }
 
                 feedingAdapter.submitList(feedingSchedules)
 
-                // Reload history
                 loadFeedingRecords()
             }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
