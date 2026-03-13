@@ -7,7 +7,15 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
     tools:context=".activity.RegisterActivity">
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="My Profile"
+        app:titleTextColor="@color/brown" />
     <!-- Profile Image -->
 
     <com.google.android.material.imageview.ShapeableImageView

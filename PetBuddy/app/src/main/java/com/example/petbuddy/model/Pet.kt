@@ -1,6 +1,7 @@
 package com.example.petbuddy.model
 
 import com.google.firebase.Timestamp
+import java.io.Serializable
 
 data class Pet(
     var petId: String = "",
@@ -10,4 +11,4 @@ data class Pet(
     val petType: String = "",
     val birthDate: Timestamp? = null,
     val imagePath: String ?= null,
-    )
+    ) : Serializable

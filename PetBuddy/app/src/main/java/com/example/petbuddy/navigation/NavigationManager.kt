@@ -66,7 +66,7 @@ class NavigationManager(
     }
 
     fun navigateToEditPetProfile(pet : Pet){
-        replaceFragment(EditPetProfileFragment(pet),addToBackStack = true,tag = TAG_EDIT_PET_PROFILE)
+        replaceFragment(EditPetProfileFragment(),addToBackStack = true,tag = TAG_EDIT_PET_PROFILE)
     }
 
     fun navigateToRoot() {
