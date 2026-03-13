@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
+import com.example.petbuddy.adapter.FeedingTodayAdapter
 import com.example.petbuddy.adapter.TodoAdapter
+import com.example.petbuddy.adapter.UpcomingAdapter
 import com.example.petbuddy.databinding.FragmentHomeBinding
-import com.example.petbuddy.model.Event
-import com.example.petbuddy.model.VaccinationRecord
+import com.example.petbuddy.model.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,9 +22,16 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var baseActivity: BaseActivity
+
     private lateinit var todoAdapter: TodoAdapter
+    private lateinit var feedingAdapter: FeedingTodayAdapter
+    private lateinit var upcomingAdapter: UpcomingAdapter
 
     private val todoList = mutableListOf<String>()
+    private val upcomingList = mutableListOf<UpcomingActivity>()
+
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,19 +46,17 @@ class HomeFragment : Fragment() {
         setupRecycler()
 
         loadTodayData()
+        loadUpcomingActivities()
         loadMonthlyExpense()
+
+        setUpButton()
 
         return binding.root
     }
 
-    // ---------------- DATE ----------------
-
     private fun setupDate() {
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        binding.homeDate.text = formatter.format(Date())
+        binding.homeDate.text = dateFormatter.format(Date())
     }
-
-    // ---------------- RECYCLER ----------------
 
     private fun setupRecycler() {
 
@@ -59,9 +66,33 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = todoAdapter
         }
-    }
 
-    // ---------------- MAIN LOAD ----------------
+        feedingAdapter = FeedingTodayAdapter(
+            feedingList = emptyList(),
+            petMap = emptyMap(),
+
+            onDoneClick = { schedule ->
+                onFeedingDone(schedule)
+            },
+
+            onPetClick = { petId ->
+                baseActivity.showToast("Pet clicked: $petId")
+            }
+        )
+
+        binding.recyclerView3.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = feedingAdapter
+        }
+
+        // Upcoming Activities
+        upcomingAdapter = UpcomingAdapter(emptyList())
+
+        binding.recyclerView2.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = upcomingAdapter
+        }
+    }
 
     private fun loadTodayData() {
 
@@ -71,8 +102,6 @@ class HomeFragment : Fragment() {
         loadTodayVaccinations()
         loadTodayFeeding()
     }
-
-    // ---------------- TIME HELPERS ----------------
 
     private fun getStartOfDay(): Date {
         val cal = Calendar.getInstance()
@@ -91,8 +120,6 @@ class HomeFragment : Fragment() {
         return cal.time
     }
 
-    // ---------------- EVENTS ----------------
-
     private fun loadTodayEvents() {
 
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
@@ -109,14 +136,16 @@ class HomeFragment : Fragment() {
 
                     val event = doc.toObject(Event::class.java)
 
-                    todoList.add("📅 ${event.title}")
+                    val time = event.startDate.toDate().let {
+                        timeFormatter.format(it)
+                    }
+
+                    todoList.add("$time  ${event.title}")
                 }
 
                 todoAdapter.notifyDataSetChanged()
             }
     }
-
-    // ---------------- VACCINATIONS ----------------
 
     private fun loadTodayVaccinations() {
 
@@ -143,7 +172,9 @@ class HomeFragment : Fragment() {
 
                                 if (date.after(getStartOfDay()) && date.before(getEndOfDay())) {
 
-                                    todoList.add("💉 Vaccine: ${record.vaccineName}")
+                                    val time = timeFormatter.format(date)
+
+                                    todoList.add("💉 $time  ${record.vaccineName}")
                                 }
                             }
 
@@ -153,42 +184,107 @@ class HomeFragment : Fragment() {
             }
     }
 
-    // ---------------- FEEDING ----------------
-
     private fun loadTodayFeeding() {
 
-        baseActivity.loadFeedingSchedules { schedules ->
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
 
-            val now = Calendar.getInstance()
+        val feedingList = mutableListOf<FeedingSchedule>()
+        val petMap = mutableMapOf<String, Pet>()
 
-            schedules.forEach { schedule ->
+        baseActivity.db.collection("users")
+            .document(userId)
+            .collection("pets")
+            .get()
+            .addOnSuccessListener { pets ->
 
-                val scheduleCal = Calendar.getInstance()
-                scheduleCal.set(Calendar.HOUR_OF_DAY, schedule.hour)
-                scheduleCal.set(Calendar.MINUTE, schedule.minute)
+                for (doc in pets) {
 
-                if (scheduleCal.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR)) {
-
-                    todoList.add("🍖 Feed: ${schedule.title}")
+                    val pet = doc.toObject(Pet::class.java)
+                    petMap[doc.id] = pet
                 }
-            }
 
-            todoAdapter.notifyDataSetChanged()
-        }
+                baseActivity.db.collection("users")
+                    .document(userId)
+                    .collection("feeding_schedules")
+                    .get()
+                    .addOnSuccessListener { docs ->
+
+                        for (doc in docs) {
+
+                            val schedule = doc.toObject(FeedingSchedule::class.java)
+
+                            if (schedule.isActive) {
+                                feedingList.add(schedule)
+                            }
+                        }
+
+                        feedingAdapter.updatePetMap(petMap)
+                        feedingAdapter.submitList(feedingList)
+                    }
+            }
     }
 
-    // ---------------- EXPENSE SUMMARY ----------------
+    private fun loadUpcomingActivities() {
+
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
+        val now = System.currentTimeMillis()
+
+        val activities = mutableListOf<UpcomingActivity>()
+
+        baseActivity.db.collection("users")
+            .document(userId)
+            .collection("events")
+            .get()
+            .addOnSuccessListener { docs ->
+
+                for (doc in docs) {
+
+                    val event = doc.toObject(Event::class.java)
+
+                    val time = event.startDate.toDate().time
+
+                    if (time > now) {
+
+                        activities.add(
+                            UpcomingActivity(
+                                title = event.title,
+                                type = "Event",
+                                time = time
+                            )
+                        )
+                    }
+                }
+
+                upcomingAdapter.submitList(activities)
+            }
+    }
 
     private fun loadMonthlyExpense() {
 
         baseActivity.loadMonthlyExpense { total ->
 
             _binding?.tvExpenseAmount?.text = "฿%.2f".format(total)
-
         }
     }
 
-    // ---------------- DESTROY ----------------
+    private fun setUpButton() {
+
+        binding.cardExpense.setOnClickListener {
+
+            val fragment = ExpenseFragment()
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    private fun onFeedingDone(schedule: FeedingSchedule) {
+
+        baseActivity.showToast("Feeding done: ${schedule.title}")
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

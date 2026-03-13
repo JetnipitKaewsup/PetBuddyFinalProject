@@ -17,13 +17,23 @@ class FeedingTodayAdapter(
     private val onPetClick: (String) -> Unit
 ) : RecyclerView.Adapter<FeedingTodayAdapter.FeedingViewHolder>() {
 
+    private val dateFormatter =
+        SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    // ⭐ update feeding list
     fun submitList(newList: List<FeedingSchedule>) {
+
         feedingList = newList.filter { it.isActive }
+
         notifyDataSetChanged()
     }
 
+    // ⭐ update pet map
     fun updatePetMap(newMap: Map<String, Pet>) {
+
         petMap = newMap
+
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedingViewHolder {
@@ -40,6 +50,7 @@ class FeedingTodayAdapter(
     override fun getItemCount(): Int = feedingList.size
 
     override fun onBindViewHolder(holder: FeedingViewHolder, position: Int) {
+
         holder.bind(feedingList[position])
     }
 
@@ -52,19 +63,21 @@ class FeedingTodayAdapter(
             binding.tvFoodName.text = schedule.title
             binding.tvFoodType.text = schedule.type
 
-            val time = String.format("%02d:%02d", schedule.hour, schedule.minute)
+            val time = String.format(
+                "%02d:%02d",
+                schedule.hour,
+                schedule.minute
+            )
+
             binding.tvTime.text = time
 
             schedule.createdAt?.toDate()?.let {
 
-                val formatter = SimpleDateFormat(
-                    "dd MMM yyyy",
-                    Locale.getDefault()
-                )
-
-                binding.tvDate.text = formatter.format(it)
+                binding.tvDate.text =
+                    dateFormatter.format(it)
             }
 
+            // convert petIds -> Pet objects
             val pets = schedule.petIds.mapNotNull { petMap[it] }
 
             val petAdapter = PetIconAdapter { petId ->
@@ -83,6 +96,7 @@ class FeedingTodayAdapter(
             petAdapter.submitList(pets)
 
             binding.btnAction.setOnClickListener {
+
                 onDoneClick(schedule)
             }
         }

@@ -39,6 +39,7 @@ class FeedingFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         baseActivity = activity as BaseActivity
@@ -51,6 +52,7 @@ class FeedingFragment : Fragment() {
     }
 
     private fun setupToolbar() {
+
         binding.toolbar.setNavigationOnClickListener {
             baseActivity.onBackPressedDispatcher.onBackPressed()
         }
@@ -58,6 +60,7 @@ class FeedingFragment : Fragment() {
 
     private fun setupRecyclerView() {
 
+        // Feeding schedules (today)
         feedingAdapter = FeedingTodayAdapter(
             feedingList = emptyList(),
             petMap = emptyMap(),
@@ -71,22 +74,24 @@ class FeedingFragment : Fragment() {
             }
         )
 
-        binding.showFeeding.layoutManager =
-            LinearLayoutManager(requireContext())
+        binding.showFeeding.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = feedingAdapter
+        }
 
-        binding.showFeeding.setHasFixedSize(true)
+        // Feeding history
+        recordAdapter = FeedingRecordAdapter(
+            petMap
+        ) { petId ->
 
-        binding.showFeeding.adapter = feedingAdapter
-
-
-        recordAdapter = FeedingRecordAdapter(petMap) { petId ->
             baseActivity.showToast("Pet clicked: $petId")
         }
 
-        binding.showRecords.layoutManager =
-            LinearLayoutManager(requireContext())
-
-        binding.showRecords.adapter = recordAdapter
+        binding.showRecords.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = recordAdapter
+        }
     }
 
     private fun setupButtons() {
@@ -102,10 +107,12 @@ class FeedingFragment : Fragment() {
         }
 
         binding.showFeedingSchedules.setOnClickListener {
+
             val fragment = SettingFeedingFragment()
 
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment).addToBackStack(null)
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
                 .commit()
         }
     }
@@ -119,19 +126,23 @@ class FeedingFragment : Fragment() {
             feedingAdapter.updatePetMap(petMap)
             recordAdapter.updatePetMap(petMap)
 
-            baseActivity.loadFeedingSchedules { schedules ->
+            loadSchedules()
+        }
+    }
 
-                // Debug log
-                schedules.forEach {
-                    println("Schedule ${it.title} active=${it.isActive}")
-                }
+    private fun loadSchedules() {
 
-                // ⭐ show only active schedules
-                feedingSchedules = schedules.filter { it.isActive }
+        baseActivity.loadFeedingSchedules { schedules ->
 
-                feedingAdapter.submitList(feedingSchedules)
-
+            // Debug log
+            schedules.forEach {
+                println("Schedule ${it.title} active=${it.isActive}")
             }
+
+            // Show only active schedules
+            feedingSchedules = schedules.filter { it.isActive }
+
+            feedingAdapter.submitList(feedingSchedules)
 
             loadFeedingRecords()
         }
@@ -142,7 +153,6 @@ class FeedingFragment : Fragment() {
         baseActivity.loadFeedingRecords { records ->
 
             recordAdapter.submitList(records)
-
         }
     }
 
@@ -161,8 +171,9 @@ class FeedingFragment : Fragment() {
         // Save feeding record
         baseActivity.saveFeedingRecord(record)
 
-        // Update Firestore schedule
-        baseActivity.db.collection("users").document(userId)
+        // Update schedule in Firestore
+        baseActivity.db.collection("users")
+            .document(userId)
             .collection("feeding_schedules")
             .document(schedule.id)
             .update("isActive", false)
@@ -170,12 +181,13 @@ class FeedingFragment : Fragment() {
 
                 baseActivity.showToast("Feeding recorded")
 
-                // ⭐ Remove from current UI list immediately
-                feedingSchedules = feedingSchedules.filter { it.id != schedule.id }
+                // Remove schedule from UI immediately
+                feedingSchedules =
+                    feedingSchedules.filter { it.id != schedule.id }
 
                 feedingAdapter.submitList(feedingSchedules)
 
-                // Reload feeding history
+                // Reload history
                 loadFeedingRecords()
             }
     }
