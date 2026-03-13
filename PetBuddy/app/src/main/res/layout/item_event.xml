@@ -7,13 +7,15 @@
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
+
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="12dp"
+        android:background="@drawable/light_brown_bg">
 
         <!-- Row 1: Title และ Tag -->
         <LinearLayout
@@ -42,7 +44,7 @@
                 android:paddingVertical="4dp"
                 android:textSize="12sp"
                 android:textColor="@android:color/white"
-                android:background="@drawable/brown_oval_bg"
+                android:background="@drawable/brown_bg"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
@@ -57,8 +59,8 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_clock"
-                android:tint="@color/brown"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                app:tint="@color/brown" />
 
             <TextView
                 android:id="@+id/tvEventTime"
@@ -83,8 +85,8 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_calendar"
-                android:tint="@color/brown"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                app:tint="@color/brown" />
 
             <TextView
                 android:id="@+id/tvEventPlace"

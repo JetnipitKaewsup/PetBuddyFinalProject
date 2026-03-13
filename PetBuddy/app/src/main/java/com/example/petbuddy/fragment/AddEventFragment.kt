@@ -300,7 +300,7 @@ class AddEventFragment : Fragment() {
 
             selectedPets.forEach { pet ->
                 val imageView = ImageView(requireContext()).apply {
-                    layoutParams = ViewGroup.LayoutParams(80, 80)
+                    layoutParams = ViewGroup.LayoutParams(200, 200)
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     setPadding(4, 4, 4, 4)
                     setOnClickListener {
