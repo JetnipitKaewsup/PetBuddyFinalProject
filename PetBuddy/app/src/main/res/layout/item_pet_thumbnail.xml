@@ -11,6 +11,7 @@
         android:id="@+id/ivPetThumbnail"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:padding="3dp"
         android:src="@drawable/pet_placeholder"
         app:shapeAppearanceOverlay="@style/CircleImage"
         app:strokeColor="@color/brown"
