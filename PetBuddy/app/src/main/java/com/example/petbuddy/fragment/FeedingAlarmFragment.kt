@@ -10,6 +10,7 @@ import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.PetIconAdapter
 import com.example.petbuddy.databinding.FragmentFeedingAlarmBinding
+import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.notifications.ReminderManager
 import com.example.petbuddy.util.Constants
@@ -288,14 +289,16 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 .collection("users")
                 .document(userId)
                 .collection("feeding_schedules")
-                .add(scheduleData)
-                .addOnSuccessListener {
+                .get()
+                .addOnSuccessListener { result ->
 
-                    scheduleAlarm(hour, minute)
+                    val schedules = result.map { doc ->
 
-                    baseActivity.showToast("Feeding alarm saved")
+                        val schedule = doc.toObject(FeedingSchedule::class.java)
 
-                    parentFragmentManager.popBackStack()
+                        schedule.copy(id = doc.id)
+
+                    }
 
                 }
                 .addOnFailureListener {

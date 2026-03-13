@@ -13,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.example.petbuddy.model.FeedingRecord
+import com.example.petbuddy.model.ExpenseRecord
+import java.util.Calendar
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -401,6 +403,48 @@ abstract class BaseActivity : AppCompatActivity() {
                 showToast("Delete failed")
 
             }
+    }
+
+    fun loadMonthlyExpense(callback: (Double) -> Unit) {
+
+        currentUserId?.let { uid ->
+
+            db.collection("users")
+                .document(uid)
+                .collection("expense_records")
+                .get()
+                .addOnSuccessListener { result ->
+
+                    val calendar = Calendar.getInstance()
+                    val currentMonth = calendar.get(Calendar.MONTH)
+                    val currentYear = calendar.get(Calendar.YEAR)
+
+                    var total = 0.0
+
+                    for (doc in result.documents) {
+
+                        val record = doc.toObject(ExpenseRecord::class.java) ?: continue
+
+                        val recordCal = Calendar.getInstance()
+                        recordCal.timeInMillis = record.timestamp
+
+                        val month = recordCal.get(Calendar.MONTH)
+                        val year = recordCal.get(Calendar.YEAR)
+
+                        if (month == currentMonth && year == currentYear) {
+                            total += record.amount
+                        }
+                    }
+
+                    callback(total)
+                }
+                .addOnFailureListener {
+
+                    callback(0.0)
+
+                }
+
+        } ?: callback(0.0)
     }
 
 
