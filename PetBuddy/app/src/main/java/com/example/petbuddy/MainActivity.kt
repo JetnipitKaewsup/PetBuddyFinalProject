@@ -122,13 +122,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun handleHealthSelected() {
-        if (hasSelectedPet) {
-            // มีสัตว์เลี้ยงที่เลือกแล้ว ไปหน้า Health
-            navigator.navigateToHealth()
-        } else {
-            // ยังไม่มี ไปเลือกสัตว์เลี้ยงก่อน
-            navigator.navigateToPetSelection(SelectionMode.SINGLE, Constants.TAG_HEALTH_DASHBOARD)
-        }
+        navigator.navigateToHealth()
     }
 
     private fun handleScheduleSelected() {
