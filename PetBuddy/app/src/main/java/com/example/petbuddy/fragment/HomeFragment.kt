@@ -55,18 +55,22 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupDate() {
-        binding.homeDate.text = dateFormatter.format(Date())
+        _binding?.homeDate?.text = dateFormatter.format(Date())
     }
 
     private fun setupRecycler() {
 
+        val bindingSafe = _binding ?: return
+
+        // Todo Today
         todoAdapter = TodoAdapter(todoList)
 
-        binding.recyclerView.apply {
+        bindingSafe.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = todoAdapter
         }
 
+        // Feeding Today
         feedingAdapter = FeedingTodayAdapter(
             feedingList = emptyList(),
             petMap = emptyMap(),
@@ -80,24 +84,22 @@ class HomeFragment : Fragment() {
             }
         )
 
-        binding.recyclerView3.apply {
+        bindingSafe.recyclerView3.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = feedingAdapter
         }
 
         // Upcoming Activities
-        upcomingAdapter = UpcomingAdapter(emptyList())
+        upcomingAdapter = UpcomingAdapter(upcomingList)
 
-        binding.recyclerView2.apply {
+        bindingSafe.recyclerView2.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = upcomingAdapter
         }
     }
 
     private fun loadTodayData() {
-
         todoList.clear()
-
         loadTodayEvents()
         loadTodayVaccinations()
         loadTodayFeeding()
@@ -132,6 +134,8 @@ class HomeFragment : Fragment() {
             .get()
             .addOnSuccessListener { docs ->
 
+                val bindingSafe = _binding ?: return@addOnSuccessListener
+
                 for (doc in docs) {
 
                     val event = doc.toObject(Event::class.java)
@@ -157,12 +161,16 @@ class HomeFragment : Fragment() {
             .get()
             .addOnSuccessListener { pets ->
 
+                val bindingSafe = _binding ?: return@addOnSuccessListener
+
                 for (petDoc in pets) {
 
                     petDoc.reference
                         .collection("records")
                         .get()
                         .addOnSuccessListener { records ->
+
+                            val safe = _binding ?: return@addOnSuccessListener
 
                             for (doc in records) {
 
@@ -197,8 +205,9 @@ class HomeFragment : Fragment() {
             .get()
             .addOnSuccessListener { pets ->
 
-                for (doc in pets) {
+                val bindingSafe = _binding ?: return@addOnSuccessListener
 
+                for (doc in pets) {
                     val pet = doc.toObject(Pet::class.java)
                     petMap[doc.id] = pet
                 }
@@ -208,6 +217,8 @@ class HomeFragment : Fragment() {
                     .collection("feeding_schedules")
                     .get()
                     .addOnSuccessListener { docs ->
+
+                        val safe = _binding ?: return@addOnSuccessListener
 
                         for (doc in docs) {
 
@@ -229,7 +240,6 @@ class HomeFragment : Fragment() {
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
 
         val now = System.currentTimeMillis()
-
         val activities = mutableListOf<UpcomingActivity>()
 
         baseActivity.db.collection("users")
@@ -238,10 +248,11 @@ class HomeFragment : Fragment() {
             .get()
             .addOnSuccessListener { docs ->
 
+                val bindingSafe = _binding ?: return@addOnSuccessListener
+
                 for (doc in docs) {
 
                     val event = doc.toObject(Event::class.java)
-
                     val time = event.startDate.toDate().time
 
                     if (time > now) {
@@ -262,15 +273,51 @@ class HomeFragment : Fragment() {
 
     private fun loadMonthlyExpense() {
 
-        baseActivity.loadMonthlyExpense { total ->
+        baseActivity.loadExpenses { list: List<ExpenseRecord> ->
 
-            _binding?.tvExpenseAmount?.text = "฿%.2f".format(total)
+            val bindingSafe = _binding ?: return@loadExpenses
+
+            val calendar = Calendar.getInstance()
+            val currentMonth = calendar.get(Calendar.MONTH)
+            val currentYear = calendar.get(Calendar.YEAR)
+
+            var total = 0.0
+
+            val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+            for (expense in list) {
+
+                try {
+
+                    val date = formatter.parse(expense.date)
+
+                    if (date != null) {
+
+                        val cal = Calendar.getInstance()
+                        cal.time = date
+
+                        val month = cal.get(Calendar.MONTH)
+                        val year = cal.get(Calendar.YEAR)
+
+                        if (month == currentMonth && year == currentYear) {
+
+                            if (expense.currency == "THB") {
+                                total += expense.amount
+                            }
+                        }
+                    }
+
+                } catch (e: Exception) {
+                }
+            }
+
+            bindingSafe.tvExpenseAmount.text = "฿%.2f".format(total)
         }
     }
 
     private fun setUpButton() {
 
-        binding.cardExpense.setOnClickListener {
+        _binding?.cardExpense?.setOnClickListener {
 
             val fragment = ExpenseFragment()
 
@@ -279,10 +326,18 @@ class HomeFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        _binding?.upcomingRow?.setOnClickListener {
+            val fragment = ScheduleFragment()
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container,fragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun onFeedingDone(schedule: FeedingSchedule) {
-
         baseActivity.showToast("Feeding done: ${schedule.title}")
     }
 

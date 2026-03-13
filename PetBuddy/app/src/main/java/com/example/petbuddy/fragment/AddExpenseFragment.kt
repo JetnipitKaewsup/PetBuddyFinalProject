@@ -1,0 +1,208 @@
+package com.example.petbuddy.fragment
+
+import android.app.DatePickerDialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.petbuddy.activity.BaseActivity
+import com.example.petbuddy.databinding.FragmentAddExpenseBinding
+import com.example.petbuddy.model.ExpenseRecord
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
+class AddExpenseFragment : Fragment() {
+
+    private var _binding: FragmentAddExpenseBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var baseActivity: BaseActivity
+
+    private var selectedCategory = "food"
+    private var selectedCurrency = "THB"
+    private var selectedDate = ""
+
+    private val calendar = Calendar.getInstance()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
+        baseActivity = activity as BaseActivity
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        setupCategorySelection()
+        setupCurrencyToggle()
+        setupDatePicker()
+        setupSaveButton()
+        setupBackButton()
+
+        // default date today
+        updateDate()
+
+    }
+
+    // -----------------------------
+    // CATEGORY SELECT
+    // -----------------------------
+
+    private fun setupCategorySelection() {
+
+        binding.petBowl.setOnClickListener {
+            selectedCategory = "food"
+            highlightCategory(binding.petBowl)
+        }
+
+        binding.vaccine.setOnClickListener {
+            selectedCategory = "medical"
+            highlightCategory(binding.vaccine)
+        }
+
+        binding.toy.setOnClickListener {
+            selectedCategory = "toy"
+            highlightCategory(binding.toy)
+        }
+
+        binding.other.setOnClickListener {
+            selectedCategory = "other"
+            highlightCategory(binding.other)
+        }
+    }
+
+    private fun highlightCategory(selected: View) {
+
+        val views = listOf(
+            binding.petBowl,
+            binding.vaccine,
+            binding.toy,
+            binding.other
+        )
+
+        views.forEach {
+            it.alpha = 0.5f
+        }
+
+        selected.alpha = 1f
+    }
+
+    // -----------------------------
+    // CURRENCY
+    // -----------------------------
+
+    private fun setupCurrencyToggle() {
+
+        binding.currencyToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+
+            if (!isChecked) return@addOnButtonCheckedListener
+
+            selectedCurrency = when (checkedId) {
+                binding.btnUSD.id -> "USD"
+                binding.btnTHB.id -> "THB"
+                else -> "THB"
+            }
+        }
+    }
+
+    // -----------------------------
+    // DATE PICKER
+    // -----------------------------
+
+    private fun setupDatePicker() {
+
+        binding.dateRow.setOnClickListener {
+
+            DatePickerDialog(
+                requireContext(),
+                { _, year, month, day ->
+
+                    calendar.set(year, month, day)
+                    updateDate()
+
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+    }
+
+    private fun updateDate() {
+
+        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        selectedDate = format.format(calendar.time)
+
+        binding.expenseDate.setText(selectedDate)
+    }
+
+    // -----------------------------
+    // SAVE EXPENSE
+    // -----------------------------
+
+    private fun setupSaveButton() {
+
+        binding.finishBtn.setOnClickListener {
+
+            val amountText = binding.inputMoney.text.toString()
+
+            if (amountText.isEmpty()) {
+                baseActivity.showToast("Enter amount")
+                return@setOnClickListener
+            }
+
+            val amount = amountText.toDouble()
+
+            val petId = baseActivity.getSelectedPetId()
+
+            if (petId == null) {
+                baseActivity.showToast("No pet selected")
+                return@setOnClickListener
+            }
+
+            val record = ExpenseRecord(
+                petId = petId,
+                category = selectedCategory,
+                amount = amount,
+                currency = selectedCurrency,
+                date = selectedDate,
+                timestamp = System.currentTimeMillis()
+            )
+
+            baseActivity.saveExpenseRecord(record)
+
+            baseActivity.showToast("Expense saved")
+
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    // -----------------------------
+    // BACK BUTTON
+    // -----------------------------
+
+    private fun setupBackButton() {
+
+        binding.homeArrow3.setOnClickListener {
+
+            parentFragmentManager.popBackStack()
+
+        }
+    }
+
+    // -----------------------------
+    // CLEANUP
+    // -----------------------------
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

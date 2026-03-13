@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:padding="20dp">
+
+
+    <!-- BACK BUTTON -->
+
+    <ImageView
+        android:id="@+id/homeArrow3"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_ios_24"/>
+
+
+    <!-- PAGE TITLE -->
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Expense"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/homeArrow3"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <!-- CATEGORY TITLE -->
+
+    <TextView
+        android:id="@+id/categoryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <!-- CATEGORY ROW -->
+
+    <LinearLayout
+        android:id="@+id/categoryRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:padding="14dp"
+        android:background="@drawable/background_input_field"
+        app:layout_constraintTop_toBottomOf="@id/categoryTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/petBowl"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/brown_oval_bg"
+            android:padding="12dp"
+            app:srcCompat="@drawable/pet_bowl"/>
+
+        <ImageView
+            android:id="@+id/vaccine"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/brown_oval_bg"
+            android:padding="12dp"
+            app:srcCompat="@drawable/vaccine"/>
+
+        <ImageView
+            android:id="@+id/toy"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/brown_oval_bg"
+            android:padding="12dp"
+            app:srcCompat="@drawable/toy"/>
+
+        <ImageView
+            android:id="@+id/other"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/brown_oval_bg"
+            android:padding="12dp"
+            app:srcCompat="@drawable/other"/>
+
+    </LinearLayout>
+
+
+    <!-- AMOUNT TITLE -->
+
+    <TextView
+        android:id="@+id/textMoneyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Amount"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/categoryRow"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <!-- MONEY INPUT -->
+
+    <EditText
+        android:id="@+id/inputMoney"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_input_field"
+        android:hint="Enter amount"
+        android:inputType="number"
+        android:textSize="18sp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/textMoneyTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <!-- CURRENCY -->
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/currencyToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/inputMoney"
+        app:layout_constraintStart_toStartOf="parent"
+        app:singleSelection="true"
+        app:selectionRequired="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUSD"
+            android:text="USD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/brown"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTHB"
+            android:text="THB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/brown"/>
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+    <!-- DATE TITLE -->
+
+    <TextView
+        android:id="@+id/dateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/currencyToggle"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <!-- DATE PICKER -->
+
+    <LinearLayout
+        android:id="@+id/dateRow"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:background="@drawable/background_input_field"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/dateTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/expenseDate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Select date"
+            android:background="@null"
+            android:focusable="false"/>
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            app:srcCompat="@drawable/ic_calendar"/>
+
+    </LinearLayout>
+
+
+    <!-- SAVE BUTTON -->
+
+    <ImageView
+        android:id="@+id/finishBtn"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_margin="24dp"
+        android:background="@drawable/brown_oval_bg"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/check_mark"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

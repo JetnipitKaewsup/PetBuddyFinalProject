@@ -405,47 +405,52 @@ abstract class BaseActivity : AppCompatActivity() {
             }
     }
 
-    fun loadMonthlyExpense(callback: (Double) -> Unit) {
+    fun loadExpenses(callback: (List<ExpenseRecord>) -> Unit) {
 
         currentUserId?.let { uid ->
 
             db.collection("users")
                 .document(uid)
                 .collection("expense_records")
+                .orderBy("timestamp")
                 .get()
                 .addOnSuccessListener { result ->
 
-                    val calendar = Calendar.getInstance()
-                    val currentMonth = calendar.get(Calendar.MONTH)
-                    val currentYear = calendar.get(Calendar.YEAR)
+                    val list = result.documents.mapNotNull {
 
-                    var total = 0.0
+                        it.toObject(ExpenseRecord::class.java)
 
-                    for (doc in result.documents) {
-
-                        val record = doc.toObject(ExpenseRecord::class.java) ?: continue
-
-                        val recordCal = Calendar.getInstance()
-                        recordCal.timeInMillis = record.timestamp
-
-                        val month = recordCal.get(Calendar.MONTH)
-                        val year = recordCal.get(Calendar.YEAR)
-
-                        if (month == currentMonth && year == currentYear) {
-                            total += record.amount
-                        }
                     }
 
-                    callback(total)
+                    callback(list)
                 }
                 .addOnFailureListener {
 
-                    callback(0.0)
+                    callback(emptyList())
 
                 }
-
-        } ?: callback(0.0)
+        } ?: callback(emptyList())
     }
 
+    fun saveExpenseRecord(record: ExpenseRecord) {
+
+        currentUserId?.let { uid ->
+
+            db.collection("users")
+                .document(uid)
+                .collection("expense_records")
+                .add(record)
+                .addOnSuccessListener {
+
+                    showToast("Expense saved")
+
+                }
+                .addOnFailureListener {
+
+                    showToast("Save failed")
+
+                }
+        }
+    }
 
 }
