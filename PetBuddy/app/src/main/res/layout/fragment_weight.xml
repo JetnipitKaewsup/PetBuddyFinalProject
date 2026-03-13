@@ -19,7 +19,12 @@
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
     <!-- Content -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,10 +59,10 @@
                 android:padding="8dp"
                 android:src="@drawable/ic_sort_descending"
                 android:background="?selectableItemBackgroundBorderless"
-                android:tint="@color/brown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:tint="@color/brown" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -116,7 +121,7 @@
             android:paddingBottom="16dp"/>
 
     </LinearLayout>
-
+    </ScrollView>
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddWeight"

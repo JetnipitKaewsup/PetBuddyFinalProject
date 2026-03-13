@@ -13,10 +13,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/brown"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="ประวัติวัคซีน"
-        app:titleTextColor="@android:color/white"
+        app:title="Vaccination"
+        app:titleTextColor="@color/brown"
         app:navigationIcon="@drawable/ic_arrow_back"/>
 
     <ScrollView
@@ -53,7 +52,7 @@
                     android:id="@+id/btnChangePet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="เปลี่ยน"
+                    android:text="change"
                     android:backgroundTint="@color/brown"/>
             </LinearLayout>
 
@@ -103,7 +102,7 @@
                             android:layout_height="32dp"
                             android:src="@drawable/ic_edit"
                             android:background="?selectableItemBackgroundBorderless"
-                            android:tint="@color/brown"/>
+                            app:tint="@color/brown" />
                     </LinearLayout>
 
                     <TextView
@@ -228,7 +227,7 @@
                     android:id="@+id/btnViewAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ดูทั้งหมด"
+                    android:text="view all"
                     android:backgroundTint="@color/brown"/>
             </LinearLayout>
 
@@ -274,6 +273,7 @@
         android:src="@drawable/ic_add"
         android:contentDescription="เพิ่มวัคซีน"
         app:backgroundTint="@color/brown"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
