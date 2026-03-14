@@ -17,6 +17,7 @@ data class FeedingSchedule(
     val repeatType: String = "once",
     val days: List<String> = emptyList(),
 
+    var completedDays: List<String>? = emptyList(),
     val petIds: List<String> = emptyList(),
 
     @get:PropertyName("isActive")

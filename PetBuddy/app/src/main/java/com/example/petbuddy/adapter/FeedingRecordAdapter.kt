@@ -14,20 +14,28 @@ import java.util.Locale
 class FeedingRecordAdapter(
     private var petMap: Map<String, Pet>,
     private val onPetClick: (String) -> Unit
-) : RecyclerView.Adapter<FeedingRecordAdapter.RecordViewHolder>() {
+) : RecyclerView.Adapter<FeedingRecordAdapter.ViewHolder>() {
 
-    private var records: List<FeedingRecord> = emptyList()
+    private var recordList: List<FeedingRecord> = emptyList()
+
+    private val formatter =
+        SimpleDateFormat("dd MMM • HH:mm", Locale.getDefault())
 
     fun submitList(newList: List<FeedingRecord>) {
-        records = newList
+
+        recordList = newList
+
         notifyDataSetChanged()
     }
 
     fun updatePetMap(newMap: Map<String, Pet>) {
+
         petMap = newMap
+
+        notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val binding = ItemFeedingRecordBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -35,36 +43,41 @@ class FeedingRecordAdapter(
             false
         )
 
-        return RecordViewHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
-        holder.bind(records[position])
+    override fun getItemCount(): Int = recordList.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        holder.bind(recordList[position])
     }
 
-    override fun getItemCount() = records.size
-
-    inner class RecordViewHolder(
+    inner class ViewHolder(
         private val binding: ItemFeedingRecordBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(record: FeedingRecord) {
 
             binding.tvFoodName.text = record.foodName
+
             binding.tvFoodType.text = "(${record.foodType})"
 
-            // Convert timestamp -> readable time
-            val sdf = SimpleDateFormat("dd MMM yyyy  HH:mm", Locale.getDefault())
-            val dateTime = sdf.format(Date(record.fedAt))
-
-            binding.tvDateTime.text = dateTime
+            binding.tvDateTime.text =
+                formatter.format(Date(record.fedAt))
 
             val pets = record.petIds.mapNotNull { petMap[it] }
 
-            val petAdapter = PetIconAdapter(onPetClick)
+            val petAdapter = PetIconAdapter { petId ->
+                onPetClick(petId)
+            }
 
             binding.rvPets.layoutManager =
-                LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(
+                    binding.root.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
 
             binding.rvPets.adapter = petAdapter
 

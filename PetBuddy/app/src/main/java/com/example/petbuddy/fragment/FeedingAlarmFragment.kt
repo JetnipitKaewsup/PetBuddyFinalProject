@@ -10,7 +10,6 @@ import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.PetIconAdapter
 import com.example.petbuddy.databinding.FragmentFeedingAlarmBinding
-import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.notifications.ReminderManager
 import com.example.petbuddy.util.Constants
@@ -50,6 +49,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
             parentFragmentManager.popBackStack()
         }
 
+        // Default repeat
+        repeatType = "once"
         selectRepeatButton(binding.btnOnce)
     }
 
@@ -68,9 +69,7 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        val time = String.format("%02d:%02d", hour, minute)
-
-        binding.tvTime.text = time
+        binding.tvTime.text = String.format("%02d:%02d", hour, minute)
     }
 
     private fun setupTimePicker() {
@@ -79,19 +78,16 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
             val calendar = Calendar.getInstance()
 
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-
             val dialog = TimePickerDialog(
                 requireContext(),
                 { _, selectedHour, selectedMinute ->
 
-                    val time = String.format("%02d:%02d", selectedHour, selectedMinute)
-                    binding.tvTime.text = time
+                    binding.tvTime.text =
+                        String.format("%02d:%02d", selectedHour, selectedMinute)
 
                 },
-                hour,
-                minute,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
                 true
             )
 
@@ -103,9 +99,10 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.btnOnce.setOnClickListener {
 
+            repeatType = "once"
+
             selectRepeatButton(binding.btnOnce)
 
-            repeatType = "once"
             binding.chipDays.visibility = View.GONE
 
             selectedDays.clear()
@@ -114,12 +111,14 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.btnEveryday.setOnClickListener {
 
+            repeatType = "everyday"
+
             selectRepeatButton(binding.btnEveryday)
 
-            repeatType = "everyday"
             binding.chipDays.visibility = View.GONE
 
             selectedDays.clear()
+
             selectedDays.addAll(
                 listOf("Mon","Tue","Wed","Thu","Fri","Sat","Sun")
             )
@@ -129,9 +128,10 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         binding.btnCustom.setOnClickListener {
 
+            repeatType = "custom"
+
             selectRepeatButton(binding.btnCustom)
 
-            repeatType = "custom"
             binding.chipDays.visibility = View.VISIBLE
 
             selectedDays.clear()
@@ -242,12 +242,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
             val hour = timeParts[0].toInt()
             val minute = timeParts[1].toInt()
 
-            if (repeatType == "custom" && selectedDays.isEmpty()) {
-
-                baseActivity.showToast("Please select days")
-                return@setOnClickListener
-            }
-
             val title = binding.etTitle.text.toString()
             val note = binding.etNote.text.toString()
             val type = binding.spinnerType.selectedItem?.toString() ?: ""
@@ -261,6 +255,22 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
                 baseActivity.showToast("Please select pet")
                 return@setOnClickListener
+            }
+
+            // Validation
+            if (repeatType == "custom" && selectedDays.isEmpty()) {
+
+                baseActivity.showToast("Please select days")
+                return@setOnClickListener
+            }
+
+            if (repeatType == "everyday") {
+
+                selectedDays.clear()
+
+                selectedDays.addAll(
+                    listOf("Mon","Tue","Wed","Thu","Fri","Sat","Sun")
+                )
             }
 
             val scheduleData = hashMapOf(

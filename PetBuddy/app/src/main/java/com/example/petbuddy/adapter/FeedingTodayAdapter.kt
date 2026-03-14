@@ -8,6 +8,7 @@ import com.example.petbuddy.databinding.ItemFeedingBinding
 import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.Pet
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class FeedingTodayAdapter(
@@ -17,22 +18,13 @@ class FeedingTodayAdapter(
     private val onPetClick: (String) -> Unit
 ) : RecyclerView.Adapter<FeedingTodayAdapter.FeedingViewHolder>() {
 
-    private val dateFormatter =
-        SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-
-    // ⭐ update feeding list
     fun submitList(newList: List<FeedingSchedule>) {
-
-        feedingList = newList.filter { it.isActive }
-
+        feedingList = newList
         notifyDataSetChanged()
     }
 
-    // ⭐ update pet map
     fun updatePetMap(newMap: Map<String, Pet>) {
-
         petMap = newMap
-
         notifyDataSetChanged()
     }
 
@@ -58,31 +50,11 @@ class FeedingTodayAdapter(
         private val binding: ItemFeedingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(schedule: FeedingSchedule) {
+        private val petAdapter = PetIconAdapter { petId ->
+            onPetClick(petId)
+        }
 
-            binding.tvFoodName.text = schedule.title
-            binding.tvFoodType.text = schedule.type
-
-            val time = String.format(
-                "%02d:%02d",
-                schedule.hour,
-                schedule.minute
-            )
-
-            binding.tvTime.text = time
-
-            schedule.createdAt?.toDate()?.let {
-
-                binding.tvDate.text =
-                    dateFormatter.format(it)
-            }
-
-            // convert petIds -> Pet objects
-            val pets = schedule.petIds.mapNotNull { petMap[it] }
-
-            val petAdapter = PetIconAdapter { petId ->
-                onPetClick(petId)
-            }
+        init {
 
             binding.rvPets.layoutManager =
                 LinearLayoutManager(
@@ -92,11 +64,35 @@ class FeedingTodayAdapter(
                 )
 
             binding.rvPets.adapter = petAdapter
+        }
 
+        fun bind(schedule: FeedingSchedule) {
+
+            // Food name
+            binding.tvFoodName.text = schedule.title
+
+            // Food type
+            binding.tvFoodType.text = schedule.type
+
+            // Time
+            val time = String.format(
+                "%02d:%02d",
+                schedule.hour,
+                schedule.minute
+            )
+            binding.tvTime.text = time
+
+            // 🔥 Show today's date
+            val calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            binding.tvDate.text = dateFormat.format(calendar.time)
+
+            // Pets
+            val pets = schedule.petIds.mapNotNull { petMap[it] }
             petAdapter.submitList(pets)
 
+            // Done button
             binding.btnAction.setOnClickListener {
-
                 onDoneClick(schedule)
             }
         }

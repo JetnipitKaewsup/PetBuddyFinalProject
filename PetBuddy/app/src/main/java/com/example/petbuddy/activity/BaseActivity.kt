@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.Pet
@@ -14,6 +15,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.example.petbuddy.model.FeedingRecord
 import com.example.petbuddy.model.ExpenseRecord
+import com.google.firebase.firestore.FieldValue
 import java.util.Calendar
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -451,6 +453,38 @@ abstract class BaseActivity : AppCompatActivity() {
 
                 }
         }
+    }
+
+    fun markScheduleCompleted(
+        scheduleId: String,
+        todayDate: String,
+        onComplete: () -> Unit
+    ) {
+
+        val uid = currentUserId ?: return
+
+        val docRef = db
+            .collection("users")
+            .document(uid)
+            .collection("feeding_schedules")
+            .document(scheduleId)
+
+        docRef.update(
+            "completedDays",
+            FieldValue.arrayUnion(todayDate)
+        )
+            .addOnSuccessListener {
+
+                Log.d("Feeding", "Schedule completed updated")
+
+                onComplete()
+            }
+            .addOnFailureListener { e ->
+
+                Log.e("Feeding", "Update failed", e)
+
+                showToast("Failed to update schedule")
+            }
     }
 
 }

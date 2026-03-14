@@ -199,6 +199,20 @@ class HomeFragment : Fragment() {
         val feedingList = mutableListOf<FeedingSchedule>()
         val petMap = mutableMapOf<String, Pet>()
 
+        val calendar = Calendar.getInstance()
+
+        val todayShort =
+            SimpleDateFormat("EEE", Locale.getDefault())
+                .format(calendar.time)
+
+        val todayFull =
+            SimpleDateFormat("EEEE", Locale.getDefault())
+                .format(calendar.time)
+
+        val todayDate =
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(calendar.time)
+
         baseActivity.db.collection("users")
             .document(userId)
             .collection("pets")
@@ -208,7 +222,9 @@ class HomeFragment : Fragment() {
                 val bindingSafe = _binding ?: return@addOnSuccessListener
 
                 for (doc in pets) {
+
                     val pet = doc.toObject(Pet::class.java)
+
                     petMap[doc.id] = pet
                 }
 
@@ -222,19 +238,48 @@ class HomeFragment : Fragment() {
 
                         for (doc in docs) {
 
-                            val schedule = doc.toObject(FeedingSchedule::class.java)
+                            val schedule =
+                                doc.toObject(FeedingSchedule::class.java)
 
-                            if (schedule.isActive) {
+                            if (!schedule.isActive) continue
+
+                            // ⭐ check completed today
+                            if (schedule.completedDays?.contains(todayDate) == true) {
+                                continue
+                            }
+
+                            val repeat = schedule.repeatType.lowercase()
+
+                            val showToday = when (repeat) {
+
+                                "once" -> schedule.completedDays.isNullOrEmpty()
+
+                                "daily", "everyday" -> true
+
+                                "weekly", "custom" -> {
+
+                                    schedule.days.contains(todayShort) ||
+                                            schedule.days.contains(todayFull)
+                                }
+
+                                else -> true
+                            }
+
+                            if (showToday) {
                                 feedingList.add(schedule)
                             }
                         }
 
+                        feedingList.sortWith(
+                            compareBy({ it.hour }, { it.minute })
+                        )
+
                         feedingAdapter.updatePetMap(petMap)
+
                         feedingAdapter.submitList(feedingList)
                     }
             }
     }
-
     private fun loadUpcomingActivities() {
 
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
