@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
@@ -20,6 +23,8 @@ import com.example.petbuddy.model.VaccineData
 import com.example.petbuddy.navigation.MainNavigator
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.Query
+import java.text.SimpleDateFormat
+import java.util.*
 
 class VaccinationFragment : Fragment() {
 
@@ -29,8 +34,16 @@ class VaccinationFragment : Fragment() {
     private lateinit var navigator: MainNavigator
     private lateinit var adapter: VaccinationRecordAdapter
     private lateinit var recentAdapter: RecentVaccineAdapter
-
+    private val datePattern = "dd/MM/yyyy"
+    private val timePattern = "H:mm"
     private var allRecords = mutableListOf<VaccinationRecord>()
+    private var currentPetId: String = ""
+
+    companion object {
+        fun newInstance(): VaccinationFragment {
+            return VaccinationFragment()
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,6 +63,7 @@ class VaccinationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
         setupUI()
         setupRecyclerViews()
         loadVaccinationRecords()
@@ -60,47 +74,55 @@ class VaccinationFragment : Fragment() {
         loadVaccinationRecords()
     }
 
+    private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+    }
+
     private fun setupUI() {
         val currentPet = baseActivity.selectedPet
         if (currentPet == null) {
-            showMessage("กรุณาเลือกสัตว์เลี้ยงก่อน")
+            showMessage("Please select a pet first")
             parentFragmentManager.popBackStack()
             return
         }
 
+        currentPetId = currentPet.petId
         binding.tvPetName.text = currentPet.petName
 
-        // ปุ่มเพิ่มวัคซีน
         binding.fabAddVaccine.setOnClickListener {
-            navigateToAddVaccination()
+            navigator.navigateToAddVaccination()
         }
 
-        // ปุ่มเปลี่ยนสัตว์เลี้ยง
         binding.btnChangePet.setOnClickListener {
             goToPetSelection()
         }
 
-        // ปุ่มดูทั้งหมด
         binding.btnViewAll.setOnClickListener {
             toggleViewMode()
         }
 
-        // ปุ่มกลับ
-        /*binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }*/
+//        binding.btnAddNext.setOnClickListener {
+//            if (allRecords.isNotEmpty()) {
+//                val next = allRecords.firstOrNull { it.nextDueDate != null }
+//                next?.let {
+//                    navigator.navigateToAddVaccination(it)
+//                } ?: run {
+//                    Toast.makeText(requireContext(), "No upcoming vaccine found", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
     }
 
     private fun setupRecyclerViews() {
-        // Recent vaccines adapter (แสดง 3 รายการล่าสุด)
         recentAdapter = RecentVaccineAdapter(emptyList())
         binding.rvRecentVaccines.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRecentVaccines.adapter = recentAdapter
 
-        // All records adapter
         adapter = VaccinationRecordAdapter(
             onItemClick = { record ->
-                navigateToAddVaccination(record)
+                navigator.navigateToAddVaccination(record)
             },
             onItemLongClick = { record ->
                 showDeleteConfirmation(record)
@@ -141,36 +163,16 @@ class VaccinationFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
-                showMessage("โหลดข้อมูลไม่สำเร็จ: ${e.message}")
+                showMessage("Error loading data: ${e.message}")
             }
     }
 
     private fun updateUI() {
-        // อัพเดท Next Vaccine
         updateNextVaccine()
-
-        // อัพเดท Latest Vaccine
         updateLatestVaccine()
-
-        // อัพเดท Core Vaccines
-        updateCoreVaccines()
-
-        // อัพเดท Recent Vaccines (3 รายการล่าสุด)
-        val recentVaccines = allRecords.take(3)
-        recentAdapter = RecentVaccineAdapter(recentVaccines)
-        binding.rvRecentVaccines.adapter = recentAdapter
-
-        // อัพเดท All Records
-        adapter.submitList(allRecords)
-
-        // แสดง/ซ่อน views
-        if (allRecords.isEmpty()) {
-            binding.tvNoData.visibility = View.VISIBLE
-            binding.rvAllRecords.visibility = View.GONE
-        } else {
-            binding.tvNoData.visibility = View.GONE
-            binding.rvAllRecords.visibility = View.VISIBLE
-        }
+        updateVaccineStatus()
+        updateRecentVaccines()
+        updateAllRecords()
     }
 
     private fun updateNextVaccine() {
@@ -180,34 +182,36 @@ class VaccinationFragment : Fragment() {
         if (nextVaccines.isNotEmpty()) {
             val next = nextVaccines.first()
             binding.layoutNextVaccine.visibility = View.VISIBLE
-            binding.tvNextVaccineName.text = next.nextVaccineName ?: next.vaccineName
-            binding.tvNextDose.text = "เข็มที่ ${next.nextDose ?: next.dose + 1}"
-            binding.tvNextDate.text = next.nextDueDateString ?: ""
 
-            // แสดงจำนวนวันที่เหลือ
+            // Calculate months and days
             next.daysUntilNext?.let { days ->
-                when {
-                    days < 0 -> {
-                        binding.tvNextDaysLeft.text = "เลยกำหนดมา ${-days} วัน"
-                        binding.tvNextDaysLeft.setTextColor(android.graphics.Color.parseColor("#F44336"))
-                    }
-                    days == 0 -> {
-                        binding.tvNextDaysLeft.text = "วันนี้"
-                        binding.tvNextDaysLeft.setTextColor(android.graphics.Color.parseColor("#FF9800"))
-                    }
-                    days <= 7 -> {
-                        binding.tvNextDaysLeft.text = "อีก $days วัน"
-                        binding.tvNextDaysLeft.setTextColor(android.graphics.Color.parseColor("#FF9800"))
-                    }
-                    else -> {
-                        binding.tvNextDaysLeft.text = "อีก $days วัน"
-                        binding.tvNextDaysLeft.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
-                    }
-                }
+                val months = days / 30
+                val remainingDays = days % 30
+                binding.tvMonths.text = months.toString()
+                binding.tvDays.text = remainingDays.toString()
             }
 
-            binding.btnEditNext.setOnClickListener {
-                navigateToAddVaccination(next)
+            binding.tvNextVaccineName.text = "Name ${next.nextVaccineName ?: next.vaccineName}"
+            binding.tvNextDose.text = "Dose ${next.nextDose ?: next.dose + 1}"
+
+            if (!next.nextPlace.isNullOrEmpty()) {
+                binding.tvNextPlace.visibility = View.VISIBLE
+                binding.tvNextPlace.text = "Place ${next.nextPlace}"
+            } else {
+                binding.tvNextPlace.visibility = View.GONE
+            }
+
+            val dateFormat = SimpleDateFormat(datePattern, Locale.US)
+            val timeFormat = SimpleDateFormat(timePattern, Locale.US)
+            val nextDate = Date(next.nextDueDate!!)
+            binding.tvNextDateTime.text = "Date ${dateFormat.format(nextDate)} Time ${timeFormat.format(nextDate)}"
+
+            binding.tvEdit.setOnClickListener {
+                navigator.navigateToAddVaccination(next)
+            }
+
+            binding.btnDone.setOnClickListener {
+                markVaccineAsDone(next)
             }
         } else {
             binding.layoutNextVaccine.visibility = View.GONE
@@ -218,57 +222,103 @@ class VaccinationFragment : Fragment() {
         if (allRecords.isNotEmpty()) {
             val latest = allRecords.first()
             binding.layoutLatestVaccine.visibility = View.VISIBLE
-            binding.tvLatestVaccineName.text = latest.vaccineName
-            binding.tvLatestDose.text = "เข็มที่ ${latest.dose}"
-            binding.tvLatestDate.text = latest.dateString
-            binding.tvLatestTime.text = latest.timeString
+
+            binding.tvLatestVaccineName.text = "Name ${latest.vaccineName}"
+            binding.tvLatestDose.text = "Dose ${latest.dose}"
+
+            val dateFormat = SimpleDateFormat(datePattern, Locale.US)
+            val timeFormat = SimpleDateFormat(timePattern, Locale.US)
+            binding.tvLatestDateTime.text = "Date ${dateFormat.format(Date(latest.timestamp))} Time ${timeFormat.format(Date(latest.timestamp))}"
         } else {
             binding.layoutLatestVaccine.visibility = View.GONE
         }
     }
 
-    private fun updateCoreVaccines() {
+    private fun updateVaccineStatus() {
         val currentPet = baseActivity.selectedPet ?: return
+
         val coreVaccines = VaccineData.getCoreVaccinesByPetType(currentPet.petType ?: "")
+        val boosterVaccines = VaccineData.getBoosterVaccinesByPetType(currentPet.petType ?: "")
 
-        val vaccinatedCore = allRecords.map { it.vaccineName }.toSet()
+        val vaccinatedVaccines = allRecords.map { it.vaccineName }.toSet()
 
-        val coreVaccineText = coreVaccines.joinToString("\n") { vaccine ->
-            val status = if (vaccinatedCore.contains(vaccine.name)) "✓" else "○"
-            "$status ${vaccine.name}"
+        // Core Vaccines
+        binding.layoutCoreVaccines.removeAllViews()
+        coreVaccines.forEach { vaccine ->
+            val statusView = layoutInflater.inflate(R.layout.vaccine_status_item, binding.layoutCoreVaccines, false)
+            val tvStatus = statusView.findViewById<TextView>(R.id.tvStatus)
+            val tvName = statusView.findViewById<TextView>(R.id.tvVaccineName)
+
+            tvStatus.text = if (vaccinatedVaccines.contains(vaccine.name)) "✓" else "○"
+            tvName.text = vaccine.name
+
+            binding.layoutCoreVaccines.addView(statusView)
         }
 
-        binding.tvCoreVaccines.text = coreVaccineText
+        // Booster Vaccines
+        binding.layoutBoosterVaccines.removeAllViews()
+        boosterVaccines.forEach { vaccine ->
+            val statusView = layoutInflater.inflate(R.layout.vaccine_status_item, binding.layoutBoosterVaccines, false)
+            val tvStatus = statusView.findViewById<TextView>(R.id.tvStatus)
+            val tvName = statusView.findViewById<TextView>(R.id.tvVaccineName)
+
+            tvStatus.text = if (vaccinatedVaccines.contains(vaccine.name)) "✓" else "○"
+            tvName.text = vaccine.name
+
+            binding.layoutBoosterVaccines.addView(statusView)
+        }
+    }
+
+    private fun updateRecentVaccines() {
+        val recentVaccines = allRecords.take(3)
+        binding.layoutRecentVaccines.removeAllViews()
+
+        recentVaccines.forEach { record ->
+            val itemView = layoutInflater.inflate(R.layout.item_recent_vaccine, binding.layoutRecentVaccines, false)
+
+            itemView.findViewById<TextView>(R.id.tvVaccineName).text = "Name ${record.vaccineName}"
+            itemView.findViewById<TextView>(R.id.tvDose).text = "Dose ${record.dose}"
+
+            if (!record.place.isNullOrEmpty()) {
+                itemView.findViewById<TextView>(R.id.tvPlace).text = "Place ${record.place}"
+            } else {
+                itemView.findViewById<TextView>(R.id.tvPlace).visibility = View.GONE
+            }
+
+            val timeFormat = SimpleDateFormat(timePattern, Locale.US)
+            itemView.findViewById<TextView>(R.id.tvTime).text = "Time ${timeFormat.format(Date(record.timestamp))}"
+
+            binding.layoutRecentVaccines.addView(itemView)
+        }
+    }
+
+    private fun updateAllRecords() {
+        adapter.submitList(allRecords)
+
+        if (allRecords.isEmpty()) {
+            binding.tvNoData.visibility = View.VISIBLE
+            binding.rvAllRecords.visibility = View.GONE
+        } else {
+            binding.tvNoData.visibility = View.GONE
+            binding.rvAllRecords.visibility = View.VISIBLE
+        }
     }
 
     private fun toggleViewMode() {
         if (binding.rvRecentVaccines.visibility == View.VISIBLE) {
-            // เปลี่ยนเป็นแสดงทั้งหมด
             binding.rvRecentVaccines.visibility = View.GONE
             binding.rvAllRecords.visibility = View.VISIBLE
-            binding.btnViewAll.text = "แสดงล่าสุด"
+            binding.btnViewAll.text = "Show Recent"
         } else {
-            // เปลี่ยนเป็นแสดงล่าสุด
             binding.rvRecentVaccines.visibility = View.VISIBLE
             binding.rvAllRecords.visibility = View.GONE
-            binding.btnViewAll.text = "ดูทั้งหมด"
+            binding.btnViewAll.text = "View All"
         }
     }
 
-    private fun navigateToAddVaccination(record: VaccinationRecord? = null) {
-        navigator.navigateToAddVaccination(record)
-//        val fragment = AddVaccinationFragment.newInstance(record)
-//
-//        parentFragmentManager.beginTransaction()
-//            .setCustomAnimations(
-//                R.anim.slide_in_right,
-//                R.anim.slide_out_left,
-//                R.anim.slide_in_left,
-//                R.anim.slide_out_right
-//            )
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack("add_vaccination")
-//            .commit()
+    private fun markVaccineAsDone(record: VaccinationRecord) {
+        // TODO: Implement mark as done logic
+        Toast.makeText(requireContext(), "Marked as done", Toast.LENGTH_SHORT).show()
     }
 
     private fun goToPetSelection() {
@@ -293,18 +343,21 @@ class VaccinationFragment : Fragment() {
 
     private fun showDeleteConfirmation(record: VaccinationRecord) {
         AlertDialog.Builder(requireContext())
-            .setTitle("ลบประวัติวัคซีน")
-            .setMessage("คุณต้องการลบประวัติวัคซีน ${record.vaccineName} เข็มที่ ${record.dose} วันที่ ${record.dateString} ใช่หรือไม่?")
-            .setPositiveButton("ลบ") { _, _ ->
+            .setTitle("Delete Vaccination Record")
+            .setMessage("Are you sure you want to delete ${record.vaccineName} Dose ${record.dose} from ${record.dateString}?")
+            .setPositiveButton("Delete") { _, _ ->
                 deleteVaccinationRecord(record)
             }
-            .setNegativeButton("ยกเลิก", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun deleteVaccinationRecord(record: VaccinationRecord) {
         val currentPet = baseActivity.selectedPet ?: return
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
+        // Delete associated event
+        deleteAssociatedEvent(record.id)
 
         baseActivity.db.collection("users")
             .document(userId)
@@ -314,11 +367,26 @@ class VaccinationFragment : Fragment() {
             .document(record.id)
             .delete()
             .addOnSuccessListener {
-                showMessage("ลบข้อมูลสำเร็จ")
+                showMessage("Record deleted")
                 loadVaccinationRecords()
             }
             .addOnFailureListener { e ->
-                showMessage("ลบไม่สำเร็จ: ${e.message}")
+                showMessage("Error: ${e.message}")
+            }
+    }
+
+    private fun deleteAssociatedEvent(vaccinationId: String) {
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
+        baseActivity.db.collection("users")
+            .document(userId)
+            .collection("events")
+            .whereEqualTo("sourceId", vaccinationId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                snapshot.documents.forEach { doc ->
+                    doc.reference.delete()
+                }
             }
     }
 

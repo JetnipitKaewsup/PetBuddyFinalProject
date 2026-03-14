@@ -1,53 +1,203 @@
 package com.example.petbuddy.model
 
+/**
+ * ข้อมูลวัคซีนสำหรับสุนัขและแมว
+ * อ้างอิงจาก WSAVA, AAHA, AAFP Guidelines
+ */
+
 data class VaccineInfo(
     val name: String,
-    val type: PetType, // DOG หรือ CAT
+    val type: PetType,
     val description: String? = null,
-    val isCore: Boolean = false, // วัคซีนหลัก
+    val isCore: Boolean = false,
+    val isBooster: Boolean = false,
     val recommendedAge: String? = null,
-    val frequency: String? = null // ความถี่ที่ต้องฉีด
+    val frequency: String? = null
 )
 
 enum class PetType {
     DOG, CAT
 }
 
-// ข้อมูลวัคซีนสำหรับสุนัขและแมว
 object VaccineData {
 
-    // วัคซีนหลักสำหรับสุนัข
+    // ========== DOG VACCINES ==========
     val dogCoreVaccines = listOf(
-        VaccineInfo("DHPP", PetType.DOG, "Distemper, Hepatitis, Parainfluenza, Parvo", true, "6-8 weeks", "Every 3-4 weeks until 16 weeks"),
-        VaccineInfo("DHPPL", PetType.DOG, "Distemper, Hepatitis, Parainfluenza, Parvo, Leptospirosis", true, "8 weeks", "Booster annually"),
-        VaccineInfo("Rabies", PetType.DOG, "Rabies virus", true, "12-16 weeks", "Booster annually or every 3 years")
+        VaccineInfo(
+            name = "DHPP (Distemper, Hepatitis, Parainfluenza, Parvo)",
+            type = PetType.DOG,
+            description = "Combination vaccine for Canine Distemper, Adenovirus, Parainfluenza, and Parvovirus",
+            isCore = true,
+            isBooster = false,
+            recommendedAge = "6-8 weeks",
+            frequency = "Every 3-4 weeks until 16-20 weeks"
+        ),
+        VaccineInfo(
+            name = "Rabies",
+            type = PetType.DOG,
+            description = "Rabies virus vaccine",
+            isCore = true,
+            isBooster = false,
+            recommendedAge = "12-16 weeks",
+            frequency = "Booster 1 year later, then every 1-3 years"
+        )
     )
 
-    // วัคซีนเสริมสำหรับสุนัข
     val dogNonCoreVaccines = listOf(
-        VaccineInfo("Bordetella", PetType.DOG, "Kennel cough", false, "8 weeks", "Annually"),
-        VaccineInfo("Leptospirosis", PetType.DOG, "Leptospirosis", false, "12 weeks", "Annually"),
-        VaccineInfo("Lyme", PetType.DOG, "Lyme disease", false, "12 weeks", "Annually"),
-        VaccineInfo("Canine Influenza", PetType.DOG, "Canine flu", false, "8 weeks", "Annually")
+        VaccineInfo(
+            name = "Bordetella bronchiseptica (Kennel Cough)",
+            type = PetType.DOG,
+            description = "Prevents kennel cough/respiratory infections",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "8 weeks",
+            frequency = "Annually or every 6 months for high-risk dogs"
+        ),
+        VaccineInfo(
+            name = "Leptospirosis",
+            type = PetType.DOG,
+            description = "Protects against Leptospira bacteria",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "12 weeks",
+            frequency = "Annually"
+        ),
+        VaccineInfo(
+            name = "Lyme Disease (Borrelia burgdorferi)",
+            type = PetType.DOG,
+            description = "Protects against tick-borne Lyme disease",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "12 weeks",
+            frequency = "Annually before tick season"
+        ),
+        VaccineInfo(
+            name = "Canine Influenza (H3N8/H3N2)",
+            type = PetType.DOG,
+            description = "Protects against canine flu",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "6-8 weeks",
+            frequency = "Annually"
+        ),
+        VaccineInfo(
+            name = "Canine Parainfluenza",
+            type = PetType.DOG,
+            description = "Respiratory virus vaccine",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "6-8 weeks",
+            frequency = "Annually"
+        )
     )
 
-    // วัคซีนหลักสำหรับแมว
+    val dogBoosterVaccines = listOf(
+        VaccineInfo(
+            name = "DHPP Booster",
+            type = PetType.DOG,
+            description = "Booster for Distemper, Hepatitis, Parainfluenza, Parvo",
+            isCore = true,
+            isBooster = true,
+            recommendedAge = "1 year",
+            frequency = "Every 1-3 years"
+        ),
+        VaccineInfo(
+            name = "Rabies Booster",
+            type = PetType.DOG,
+            description = "Rabies booster",
+            isCore = true,
+            isBooster = true,
+            recommendedAge = "1 year after first, then every 1-3 years",
+            frequency = "Every 1-3 years depending on local laws"
+        )
+    )
+
+    // ========== CAT VACCINES ==========
     val catCoreVaccines = listOf(
-        VaccineInfo("FVRCP", PetType.CAT, "Feline Viral Rhinotracheitis, Calicivirus, Panleukopenia", true, "6-8 weeks", "Every 3-4 weeks until 16 weeks"),
-        VaccineInfo("Rabies", PetType.CAT, "Rabies virus", true, "12-16 weeks", "Booster annually or every 3 years")
+        VaccineInfo(
+            name = "FVRCP (Feline Viral Rhinotracheitis, Calicivirus, Panleukopenia)",
+            type = PetType.CAT,
+            description = "Combination vaccine for respiratory diseases and panleukopenia",
+            isCore = true,
+            isBooster = false,
+            recommendedAge = "6-8 weeks",
+            frequency = "Every 3-4 weeks until 16 weeks"
+        ),
+        VaccineInfo(
+            name = "Rabies",
+            type = PetType.CAT,
+            description = "Rabies virus vaccine",
+            isCore = true,
+            isBooster = false,
+            recommendedAge = "12-16 weeks",
+            frequency = "Booster 1 year later, then every 1-3 years"
+        )
     )
 
-    // วัคซีนเสริมสำหรับแมว
     val catNonCoreVaccines = listOf(
-        VaccineInfo("FeLV", PetType.CAT, "Feline Leukemia", false, "8 weeks", "Annually"),
-        VaccineInfo("FIV", PetType.CAT, "Feline Immunodeficiency Virus", false, "8 weeks", "Annually"),
-        VaccineInfo("Chlamydia", PetType.CAT, "Chlamydia felis", false, "9 weeks", "Annually")
+        VaccineInfo(
+            name = "FeLV (Feline Leukemia)",
+            type = PetType.CAT,
+            description = "Protects against Feline Leukemia virus",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "8-9 weeks",
+            frequency = "Booster 3-4 weeks later, then annually"
+        ),
+        VaccineInfo(
+            name = "FIV (Feline Immunodeficiency Virus)",
+            type = PetType.CAT,
+            description = "Protects against FIV",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "8 weeks",
+            frequency = "Annually for at-risk cats"
+        ),
+        VaccineInfo(
+            name = "Chlamydia felis",
+            type = PetType.CAT,
+            description = "Protects against Chlamydia conjunctivitis",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "9 weeks",
+            frequency = "Annually"
+        ),
+        VaccineInfo(
+            name = "Bordetella bronchiseptica",
+            type = PetType.CAT,
+            description = "Respiratory infection vaccine",
+            isCore = false,
+            isBooster = false,
+            recommendedAge = "8 weeks",
+            frequency = "Annually"
+        )
     )
 
-    fun getVaccinesByPetType(petType: String): List<VaccineInfo> {
+    val catBoosterVaccines = listOf(
+        VaccineInfo(
+            name = "FVRCP Booster",
+            type = PetType.CAT,
+            description = "Booster for FVRCP combination",
+            isCore = true,
+            isBooster = true,
+            recommendedAge = "1 year",
+            frequency = "Every 1-3 years"
+        ),
+        VaccineInfo(
+            name = "Rabies Booster",
+            type = PetType.CAT,
+            description = "Rabies booster",
+            isCore = true,
+            isBooster = true,
+            recommendedAge = "1 year after first, then every 1-3 years",
+            frequency = "Every 1-3 years depending on local laws"
+        )
+    )
+
+    fun getAllVaccinesByPetType(petType: String): List<VaccineInfo> {
         return when (petType.lowercase()) {
-            "dog" -> dogCoreVaccines + dogNonCoreVaccines
-            "cat" -> catCoreVaccines + catNonCoreVaccines
+            "dog" -> dogCoreVaccines + dogNonCoreVaccines + dogBoosterVaccines
+            "cat" -> catCoreVaccines + catNonCoreVaccines + catBoosterVaccines
             else -> emptyList()
         }
     }
@@ -56,6 +206,22 @@ object VaccineData {
         return when (petType.lowercase()) {
             "dog" -> dogCoreVaccines
             "cat" -> catCoreVaccines
+            else -> emptyList()
+        }
+    }
+
+    fun getBoosterVaccinesByPetType(petType: String): List<VaccineInfo> {
+        return when (petType.lowercase()) {
+            "dog" -> dogBoosterVaccines
+            "cat" -> catBoosterVaccines
+            else -> emptyList()
+        }
+    }
+
+    fun getNonCoreVaccinesByPetType(petType: String): List<VaccineInfo> {
+        return when (petType.lowercase()) {
+            "dog" -> dogNonCoreVaccines
+            "cat" -> catNonCoreVaccines
             else -> emptyList()
         }
     }

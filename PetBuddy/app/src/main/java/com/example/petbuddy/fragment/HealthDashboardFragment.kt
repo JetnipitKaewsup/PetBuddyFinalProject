@@ -13,6 +13,8 @@ import com.example.petbuddy.databinding.FragmentHealthDashboardBinding
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.navigation.MainNavigator
 import com.example.petbuddy.util.Constants
+import com.google.firebase.firestore.Query
+import java.util.Date
 
 class HealthDashboardFragment : Fragment() {
 
@@ -76,8 +78,75 @@ class HealthDashboardFragment : Fragment() {
 
     private fun loadHealthData(petId: String) {
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
-
         // โหลดน้ำหนักล่าสุด
+        loadLatestWeight(userId, petId)
+
+        // โหลดข้อมูลวัคซีนที่กำลังจะถึง
+        loadVaccinationSummary(petId)
+        // โหลดน้ำหนักล่าสุด
+//        baseActivity.db.collection("users")
+//            .document(userId)
+//            .collection("weights")
+//            .document(petId)
+//            .collection("records")
+//            .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
+//            .limit(1)
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                if (isAdded && _binding != null) {
+//                    if (!documents.isEmpty) {
+//                        val weight = documents.documents[0].getDouble("weight") ?: 0.0
+//                        binding.tvLatestWeight.text = String.format("%.1f kg", weight)
+//                        binding.tvWeightStatus.text = "น้ำหนักปกติ"
+//                        binding.tvWeightStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
+//                    } else {
+//                        binding.tvLatestWeight.text = "- kg"
+//                        binding.tvWeightStatus.text = "ยังไม่มีข้อมูลน้ำหนัก"
+//                    }
+//                }
+//            }
+//            .addOnFailureListener {
+//                binding.tvLatestWeight.text = "- kg"
+//                binding.tvWeightStatus.text = "โหลดไม่สำเร็จ"
+//            }
+//
+//        // โหลดวัคซีนที่กำลังจะถึง
+//        baseActivity.db.collection("users")
+//            .document(userId)
+//            .collection("vaccinations")
+//            .document(petId)
+//            .collection("records")
+//            .whereGreaterThan("nextDueDate", java.util.Date())
+//            .orderBy("nextDueDate", com.google.firebase.firestore.Query.Direction.ASCENDING)
+//            .limit(1)
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                if (!documents.isEmpty) {
+//                    val vaccineName = documents.documents[0].getString("name") ?: "วัคซีน"
+//                    binding.tvNextVaccine.text = "$vaccineName (เร็วๆนี้)"
+//                } else {
+//                    binding.tvNextVaccine.text = "ไม่มีวัคซีนที่กำลังจะถึง"
+//                }
+//            }
+//            .addOnFailureListener {
+//                binding.tvNextVaccine.text = "โหลดไม่สำเร็จ"
+//            }
+    }
+
+    private fun setupClickListeners() {
+        binding.btnChangePet.setOnClickListener {
+            goToPetSelection()
+        }
+
+        binding.cardWeight.setOnClickListener {
+            navigator.navigateToWeight()
+        }
+
+        binding.cardVaccination.setOnClickListener {
+            navigator.navigateToVaccination()
+        }
+    }
+    private fun loadLatestWeight(userId : String ,petId:String){
         baseActivity.db.collection("users")
             .document(userId)
             .collection("weights")
@@ -91,7 +160,7 @@ class HealthDashboardFragment : Fragment() {
                     if (!documents.isEmpty) {
                         val weight = documents.documents[0].getDouble("weight") ?: 0.0
                         binding.tvLatestWeight.text = String.format("%.1f kg", weight)
-                        binding.tvWeightStatus.text = "น้ำหนักปกติ"
+                        //binding.tvWeightStatus.text = "น้ำหนักปกติ"
                         binding.tvWeightStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
                     } else {
                         binding.tvLatestWeight.text = "- kg"
@@ -103,66 +172,49 @@ class HealthDashboardFragment : Fragment() {
                 binding.tvLatestWeight.text = "- kg"
                 binding.tvWeightStatus.text = "โหลดไม่สำเร็จ"
             }
+    }
 
-        // โหลดวัคซีนที่กำลังจะถึง
+    private fun loadVaccinationSummary(petId: String) {
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
         baseActivity.db.collection("users")
             .document(userId)
             .collection("vaccinations")
             .document(petId)
             .collection("records")
-            .whereGreaterThan("nextDueDate", java.util.Date())
-            .orderBy("nextDueDate", com.google.firebase.firestore.Query.Direction.ASCENDING)
+            .whereGreaterThan("nextDueDate", Date())
+            .orderBy("nextDueDate", Query.Direction.ASCENDING)
             .limit(1)
             .get()
             .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val vaccineName = documents.documents[0].getString("name") ?: "วัคซีน"
-                    binding.tvNextVaccine.text = "$vaccineName (เร็วๆนี้)"
-                } else {
-                    binding.tvNextVaccine.text = "ไม่มีวัคซีนที่กำลังจะถึง"
+                if (isAdded && _binding != null) {
+                    if (!documents.isEmpty) {
+                        val doc = documents.documents[0]
+                        val vaccineName = doc.getString("vaccineName") ?: "Vaccine"
+                        val dose = doc.getLong("dose") ?: 1
+                        val nextDose = doc.getLong("nextDose") ?: (dose + 1)
+
+                        binding.tvNextVaccine.text = "$vaccineName (Dose $nextDose)"
+
+                        // คำนวณวันที่เหลือ
+                        val nextDueDate = doc.getTimestamp("nextDueDate")?.toDate()
+                        nextDueDate?.let { date ->
+                            val daysUntil = ((date.time - System.currentTimeMillis()) / (1000 * 60 * 60 * 24)).toInt()
+                            when {
+                                daysUntil < 0 -> binding.tvNextVaccine.setTextColor(android.graphics.Color.parseColor("#F44336"))
+                                daysUntil <= 7 -> binding.tvNextVaccine.setTextColor(android.graphics.Color.parseColor("#FF9800"))
+                                else -> binding.tvNextVaccine.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
+                            }
+                        }
+                    } else {
+                        binding.tvNextVaccine.text = "No upcoming vaccines"
+                        binding.tvNextVaccine.setTextColor(android.graphics.Color.BLACK)
+                    }
                 }
             }
             .addOnFailureListener {
-                binding.tvNextVaccine.text = "โหลดไม่สำเร็จ"
+                binding.tvNextVaccine.text = "Error loading vaccines"
             }
-    }
-
-    private fun setupClickListeners() {
-        binding.btnChangePet.setOnClickListener {
-            goToPetSelection()
-        }
-
-        binding.cardWeight.setOnClickListener {
-            navigator.navigateToWeight()
-            // ไปหน้า Weight
-//            val fragment = WeightFragment()
-//            parentFragmentManager.beginTransaction()
-//                .setCustomAnimations(
-//                    R.anim.slide_in_right,
-//                    R.anim.slide_out_left,
-//                    R.anim.slide_in_left,
-//                    R.anim.slide_out_right
-//                )
-//                .replace(R.id.fragment_container, fragment)
-//                .addToBackStack("weight")
-//                .commit()
-        }
-
-        binding.cardVaccination.setOnClickListener {
-            navigator.navigateToVaccination()
-            // ไปหน้า Vaccination
-//            val fragment = VaccinationFragment()
-//            parentFragmentManager.beginTransaction()
-//                .setCustomAnimations(
-//                    R.anim.slide_in_right,
-//                    R.anim.slide_out_left,
-//                    R.anim.slide_in_left,
-//                    R.anim.slide_out_right
-//                )
-//                .replace(R.id.fragment_container, fragment)
-//                .addToBackStack("vaccination")
-//                .commit()
-        }
     }
 
     private fun goToPetSelection() {

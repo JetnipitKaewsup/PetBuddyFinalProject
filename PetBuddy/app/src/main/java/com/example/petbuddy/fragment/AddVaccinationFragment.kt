@@ -14,11 +14,13 @@ import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.FragmentAddVaccinationBinding
+import com.example.petbuddy.model.Event
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.model.VaccinationRecord
 import com.example.petbuddy.model.VaccineData
 import com.example.petbuddy.model.VaccineInfo
 import com.example.petbuddy.navigation.MainNavigator
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,8 +45,8 @@ class AddVaccinationFragment : Fragment() {
     private val doseOptions = (1..10).map { it.toString() }
 
     // Formatters
-    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
 
     // State
     private var isNextVaccineVisible = false
@@ -88,7 +90,7 @@ class AddVaccinationFragment : Fragment() {
 
         currentPet = baseActivity.selectedPet
         if (currentPet == null) {
-            Toast.makeText(requireContext(), "กรุณาเลือกสัตว์เลี้ยงก่อน", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select a pet first", Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
             return
         }
@@ -109,8 +111,8 @@ class AddVaccinationFragment : Fragment() {
 
     private fun setupVaccineList() {
         vaccineList = when (currentPet?.petType?.lowercase()) {
-            "dog" -> VaccineData.getVaccinesByPetType("dog")
-            "cat" -> VaccineData.getVaccinesByPetType("cat")
+            "dog" -> VaccineData.getAllVaccinesByPetType("dog")
+            "cat" -> VaccineData.getAllVaccinesByPetType("cat")
             else -> emptyList()
         }
         vaccineNames = vaccineList.map { it.name }
@@ -135,7 +137,6 @@ class AddVaccinationFragment : Fragment() {
     }
 
     private fun setupDatePickers() {
-        // Main vaccine date picker
         binding.btnVaccineDatePicker.setOnClickListener {
             showDatePicker { timestamp ->
                 selectedTimestamp = timestamp
@@ -150,7 +151,6 @@ class AddVaccinationFragment : Fragment() {
             }
         }
 
-        // Next vaccine date picker
         binding.btnNextVaccineDatePicker.setOnClickListener {
             showDatePicker { timestamp ->
                 nextSelectedTimestamp = timestamp
@@ -165,7 +165,6 @@ class AddVaccinationFragment : Fragment() {
                     updateNextDateTimeDisplay()
                 }
             } else {
-                // ถ้ายังไม่มีวันที่ ให้ใช้วันที่ปัจจุบัน
                 nextSelectedTimestamp = System.currentTimeMillis()
                 showTimePicker(nextSelectedTimestamp!!) { newTimestamp ->
                     nextSelectedTimestamp = newTimestamp
@@ -182,15 +181,12 @@ class AddVaccinationFragment : Fragment() {
         DatePickerDialog(
             requireContext(),
             { _, year, month, dayOfMonth ->
-                // สร้าง calendar ใหม่สำหรับวันที่ที่เลือก
                 val newCalendar = Calendar.getInstance()
                 newCalendar.set(year, month, dayOfMonth)
 
-                // เก็บเวลาเดิมจาก selectedTimestamp
                 val timeCalendar = Calendar.getInstance()
                 timeCalendar.timeInMillis = selectedTimestamp
 
-                // ตั้งค่าเวลาให้กับวันที่ใหม่
                 newCalendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY))
                 newCalendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE))
                 newCalendar.set(Calendar.SECOND, 0)
@@ -257,23 +253,18 @@ class AddVaccinationFragment : Fragment() {
 
     private fun loadExistingData() {
         existingRecord?.let { record ->
-            // ตั้งค่า vaccine name
             val vaccinePosition = vaccineNames.indexOf(record.vaccineName)
             if (vaccinePosition >= 0) {
                 binding.spinnerVaccineName.setSelection(vaccinePosition)
             }
 
-            // ตั้งค่า dose
             binding.spinnerDose.setSelection(record.dose - 1)
 
-            // ตั้งค่าวันที่
             selectedTimestamp = record.timestamp
             updateDateTimeDisplay(selectedTimestamp)
 
-            // ตั้งค่าสถานที่
             binding.edtVaccinePlace.setText(record.place ?: "")
 
-            // ตั้งค่าข้อมูลเข็มถัดไป (ถ้ามี)
             if (record.nextDueDate != null) {
                 nextSelectedTimestamp = record.nextDueDate
                 updateNextDateTimeDisplay()
@@ -297,16 +288,14 @@ class AddVaccinationFragment : Fragment() {
     }
 
     private fun saveVaccinationRecord() {
-        // ตรวจสอบข้อมูลหลัก
         val vaccineName = binding.spinnerVaccineName.selectedItem?.toString()
         if (vaccineName.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "กรุณาเลือกชื่อวัคซีน", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select vaccine name", Toast.LENGTH_SHORT).show()
             return
         }
 
         val dose = binding.spinnerDose.selectedItem?.toString()?.toIntOrNull() ?: 1
 
-        // สร้าง record
         val now = System.currentTimeMillis()
         val record = VaccinationRecord(
             id = existingRecord?.id ?: UUID.randomUUID().toString(),
@@ -334,6 +323,11 @@ class AddVaccinationFragment : Fragment() {
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
         val petId = currentPet?.petId ?: return
 
+        // ถ้าเป็นการแก้ไข ให้ลบ Event เดิมก่อน
+        if (existingRecord != null && existingRecord?.nextDueDate != null) {
+            deleteExistingEvent(existingRecord!!.id)
+        }
+
         baseActivity.db.collection("users")
             .document(userId)
             .collection("vaccinations")
@@ -342,15 +336,67 @@ class AddVaccinationFragment : Fragment() {
             .document(record.id)
             .set(record)
             .addOnSuccessListener {
+                // สร้าง Event ใน Schedule ถ้ามี nextDueDate
+                if (record.nextDueDate != null) {
+                    createEventFromVaccination(record)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        if (existingRecord == null) "Vaccination record saved" else "Vaccination record updated",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    parentFragmentManager.popBackStack()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun createEventFromVaccination(record: VaccinationRecord) {
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
+        val event = Event.fromVaccination(
+            vaccinationId = record.id,
+            petId = record.petId,
+            vaccineName = record.vaccineName,
+            dose = record.dose,
+            dueDate = com.google.firebase.Timestamp(Date(record.nextDueDate!!)),
+            place = record.nextPlace
+        )
+
+        baseActivity.db.collection("users")
+            .document(userId)
+            .collection("events")
+            .document(event.eventId)
+            .set(event)
+            .addOnSuccessListener {
                 Toast.makeText(
                     requireContext(),
-                    if (existingRecord == null) "บันทึกประวัติวัคซีนสำเร็จ" else "แก้ไขประวัติวัคซีนสำเร็จ",
+                    if (existingRecord == null) "Vaccination record and reminder saved" else "Vaccination record updated",
                     Toast.LENGTH_SHORT
                 ).show()
                 parentFragmentManager.popBackStack()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "บันทึกไม่สำเร็จ: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Vaccination saved but reminder failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.popBackStack()
+            }
+    }
+
+    private fun deleteExistingEvent(vaccinationId: String) {
+        val userId = baseActivity.getCurrentUserIdSafe() ?: return
+
+        baseActivity.db.collection("users")
+            .document(userId)
+            .collection("events")
+            .whereEqualTo("sourceId", vaccinationId)
+            .whereEqualTo("sourceType", "vaccination")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                snapshot.documents.forEach { doc ->
+                    doc.reference.delete()
+                }
             }
     }
 

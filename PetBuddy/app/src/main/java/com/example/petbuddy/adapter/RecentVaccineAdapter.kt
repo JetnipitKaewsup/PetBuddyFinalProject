@@ -2,8 +2,9 @@ package com.example.petbuddy.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.petbuddy.databinding.ItemRecentVaccineBinding
+import com.example.petbuddy.R
 import com.example.petbuddy.model.VaccinationRecord
 
 class RecentVaccineAdapter(
@@ -11,12 +12,9 @@ class RecentVaccineAdapter(
 ) : RecyclerView.Adapter<RecentVaccineAdapter.RecentVaccineViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentVaccineViewHolder {
-        val binding = ItemRecentVaccineBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return RecentVaccineViewHolder(binding)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_recent_vaccine, parent, false)
+        return RecentVaccineViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecentVaccineViewHolder, position: Int) {
@@ -25,18 +23,15 @@ class RecentVaccineAdapter(
 
     override fun getItemCount() = vaccines.size
 
-    inner class RecentVaccineViewHolder(
-        private val binding: ItemRecentVaccineBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    class RecentVaccineViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
+        private val tvVaccineName: TextView = itemView.findViewById(R.id.tvVaccineName)
+        private val tvDose: TextView = itemView.findViewById(R.id.tvDose)
+        private val tvDate: TextView = itemView.findViewById(R.id.tvDate)
 
         fun bind(record: VaccinationRecord) {
-            binding.apply {
-                tvVaccineName.text = record.vaccineName
-                tvDose.text = "เข็มที่ ${record.dose}"
-                tvDate.text = record.dateString
-                tvTime.text = record.timeString
-                tvPlace.text = record.place ?: "ไม่ระบุสถานที่"
-            }
+            tvVaccineName.text = record.vaccineName
+            tvDose.text = "Dose ${record.dose}"
+            tvDate.text = record.dateString
         }
     }
 }
