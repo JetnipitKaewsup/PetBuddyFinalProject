@@ -148,7 +148,17 @@ class HomeFragment : Fragment() {
                 }
 
                 todoAdapter.notifyDataSetChanged()
+
+                if (todoList.isEmpty()) {
+                    bindingSafe.tvNoTodo.visibility = View.VISIBLE
+                    bindingSafe.recyclerView.visibility = View.GONE
+                } else {
+                    bindingSafe.tvNoTodo.visibility = View.GONE
+                    bindingSafe.recyclerView.visibility = View.VISIBLE
+                }
             }
+
+
     }
 
     private fun loadTodayVaccinations() {
@@ -187,6 +197,14 @@ class HomeFragment : Fragment() {
                             }
 
                             todoAdapter.notifyDataSetChanged()
+
+                            if (todoList.isEmpty()) {
+                                safe.tvNoTodo.visibility = View.VISIBLE
+                                safe.recyclerView.visibility = View.GONE
+                            } else {
+                                safe.tvNoTodo.visibility = View.GONE
+                                safe.recyclerView.visibility = View.VISIBLE
+                            }
                         }
                 }
             }
@@ -277,6 +295,14 @@ class HomeFragment : Fragment() {
                         feedingAdapter.updatePetMap(petMap)
 
                         feedingAdapter.submitList(feedingList)
+
+                        if (feedingList.isEmpty()) {
+                            safe.tvNoFeeding.visibility = View.VISIBLE
+                            safe.recyclerView3.visibility = View.GONE
+                        } else {
+                            safe.tvNoFeeding.visibility = View.GONE
+                            safe.recyclerView3.visibility = View.VISIBLE
+                        }
                     }
             }
     }
