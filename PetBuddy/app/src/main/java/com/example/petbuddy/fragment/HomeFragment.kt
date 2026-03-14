@@ -30,8 +30,8 @@ class HomeFragment : Fragment() {
     private val todoList = mutableListOf<String>()
     private val upcomingList = mutableListOf<UpcomingActivity>()
 
-    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("H:mm", Locale.ENGLISH)
 
     override fun onCreateView(
         inflater: LayoutInflater,

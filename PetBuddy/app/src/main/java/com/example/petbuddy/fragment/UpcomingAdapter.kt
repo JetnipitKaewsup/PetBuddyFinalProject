@@ -12,9 +12,9 @@ class UpcomingAdapter(
     private var list: List<UpcomingActivity>
 ) : RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
 
-    private val dayFormatter = SimpleDateFormat("EE", Locale.getDefault())
-    private val dateFormatter = SimpleDateFormat("dd", Locale.getDefault())
-    private val timeFormatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    private val dayFormatter = SimpleDateFormat("EE", Locale.ENGLISH)
+    private val dateFormatter = SimpleDateFormat("dd", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("H:mm", Locale.ENGLISH)
 
     fun submitList(newList: List<UpcomingActivity>) {
         list = newList.sortedBy { it.time }
