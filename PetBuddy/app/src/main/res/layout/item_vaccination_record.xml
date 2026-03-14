@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@drawable/light_brown_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,9 +77,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical"
-                android:background="@color/light_brown"
+                android:background="@drawable/brown_stroke_bg"
                 android:padding="12dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"

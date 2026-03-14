@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/backgroundColor"
     android:fillViewport="true">
 
     <LinearLayout
@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="เพิ่มประวัติวัคซีน"
+                android:text="Add Vaccination"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/brown"
@@ -46,7 +46,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="บันทึกการฉีดวัคซีน"
+            android:text="Vaccination Record"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -56,7 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ชื่อวัคซีน *"
+            android:text="Vaccine"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:layout_marginBottom="4dp"/>
@@ -74,7 +74,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="เข็มที่ *"
+            android:text="Dose"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:layout_marginTop="4dp"
@@ -92,7 +92,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="วันที่ฉีด *"
+            android:text="Date"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:layout_marginTop="4dp"
@@ -124,7 +124,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:focusable="false"
-                    android:hint="เลือกวันที่"
+                    android:hint="Select date"
                     android:textSize="14sp"
                     android:paddingVertical="8dp"/>
 
@@ -155,7 +155,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:focusable="false"
-                    android:hint="เลือกเวลา"
+                    android:hint="Select time"
                     android:textSize="14sp"
                     android:paddingVertical="8dp"/>
 
@@ -173,7 +173,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="สถานที่"
+            android:text="Place"
             android:textSize="14sp"
             android:textColor="@color/black"
             android:layout_marginTop="4dp"
@@ -184,7 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/light_brown_bg"
-            android:hint="โรงพยาบาลสัตว์ / คลินิก"
+            android:hint="Clinic"
             android:paddingHorizontal="12dp"
             android:layout_marginBottom="16dp"/>
 
@@ -206,7 +206,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="เพิ่มข้อมูลเข็มถัดไป (ไม่บังคับ)"
+                android:text="Add next dose details (optional)"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"/>
 
@@ -225,14 +225,14 @@
             android:orientation="vertical"
             android:padding="16dp"
             android:background="@color/light_brown"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ข้อมูลเข็มถัดไป"
+                android:text="Next Vaccination"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/brown"
@@ -242,7 +242,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ชื่อวัคซีน"
+                android:text="Vaccine"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="4dp"/>
@@ -251,7 +251,7 @@
                 android:id="@+id/spinnerNextVaccineName"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/light_brown_bg"
+                android:background="@drawable/white_input_bg"
                 android:paddingHorizontal="12dp"
                 android:layout_marginBottom="12dp"/>
 
@@ -259,7 +259,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="เข็มที่"
+                android:text="Dose"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginTop="4dp"
@@ -269,7 +269,7 @@
                 android:id="@+id/spinnerNextDose"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/light_brown_bg"
+                android:background="@drawable/white_input_bg"
                 android:paddingHorizontal="12dp"
                 android:layout_marginBottom="12dp"/>
 
@@ -277,7 +277,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="วันที่นัด"
+                android:text="Date"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginTop="4dp"
@@ -299,7 +299,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="12dp"
-                    android:background="@drawable/light_brown_bg"
+                    android:background="@drawable/white_input_bg"
                     android:layout_marginEnd="8dp">
 
                     <EditText
@@ -309,7 +309,7 @@
                         android:layout_weight="1"
                         android:background="@null"
                         android:focusable="false"
-                        android:hint="เลือกวันที่"
+                        android:hint="Select date"
                         android:textSize="14sp"
                         android:paddingVertical="8dp"/>
 
@@ -330,7 +330,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="12dp"
-                    android:background="@drawable/light_brown_bg"
+                    android:background="@drawable/white_input_bg"
                     android:layout_marginStart="8dp">
 
                     <EditText
@@ -340,7 +340,7 @@
                         android:layout_weight="1"
                         android:background="@null"
                         android:focusable="false"
-                        android:hint="เลือกเวลา"
+                        android:hint="Select time"
                         android:textSize="14sp"
                         android:paddingVertical="8dp"/>
 
@@ -358,7 +358,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="สถานที่"
+                android:text="Place"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginTop="4dp"
@@ -368,8 +368,8 @@
                 android:id="@+id/edtNextVaccinePlace"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/light_brown_bg"
-                android:hint="โรงพยาบาลสัตว์ / คลินิก"
+                android:background="@drawable/white_input_bg"
+                android:hint="Clinic"
                 android:paddingHorizontal="12dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -389,10 +389,8 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:text="ยกเลิก"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:textColor="@color/brown"
-                app:strokeColor="@color/brown"/>
+                android:text="Cancle"
+                android:backgroundTint="@color/red"/>
 
             <Button
                 android:id="@+id/btnSave"
@@ -400,7 +398,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="บันทึก"
+                android:text="Save"
                 android:backgroundTint="@color/brown"/>
 
         </LinearLayout>

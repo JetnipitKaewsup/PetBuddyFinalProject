@@ -33,7 +33,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="บันทึกน้ำหนัก"
+                android:text="Add Weight"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/brown"
@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="น้ำหนัก (kg) *"
+            android:text="weight (kg.)"
             android:textSize="16sp"
             android:textColor="@color/black"
             android:layout_marginBottom="4dp"/>
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:hint="เช่น 25.5"/>
+                android:hint="25.5"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,7 +70,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="วันที่ *"
+            android:text="Date"
             android:textSize="16sp"
             android:textColor="@color/black"
             android:layout_marginTop="16dp"
@@ -107,7 +107,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="เวลา"
+            android:text="Time"
             android:textSize="16sp"
             android:textColor="@color/black"
             android:layout_marginTop="16dp"
@@ -144,7 +144,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="หมายเหตุ"
+            android:text="Note"
             android:textSize="16sp"
             android:textColor="@color/black"
             android:layout_marginTop="16dp"
@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:maxLines="3"
-                android:hint="เพิ่มหมายเหตุ (ถ้ามี)"/>
+                android:hint="Note"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -179,10 +179,8 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:text="ยกเลิก"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:textColor="@color/brown"
-                app:strokeColor="@color/brown"/>
+                android:text="Cancle"
+                android:backgroundTint="@color/red"/>
 
             <Button
                 android:id="@+id/btnSave"
@@ -190,7 +188,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="บันทึก"
+                android:text="Save"
                 android:backgroundTint="@color/brown"/>
 
         </LinearLayout>

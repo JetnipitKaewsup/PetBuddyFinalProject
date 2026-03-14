@@ -75,7 +75,7 @@ class AddWeightFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.tvTitle.text = if (existingRecord == null) "บันทึกน้ำหนัก" else "แก้ไขน้ำหนัก"
+        binding.tvTitle.text = if (existingRecord == null) "Add weight" else "Edit weight"
 
         binding.layoutDate.setOnClickListener {
             showDatePicker()
@@ -150,19 +150,19 @@ class AddWeightFragment : Fragment() {
     private fun saveWeightRecord() {
         val weightStr = binding.etWeight.text.toString()
         if (weightStr.isEmpty()) {
-            Toast.makeText(requireContext(), "กรุณากรอกน้ำหนัก", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please enter weight", Toast.LENGTH_SHORT).show()
             return
         }
 
         val weight = weightStr.toDoubleOrNull()
         if (weight == null || weight <= 0) {
-            Toast.makeText(requireContext(), "กรุณากรอกน้ำหนักที่ถูกต้อง", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please enter a valid weight", Toast.LENGTH_SHORT).show()
             return
         }
 
         val currentPet = baseActivity.selectedPet
         if (currentPet == null) {
-            Toast.makeText(requireContext(), "ไม่พบข้อมูลสัตว์เลี้ยง", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "No pet information found", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -193,13 +193,13 @@ class AddWeightFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(
                     requireContext(),
-                    if (existingRecord == null) "บันทึกน้ำหนักสำเร็จ" else "แก้ไขน้ำหนักสำเร็จ",
+                    if (existingRecord == null) "Weight saved successfully" else "Weight updated successfully",
                     Toast.LENGTH_SHORT
                 ).show()
                 parentFragmentManager.popBackStack()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "บันทึกไม่สำเร็จ: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to save : ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 

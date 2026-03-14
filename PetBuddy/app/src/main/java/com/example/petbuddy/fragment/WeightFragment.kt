@@ -31,7 +31,7 @@ class WeightFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
     private lateinit var adapter: WeightRecordAdapter
-    private lateinit var navigator: MainNavigator // ประกาศตัวแปร
+    private lateinit var navigator: MainNavigator
     private var weightRecords = mutableListOf<WeightRecord>()
     private var isDescending = true
 
@@ -57,7 +57,7 @@ class WeightFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setupToolbar()
         setupUI()
         setupRecyclerView()
         loadWeightRecords()
@@ -71,7 +71,7 @@ class WeightFragment : Fragment() {
     private fun setupUI() {
         val currentPet = baseActivity.selectedPet
         if (currentPet == null) {
-            showMessage("กรุณาเลือกสัตว์เลี้ยงก่อน")
+            showMessage("Please select a pet first")
             parentFragmentManager.popBackStack()
             return
         }
@@ -87,7 +87,11 @@ class WeightFragment : Fragment() {
         }
 
     }
-
+    private fun setupToolbar(){
+        binding.toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+    }
     private fun setupRecyclerView() {
         adapter = WeightRecordAdapter(
             onItemClick = { record ->
@@ -144,13 +148,13 @@ class WeightFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
-                showMessage("โหลดข้อมูลไม่สำเร็จ: ${e.message}")
+                showMessage("Failed to load data: ${e.message}")
             }
     }
 
     private fun updateWeightStatus() {
         if (weightRecords.size < 2) {
-            binding.tvWeightStatus.text = "บันทึกน้ำหนักอย่างน้อย 2 ครั้งเพื่อดูแนวโน้ม"
+            binding.tvWeightStatus.text = "Record weight at least 2 times to view trends"
             binding.tvWeightStatus.setTextColor(android.graphics.Color.GRAY)
             return
         }
@@ -161,7 +165,7 @@ class WeightFragment : Fragment() {
             .take(5)
 
         if (recentRecords.size < 2) {
-            binding.tvWeightStatus.text = "ข้อมูลไม่เพียงพอ"
+            binding.tvWeightStatus.text = "Insufficient data"
             return
         }
 
@@ -171,9 +175,9 @@ class WeightFragment : Fragment() {
         val percentChange = (difference / firstWeight) * 100
 
         val statusText = when {
-            Math.abs(difference) < 0.1 -> "น้ำหนักคงที่"
-            difference > 0 -> "น้ำหนักเพิ่มขึ้น ${String.format("%.1f", difference)} kg (${String.format("%.1f", percentChange)}%)"
-            else -> "น้ำหนักลดลง ${String.format("%.1f", Math.abs(difference))} kg (${String.format("%.1f", Math.abs(percentChange))}%)"
+            Math.abs(difference) < 0.1 -> "Weight stable"
+            difference > 0 -> "Weight increased ${String.format("%.1f", difference)} kg (${String.format("%.1f", percentChange)}%)"
+            else -> "Weight decreased ${String.format("%.1f", Math.abs(difference))} kg (${String.format("%.1f", Math.abs(percentChange))}%)"
         }
 
         binding.tvWeightStatus.text = statusText
@@ -194,26 +198,14 @@ class WeightFragment : Fragment() {
         )
         loadWeightRecords()
 
-        Snackbar.make(binding.root,
-            if (isDescending) "เรียงจากล่าสุดไปเก่าสุด" else "เรียงจากเก่าสุดไปล่าสุด",
-            Snackbar.LENGTH_SHORT
-        ).show()
+//        Snackbar.make(binding.root,
+//            if (isDescending) "Sort by latest first" else "Sort by oldest first",
+//            Snackbar.LENGTH_SHORT
+//        ).show()
     }
 
     private fun navigateToAddWeight(record: WeightRecord? = null) {
         navigator.navigateToAddWeight(record)
-//        val fragment = AddWeightFragment.newInstance(record)
-//
-//        parentFragmentManager.beginTransaction()
-//            .setCustomAnimations(
-//                R.anim.slide_in_right,
-//                R.anim.slide_out_left,
-//                R.anim.slide_in_left,
-//                R.anim.slide_out_right
-//            )
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack("add_weight")
-//            .commit()
     }
 
     private fun showEditDeleteDialog(record: WeightRecord) {
@@ -233,12 +225,12 @@ class WeightFragment : Fragment() {
 
     private fun showDeleteConfirmation(record: WeightRecord) {
         AlertDialog.Builder(requireContext())
-            .setTitle("ลบข้อมูลน้ำหนัก")
-            .setMessage("คุณต้องการลบข้อมูลน้ำหนักวันที่ ${record.dateString} ใช่หรือไม่?")
-            .setPositiveButton("ลบ") { _, _ ->
+            .setTitle("Delete weight record")
+            .setMessage("Are you sure you want to delete the weight record for ${record.dateString} ?")
+            .setPositiveButton("Delete") { _, _ ->
                 deleteWeightRecord(record)
             }
-            .setNegativeButton("ยกเลิก", null)
+            .setNegativeButton("Cancle", null)
             .show()
     }
 
@@ -254,11 +246,11 @@ class WeightFragment : Fragment() {
             .document(record.id)
             .delete()
             .addOnSuccessListener {
-                showMessage("ลบข้อมูลสำเร็จ")
+                showMessage("Record deleted successfully")
                 loadWeightRecords()
             }
             .addOnFailureListener { e ->
-                showMessage("ลบไม่สำเร็จ: ${e.message}")
+                showMessage("Failed to delete record : ${e.message}")
             }
     }
 

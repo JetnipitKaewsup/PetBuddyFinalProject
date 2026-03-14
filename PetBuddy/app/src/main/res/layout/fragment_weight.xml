@@ -13,10 +13,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/brown"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="ประวัติน้ำหนัก"
-        app:titleTextColor="@android:color/white"
+        app:title="Weight"
+        app:titleTextColor="@color/brown"
         app:navigationIcon="@drawable/ic_arrow_back"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <ScrollView
@@ -43,7 +42,7 @@
                 android:id="@+id/tvPetName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="ชื่อสัตว์เลี้ยง"
+                android:text="Pet Name"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/brown"
@@ -73,9 +72,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:padding="12dp"
-            android:text="วิเคราะห์น้ำหนัก 5 รายการล่าสุด..."
+            android:text="weight status"
             android:textSize="14sp"
-            android:background="@drawable/bg_status"
+            android:background="@drawable/light_brown_bg"
             android:gravity="center"/>
 
         <!-- Records Title -->
@@ -84,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="ประวัติการบันทึก"
+            android:text="Weight Records"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>
@@ -104,7 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="ยังไม่มีประวัติการบันทึกน้ำหนัก\nกดปุ่ม + เพื่อเพิ่มข้อมูล"
+            android:text="No weight record yet\nTap the + button to add a record"
             android:textSize="16sp"
             android:textColor="@color/brown"
             android:gravity="center"
@@ -131,7 +130,7 @@
         android:src="@drawable/ic_add"
         android:contentDescription="เพิ่มน้ำหนัก"
         app:backgroundTint="@color/brown"
-        android:tint="@color/white"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

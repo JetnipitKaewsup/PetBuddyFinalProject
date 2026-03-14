@@ -34,7 +34,7 @@ class VaccinationRecordAdapter(
             binding.apply {
                 // ข้อมูลพื้นฐาน
                 tvVaccineName.text = record.vaccineName
-                tvDose.text = "เข็มที่ ${record.dose}"
+                tvDose.text = "Dose ${record.dose}"
                 tvDate.text = record.dateString
                 tvTime.text = record.timeString
 
@@ -50,26 +50,26 @@ class VaccinationRecordAdapter(
                 if (record.nextDueDate != null) {
                     layoutNextVaccine.visibility = android.view.View.VISIBLE
                     tvNextVaccineName.text = record.nextVaccineName ?: record.vaccineName
-                    tvNextDose.text = "เข็มที่ ${record.nextDose ?: record.dose + 1}"
+                    tvNextDose.text = "Dose ${record.nextDose ?: record.dose + 1}"
                     tvNextDate.text = record.nextDueDateString ?: ""
 
                     // แสดงจำนวนวันที่เหลือ
                     record.daysUntilNext?.let { days ->
                         when {
                             days < 0 -> {
-                                tvDaysLeft.text = "เลยกำหนดมา ${-days} วัน"
+                                tvDaysLeft.text = " ${-days} days overdue"
                                 tvDaysLeft.setTextColor(android.graphics.Color.parseColor("#F44336"))
                             }
                             days == 0 -> {
-                                tvDaysLeft.text = "วันนี้"
+                                tvDaysLeft.text = "today"
                                 tvDaysLeft.setTextColor(android.graphics.Color.parseColor("#FF9800"))
                             }
                             days <= 7 -> {
-                                tvDaysLeft.text = "อีก $days วัน"
+                                tvDaysLeft.text = "in $days days"
                                 tvDaysLeft.setTextColor(android.graphics.Color.parseColor("#FF9800"))
                             }
                             else -> {
-                                tvDaysLeft.text = "อีก $days วัน"
+                                tvDaysLeft.text = "in $days days"
                                 tvDaysLeft.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
                             }
                         }

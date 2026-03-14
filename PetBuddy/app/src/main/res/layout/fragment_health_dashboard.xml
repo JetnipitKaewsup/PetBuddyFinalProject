@@ -5,202 +5,202 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/backgroundColor"
     android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <!-- Header -->
+
+        <!-- Header Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-
-            app:title="All Pets"
+            app:title="Health Dashboard"
             app:titleTextColor="@color/brown"
             app:navigationIcon="@drawable/ic_arrow_back"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
-
-        <!-- Header: ชื่อสัตว์เลี้ยง และปุ่มเปลี่ยน -->
-
-        <TextView
-            android:id="@+id/tvPetName"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:text="Pet Name"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/btnChangePet"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/btnChangePet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/brown"
-            android:text="change"
-            app:layout_constraintBottom_toBottomOf="@+id/tvPetName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvPetName" />
-
-        <!-- การ์ดน้ำหนัก -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardWeight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardElevation="4dp"
-            app:strokeColor="@color/black"
-            app:strokeWidth="1dp"
-            app:cardCornerRadius="12dp"
-            app:layout_constraintTop_toBottomOf="@+id/tvPetName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Pet Name and Change Button -->
+            <TextView
+                android:id="@+id/tvPetName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="Pet Name"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/btnChangePet"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Latest Weight"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
+            <Button
+                android:id="@+id/btnChangePet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/brown"
+                android:text="Change"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPetName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvPetName" />
+
+            <!-- Weight Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardWeight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="1dp"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPetName">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="start"
-                    android:layout_marginTop="4dp">
-
-                    <TextView
-                        android:id="@+id/tvLatestWeight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0.0"
-                        android:textSize="40sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black" />
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@color/light_brown">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="kg"
-                        android:textSize="18sp"
+                        android:text="Latest Weight"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/darker_gray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="start"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:id="@+id/tvLatestWeight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0.0"
+                            android:textSize="40sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:textSize="18sp"
+                            android:textColor="@android:color/darker_gray"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginBottom="4dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvWeightDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="12sp"
                         android:textColor="@android:color/darker_gray"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginBottom="4dp" />
+                        android:layout_marginTop="2dp"
+                        android:visibility="gone" />
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:layout_marginVertical="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to view full history →"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvWeightStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="weight status"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"
-                    android:layout_marginTop="4dp" />
+            </com.google.android.material.card.MaterialCardView>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginVertical="12dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tap to view full history →"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- การ์ดวัคซีน -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardVaccination"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardElevation="4dp"
-            app:strokeColor="@color/black"
-            app:strokeWidth="1dp"
-            app:cardCornerRadius="12dp"
-            app:layout_constraintTop_toBottomOf="@+id/cardWeight"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Vaccination Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardVaccination"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Upcoming Vaccinations"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
+                app:strokeWidth="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardWeight">
 
-                <TextView
-                    android:id="@+id/tvNextVaccine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No vaccine"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginTop="4dp" />
-
-                <View
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginVertical="12dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tap to view full history →"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@color/light_brown">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Next Vaccine"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/darker_gray" />
 
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/tvNextVaccine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No upcoming vaccines"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp" />
 
-        <!-- สถิติอื่นๆ -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📈 สถิติอื่นๆ"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/cardVaccination"
-            app:layout_constraintStart_toStartOf="parent" />
+                    <TextView
+                        android:id="@+id/tvNextVaccineStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:layout_marginTop="2dp"
+                        android:visibility="gone" />
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@android:color/darker_gray"
+                        android:layout_marginVertical="12dp" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap to view full history →"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
+
 </ScrollView>

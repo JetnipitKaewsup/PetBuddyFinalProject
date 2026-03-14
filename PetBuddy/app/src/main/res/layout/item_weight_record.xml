@@ -48,7 +48,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="น้ำหนัก"
+                    android:text="Weight"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/black"/>
@@ -66,7 +66,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="กก."
+                    android:text="kg."
                     android:textStyle="bold"
                     android:textSize="14sp"
                     android:textColor="@color/brown"
@@ -84,7 +84,7 @@
                     android:id="@+id/txtTimeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="เวลา : "
+                    android:text="time : "
                     android:textStyle="bold"
                     android:textSize="14sp"
                     android:textColor="@color/black"/>
@@ -93,7 +93,7 @@
                     android:id="@+id/txtWeightTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3:34 น."
+                    android:text="3:34"
                     android:textColor="@color/brown"
                     android:textSize="14sp"/>
             </LinearLayout>

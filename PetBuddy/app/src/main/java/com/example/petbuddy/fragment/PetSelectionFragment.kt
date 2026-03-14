@@ -28,12 +28,7 @@ class PetSelectionFragment : Fragment() {
     private var sourceTag: String? = null
     private var requestKey: String? = null
     private var initialSelectedIds: List<String> = emptyList()
-    // ข้อมูลตัวอย่าง (จริงๆ ต้องโหลดจาก Firebase)
-    private val mockPets = listOf(
-        Pet("1", "ทองต้วน", "dog", "โกลเด้น", "dog", null),
-        Pet("2", "สีดา", "cat", "วิเชียรมาศ", "cat", null),
-        Pet("3", "ดำ", "dog", "ชิวาวา", "dog", null)
-    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,13 +77,13 @@ class PetSelectionFragment : Fragment() {
 
     private fun setupUI() {
         binding.tvSubtitle.text = when (mode) {
-            SelectionMode.SINGLE -> "เลือกสัตว์เลี้ยง 1 ตัว"
-            SelectionMode.MULTIPLE -> "เลือกสัตว์เลี้ยง 1 ตัวขึ้นไป"
+            SelectionMode.SINGLE -> "Select 1 pet"
+            SelectionMode.MULTIPLE -> "Select one or more pets"
         }
 
         if (mode == SelectionMode.MULTIPLE) {
             binding.btnConfirm.visibility = View.VISIBLE
-            binding.btnConfirm.text = "ยืนยัน (0)"
+            binding.btnConfirm.text = "Confirm (0)"
             binding.btnConfirm.isEnabled = false
 
             binding.btnConfirm.setOnClickListener {
@@ -105,7 +100,7 @@ class PetSelectionFragment : Fragment() {
             },
             onSelectionChanged = { selectedCount ->
                 if (mode == SelectionMode.MULTIPLE) {
-                    binding.btnConfirm.text = "ยืนยัน ($selectedCount)"
+                    binding.btnConfirm.text = "Confirm ($selectedCount)"
                     binding.btnConfirm.isEnabled = selectedCount > 0
                 }
             }
@@ -175,7 +170,7 @@ class PetSelectionFragment : Fragment() {
                             }
                         }
                     } else {
-                        Toast.makeText(requireContext(), "กรุณาเลือกสัตว์เลี้ยง", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Please select a pet", Toast.LENGTH_SHORT).show()
                     }
 
                 }
@@ -189,7 +184,7 @@ class PetSelectionFragment : Fragment() {
             }
 
         } else {
-            Toast.makeText(requireContext(), "กรุณาเลือกสัตว์เลี้ยง", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select a pet", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -201,10 +196,6 @@ class PetSelectionFragment : Fragment() {
                 if (initialSelectedIds.isNotEmpty()) {
                     adapter.setInitialSelection(initialSelectedIds)
                 }
-            } else {
-                // ถ้าไม่มีข้อมูล ให้ใช้ mock data
-                adapter.submitList(mockPets)
-                Toast.makeText(requireContext(), "ใช้ข้อมูลตัวอย่าง", Toast.LENGTH_SHORT).show()
             }
         }
     }
