@@ -5,63 +5,55 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.EditPetProfileFragment">
-    <!-- Header -->
+    tools:context=".fragment.CreateNewPetProfileFragment">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="My Profile"
+        app:title="Create Pet Profile"
         app:titleTextColor="@color/brown" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
+
     <LinearLayout
-        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:layout_editor_absoluteX="32dp">
+        android:paddingHorizontal="24dp"
 
+        android:gravity="center_horizontal">
+
+        <!-- Header -->
 
         <!-- Pet Image -->
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageProfile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/brown_oval_bg"
-            android:padding="6dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/pet_placeholder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/CircleImage" />
+        <FrameLayout
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/txtEdtProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Edit profile picture"
-            android:textColor="@color/brown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageProfile" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageProfilePet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/baseline_pets_24"
+                android:background="@drawable/brown_oval_bg"
+                app:shapeAppearanceOverlay="@style/CircleImage"/>
+
+        </FrameLayout>
 
         <!-- Form Card -->
 
@@ -70,11 +62,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:padding="20dp"
-            app:cardBackgroundColor="@color/backgroundColor"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
-            app:strokeColor="@android:color/transparent"
-            app:strokeWidth="0dp">
+            app:strokeWidth="0dp"
+            app:strokeColor="@android:color/transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -88,22 +79,22 @@
                     android:id="@+id/petNameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxBackgroundColor="@color/light_brown"
                     app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxBackgroundColor="@color/light_brown"
                     app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp">
+                    app:boxStrokeWidthFocused="0dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusBottomEnd="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/crePUser"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@null"
                         android:hint="Pet Name"
-                        android:paddingHorizontal="16dp" />
+                        android:background="@null"
+                        android:paddingHorizontal="16dp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,24 +105,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:boxBackgroundColor="@color/light_brown"
+                    app:endIconMode="dropdown_menu"
                     app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxBackgroundColor="@color/light_brown"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
-                    app:endIconMode="dropdown_menu">
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusBottomEnd="20dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/petDropdown"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@null"
                         android:hint="Pet Type"
                         android:inputType="none"
-                        android:paddingHorizontal="16dp" />
+                        android:background="@null"
+                        android:paddingHorizontal="16dp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,24 +133,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:boxBackgroundColor="@color/light_brown"
+                    app:endIconMode="dropdown_menu"
                     app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxBackgroundColor="@color/light_brown"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
-                    app:endIconMode="dropdown_menu">
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusBottomEnd="20dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/breedDropdown"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@null"
                         android:hint="Breed"
                         android:inputType="text"
-                        android:paddingHorizontal="16dp" />
+                        android:background="@null"
+                        android:paddingHorizontal="16dp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -170,21 +161,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
                     <RadioButton
                         android:id="@+id/radioFemale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Female" />
+                        android:text="Female"/>
 
                     <RadioButton
                         android:id="@+id/radioMale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:text="Male" />
+                        android:text="Male"
+                        android:layout_marginStart="24dp"/>
 
                 </RadioGroup>
 
@@ -195,45 +186,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:boxBackgroundColor="@color/light_brown"
                     app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxBackgroundColor="@color/light_brown"
                     app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp">
+                    app:boxStrokeWidthFocused="0dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusBottomEnd="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/petDate"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@null"
-                        android:clickable="true"
-                        android:focusable="false"
                         android:hint="Birthdate"
-                        android:paddingHorizontal="16dp" />
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:background="@null"
+                        android:paddingHorizontal="16dp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-        <!-- Save Button -->
-        <Button
-            android:id="@+id/btnSaveChanges"
-            android:layout_width="250dp"
-            android:layout_height="55dp"
-            android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="36dp"
+
+        <!-- Create Button -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/crePetBtn"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Create Pet Profile"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="24dp"
             android:backgroundTint="@color/brown"
-            android:elevation="4dp"
-            android:text="Save changes"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            app:cornerRadius="28dp"/>
 
     </LinearLayout>
-
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

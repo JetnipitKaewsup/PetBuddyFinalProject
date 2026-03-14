@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.fragment.AddEventFragment
+import com.example.petbuddy.fragment.CreateNewPetProfileFragment
 import com.example.petbuddy.fragment.EditUserProfileFragment
 import com.example.petbuddy.fragment.EventDetailFragment
 import com.example.petbuddy.model.Event
@@ -76,6 +77,10 @@ abstract class BaseNavigator(protected val activity: FragmentActivity) {
     fun navigateToAllMyPets() {
         val fragment = com.example.petbuddy.fragment.AllMyPetsFragment()
         navigator.navigateTo(fragment, "all_my_pets")
+    }
+    fun navigateToCreateNewPet() {
+        val fragment = CreateNewPetProfileFragment()
+        navigator.navigateTo(fragment, "create_new_pet")
     }
 
     fun navigateToAddWeight(record: WeightRecord? = null) {

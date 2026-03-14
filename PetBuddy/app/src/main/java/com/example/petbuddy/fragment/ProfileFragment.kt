@@ -45,6 +45,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
         setupRecyclerView()
         setupClickListener()
         loadUserPets()
@@ -56,6 +57,11 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupToolbar(){
+        binding.toolbar.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+    }
 
     private fun setupRecyclerView() {
         adapter = MyPetsAdapter { pet ->
@@ -76,10 +82,13 @@ class ProfileFragment : Fragment() {
 
 
     private fun setupClickListener() {
+        binding.btnCreatePet.setOnClickListener {
+            navigator.navigateToCreateNewPet()
+        }
         binding.btntMyProfile.setOnClickListener {
             // navigate to profile edit
             navigator.navigateToEditUserProfile()
-            Toast.makeText(requireContext(), "My profile clicked", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "My profile clicked", Toast.LENGTH_SHORT).show()
 
         }
         binding.layoutPassword.setOnClickListener {

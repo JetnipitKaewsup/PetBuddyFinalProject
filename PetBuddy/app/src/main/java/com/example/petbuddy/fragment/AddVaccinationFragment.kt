@@ -359,8 +359,8 @@ class AddVaccinationFragment : Fragment() {
         val event = Event.fromVaccination(
             vaccinationId = record.id,
             petId = record.petId,
-            vaccineName = record.vaccineName,
-            dose = record.dose,
+            vaccineName = record.nextVaccineName!!,
+            dose = record.nextDose!!,
             dueDate = com.google.firebase.Timestamp(Date(record.nextDueDate!!)),
             place = record.nextPlace
         )
