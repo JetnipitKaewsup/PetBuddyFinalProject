@@ -9,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.databinding.FragmentAddWeightBinding
 import com.example.petbuddy.model.WeightRecord
+import com.example.petbuddy.navigation.MainNavigator
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,9 +23,10 @@ class AddWeightFragment : Fragment() {
     private var _binding: FragmentAddWeightBinding? = null
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
+    private lateinit var navigator: MainNavigator
 
     private var existingRecord: WeightRecord? = null
-    private var selectedTimestamp: Long = System.currentTimeMillis() // เก็บเป็น timestamp
+    private var selectedTimestamp: Long = System.currentTimeMillis()
 
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -35,7 +38,7 @@ class AddWeightFragment : Fragment() {
             return AddWeightFragment().apply {
                 arguments = Bundle().apply {
                     if (existingRecord != null) {
-                        arguments?.putSerializable(ARG_RECORD, existingRecord)
+                        putSerializable(ARG_RECORD, existingRecord)
                     }
                 }
             }
@@ -45,11 +48,17 @@ class AddWeightFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+        navigator = (requireActivity() as MainActivity).navigator
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        existingRecord = arguments?.getSerializable(ARG_RECORD) as? WeightRecord
+        existingRecord = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable(ARG_RECORD, WeightRecord::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getSerializable(ARG_RECORD) as? WeightRecord
+        }
     }
 
     override fun onCreateView(
@@ -67,30 +76,46 @@ class AddWeightFragment : Fragment() {
         setupUI()
 
         if (existingRecord != null) {
+            // แก้ไข: โหลดข้อมูลเดิม
             loadExistingData()
         } else {
-            // ตั้งค่าวันที่เริ่มต้นเป็นวันนี้
+            // เพิ่มใหม่: ตั้งเวลาเริ่มต้นเป็นเวลาปัจจุบัน
+            selectedTimestamp = System.currentTimeMillis()
             updateDateTimeDisplay(selectedTimestamp)
         }
     }
 
     private fun setupUI() {
-        binding.tvTitle.text = if (existingRecord == null) "Add weight" else "Edit weight"
+        // เปลี่ยนข้อความตามโหมด
+        binding.tvTitle.text = if (existingRecord == null) "Add Weight" else "Edit Weight"
 
+        // Date picker
         binding.layoutDate.setOnClickListener {
             showDatePicker()
         }
 
+        // Time picker
         binding.layoutTime.setOnClickListener {
             showTimePicker()
         }
 
+        // Save button
         binding.btnSave.setOnClickListener {
             saveWeightRecord()
         }
 
+        // Cancel button
         binding.btnCancel.setOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+    }
+
+    private fun loadExistingData() {
+        existingRecord?.let { record ->
+            selectedTimestamp = record.timestamp
+            updateDateTimeDisplay(selectedTimestamp)
+            binding.etWeight.setText(record.weight.toString())
+            binding.etNote.setText(record.note ?: "")
         }
     }
 
@@ -100,13 +125,15 @@ class AddWeightFragment : Fragment() {
         DatePickerDialog(
             requireContext(),
             { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                // เก็บเวลาเดิมไว้
-                val timeCalendar = Calendar.getInstance().apply { timeInMillis = selectedTimestamp }
-                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY))
-                calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE))
+                val newCalendar = Calendar.getInstance()
+                newCalendar.set(year, month, dayOfMonth)
 
-                selectedTimestamp = calendar.timeInMillis
+                // เก็บเวลาเดิม
+                val timeCalendar = Calendar.getInstance().apply { timeInMillis = selectedTimestamp }
+                newCalendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY))
+                newCalendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE))
+
+                selectedTimestamp = newCalendar.timeInMillis
                 updateDateTimeDisplay(selectedTimestamp)
             },
             calendar.get(Calendar.YEAR),
@@ -123,7 +150,6 @@ class AddWeightFragment : Fragment() {
             { _, hourOfDay, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
-
                 selectedTimestamp = calendar.timeInMillis
                 updateDateTimeDisplay(selectedTimestamp)
             },
@@ -138,15 +164,6 @@ class AddWeightFragment : Fragment() {
         binding.tvTime.text = timeFormatter.format(Date(timestamp))
     }
 
-    private fun loadExistingData() {
-        existingRecord?.let { record ->
-            binding.etWeight.setText(record.weight.toString())
-            selectedTimestamp = record.timestamp
-            updateDateTimeDisplay(selectedTimestamp)
-            binding.etNote.setText(record.note ?: "")
-        }
-    }
-
     private fun saveWeightRecord() {
         val weightStr = binding.etWeight.text.toString()
         if (weightStr.isEmpty()) {
@@ -156,13 +173,13 @@ class AddWeightFragment : Fragment() {
 
         val weight = weightStr.toDoubleOrNull()
         if (weight == null || weight <= 0) {
-            Toast.makeText(requireContext(), "Please enter a valid weight", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please enter valid weight", Toast.LENGTH_SHORT).show()
             return
         }
 
         val currentPet = baseActivity.selectedPet
         if (currentPet == null) {
-            Toast.makeText(requireContext(), "No pet information found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "No pet selected", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -193,13 +210,13 @@ class AddWeightFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(
                     requireContext(),
-                    if (existingRecord == null) "Weight saved successfully" else "Weight updated successfully",
+                    if (existingRecord == null) "Weight recorded successfully" else "Weight updated successfully",
                     Toast.LENGTH_SHORT
                 ).show()
                 parentFragmentManager.popBackStack()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Failed to save : ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to save: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
