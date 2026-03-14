@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.petbuddy.MainActivity
 import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.MyPetsAdapter
 import com.example.petbuddy.databinding.FragmentAllMyPetsBinding
 import com.example.petbuddy.model.Pet
+import com.example.petbuddy.navigation.MainNavigator
 
 
 class AllMyPetsFragment : Fragment() {
@@ -21,11 +23,13 @@ class AllMyPetsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var baseActivity: BaseActivity
     private lateinit var adapter: MyPetsAdapter
+    private lateinit var navigator: MainNavigator
     private var pets: List<Pet> = emptyList()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         baseActivity = context as BaseActivity
+        navigator = (requireActivity() as MainActivity).navigator
     }
 
 
@@ -78,6 +82,7 @@ class AllMyPetsFragment : Fragment() {
     private fun navigateToPetDetail(pet: Pet) {
         Toast.makeText(requireContext(), "Viewing ${pet.petName}", Toast.LENGTH_SHORT).show()
         // TODO: Navigate to Pet Detail Fragment
+        navigator.navigateToEditPetProfile(pet)
     }
 
     override fun onDestroyView() {
