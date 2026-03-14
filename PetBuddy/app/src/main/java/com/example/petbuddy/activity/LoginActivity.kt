@@ -177,8 +177,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.txtForgetPassword.setOnClickListener {
-
-            // startActivity(Intent(this, ForgetPassword::class.java))
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
         }
     }
 }

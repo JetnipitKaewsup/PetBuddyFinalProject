@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Permissions -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -18,74 +17,56 @@
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.PetBuddy">
-
+        <activity
+            android:name=".activity.ForgotPasswordActivity"
+            android:exported="false" />
         <!-- Splash Screen -->
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true">
-
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-
-        <!-- Main Activity -->
+        </activity> <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
-
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".activity.RegisterActivity"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".activity.CreatePetProfile"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".activity.PetResult"
-            android:exported="false"/>
-
-        <!-- Firebase Messaging -->
+            android:exported="false" /> <!-- Firebase Messaging -->
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
-
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
-        </service>
-
-        <!-- Feeding Reminder -->
+        </service> <!-- Feeding Reminder -->
         <receiver
             android:name=".receivers.FeedingReminderReceiver"
-            android:exported="false" />
-
-        <!-- Event Reminder -->
+            android:exported="false" /> <!-- Event Reminder -->
         <receiver
             android:name=".receivers.EventReminderReceiver"
-            android:exported="false" />
-
-        <!-- Boot Receiver (IMPORTANT) -->
+            android:exported="false" /> <!-- Boot Receiver (IMPORTANT) -->
         <receiver
             android:name=".receivers.BootReceiver"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
         </receiver>
-
     </application>
 
 </manifest>

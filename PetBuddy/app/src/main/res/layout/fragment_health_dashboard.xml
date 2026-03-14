@@ -79,32 +79,23 @@
                         android:text="Latest Weight"
                         android:textSize="16sp"
                         android:textColor="@android:color/darker_gray" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvNoWeight"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="start"
-                        android:layout_marginTop="4dp">
-
-                        <TextView
-                            android:id="@+id/tvLatestWeight"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0.0"
-                            android:textSize="40sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-
-                            android:textSize="18sp"
-                            android:textColor="@android:color/darker_gray"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginBottom="4dp" />
-                    </LinearLayout>
+                        android:text="No weight record"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp" />
+                    <TextView
+                        android:id="@+id/tvLatestWeight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0"
+                        android:textSize="40sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/tvWeightDate"

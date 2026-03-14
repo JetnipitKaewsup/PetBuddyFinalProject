@@ -110,12 +110,14 @@ class HealthDashboardFragment : Fragment() {
                             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
                             binding.tvWeightDate.text = "Recorded on ${dateFormat.format(date)}"
                             binding.tvWeightDate.visibility = View.VISIBLE
+                            binding.tvNoWeight.visibility = View.GONE
                         }
 
 
                     } else {
-                        binding.tvLatestWeight.text = "- kg"
+                        binding.tvLatestWeight.visibility = View.GONE
                         binding.tvWeightDate.visibility = View.GONE
+                        binding.tvNoWeight.visibility = View.VISIBLE
 
                     }
                 }
