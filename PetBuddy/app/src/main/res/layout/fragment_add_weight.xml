@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="weight (kg.)"
+            android:text="Weight (kg.)"
             android:textSize="16sp"
             android:textColor="@color/black"
             android:layout_marginBottom="4dp"/>
@@ -61,6 +61,7 @@
                 android:id="@+id/etWeight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/background_input_field"
                 android:inputType="numberDecimal"
                 android:hint="25.5"/>
 
@@ -160,6 +161,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
+                android:background="@drawable/background_input_field"
                 android:maxLines="3"
                 android:hint="Note"/>
 

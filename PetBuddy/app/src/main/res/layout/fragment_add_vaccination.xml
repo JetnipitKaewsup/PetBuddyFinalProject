@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/white"
     android:fillViewport="true">
 
     <LinearLayout
@@ -65,7 +65,7 @@
             android:id="@+id/spinnerVaccineName"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/light_brown_bg"
+            android:background="@drawable/background_input_field"
             android:spinnerMode="dialog"
             android:paddingHorizontal="12dp"
             android:layout_marginBottom="12dp"/>
@@ -84,7 +84,7 @@
             android:id="@+id/spinnerDose"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/light_brown_bg"
+            android:background="@drawable/background_input_field"
             android:paddingHorizontal="12dp"
             android:layout_marginBottom="12dp"/>
 
@@ -183,7 +183,7 @@
             android:id="@+id/edtVaccinePlace"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/light_brown_bg"
+            android:background="@drawable/background_input_field"
             android:hint="Clinic"
             android:paddingHorizontal="12dp"
             android:layout_marginBottom="16dp"/>
