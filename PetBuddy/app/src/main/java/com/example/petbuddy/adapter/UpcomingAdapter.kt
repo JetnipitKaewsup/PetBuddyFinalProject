@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.petbuddy.databinding.ItemUpcomingBinding
 import com.example.petbuddy.model.UpcomingActivity
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class UpcomingAdapter(
     private var list: List<UpcomingActivity>

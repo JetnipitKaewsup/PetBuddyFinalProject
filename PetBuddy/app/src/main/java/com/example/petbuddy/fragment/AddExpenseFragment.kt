@@ -21,7 +21,6 @@ class AddExpenseFragment : Fragment() {
     private lateinit var baseActivity: BaseActivity
 
     private var selectedCategory = "food"
-    private var selectedCurrency = "THB"
     private var selectedDate = ""
 
     private val calendar = Calendar.getInstance()
@@ -41,14 +40,15 @@ class AddExpenseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         setupCategorySelection()
-        setupCurrencyToggle()
         setupDatePicker()
         setupSaveButton()
         setupBackButton()
 
+        // default category highlight
+        highlightCategory(binding.petBowl)
+
         // default date today
         updateDate()
-
     }
 
     // -----------------------------
@@ -88,28 +88,10 @@ class AddExpenseFragment : Fragment() {
         )
 
         views.forEach {
-            it.alpha = 0.5f
+            it.alpha = 0.4f
         }
 
         selected.alpha = 1f
-    }
-
-    // -----------------------------
-    // CURRENCY
-    // -----------------------------
-
-    private fun setupCurrencyToggle() {
-
-        binding.currencyToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
-
-            if (!isChecked) return@addOnButtonCheckedListener
-
-            selectedCurrency = when (checkedId) {
-                binding.btnUSD.id -> "USD"
-                binding.btnTHB.id -> "THB"
-                else -> "THB"
-            }
-        }
     }
 
     // -----------------------------
@@ -171,7 +153,7 @@ class AddExpenseFragment : Fragment() {
                 petId = petId,
                 category = selectedCategory,
                 amount = amount,
-                currency = selectedCurrency,
+                currency = "THB",
                 date = selectedDate,
                 timestamp = System.currentTimeMillis()
             )
@@ -191,9 +173,7 @@ class AddExpenseFragment : Fragment() {
     private fun setupBackButton() {
 
         binding.homeArrow3.setOnClickListener {
-
             parentFragmentManager.popBackStack()
-
         }
     }
 
