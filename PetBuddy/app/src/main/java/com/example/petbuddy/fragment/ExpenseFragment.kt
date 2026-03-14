@@ -63,7 +63,7 @@ class ExpenseFragment : Fragment() {
 
     private fun setupRecyclerView() {
 
-        adapter = ExpenseAdapter(expenseList)
+        adapter = ExpenseAdapter()
 
         binding.recyclerExpense.layoutManager =
             LinearLayoutManager(requireContext())

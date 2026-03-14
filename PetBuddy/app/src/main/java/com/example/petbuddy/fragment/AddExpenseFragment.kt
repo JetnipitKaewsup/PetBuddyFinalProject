@@ -44,16 +44,11 @@ class AddExpenseFragment : Fragment() {
         setupSaveButton()
         setupBackButton()
 
-        // default category highlight
         highlightCategory(binding.petBowl)
 
-        // default date today
         updateDate()
     }
 
-    // -----------------------------
-    // CATEGORY SELECT
-    // -----------------------------
 
     private fun setupCategorySelection() {
 
@@ -94,9 +89,6 @@ class AddExpenseFragment : Fragment() {
         selected.alpha = 1f
     }
 
-    // -----------------------------
-    // DATE PICKER
-    // -----------------------------
 
     private fun setupDatePicker() {
 
@@ -124,10 +116,6 @@ class AddExpenseFragment : Fragment() {
 
         binding.expenseDate.setText(selectedDate)
     }
-
-    // -----------------------------
-    // SAVE EXPENSE
-    // -----------------------------
 
     private fun setupSaveButton() {
 
@@ -166,9 +154,6 @@ class AddExpenseFragment : Fragment() {
         }
     }
 
-    // -----------------------------
-    // BACK BUTTON
-    // -----------------------------
 
     private fun setupBackButton() {
 
@@ -177,9 +162,6 @@ class AddExpenseFragment : Fragment() {
         }
     }
 
-    // -----------------------------
-    // CLEANUP
-    // -----------------------------
 
     override fun onDestroyView() {
         super.onDestroyView()
