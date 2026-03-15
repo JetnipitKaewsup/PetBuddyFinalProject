@@ -50,16 +50,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <TextView
                     android:id="@+id/btnCreatePet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/brown"
-                    android:text="Create New Pet Profile"
+                    android:text="Create New Pet Profile +"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                </Button>
+                </TextView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
