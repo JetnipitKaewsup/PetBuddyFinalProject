@@ -154,15 +154,40 @@ class EditPetProfileFragment : Fragment() {
     }
 
     private fun loadDogBreeds() {
+
         RetrofitClient.dogApi.getDogBreeds()
             .enqueue(object : Callback<DogResponse> {
-                override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
+
+                override fun onResponse(
+                    call: Call<DogResponse>,
+                    response: Response<DogResponse>
+                ) {
+
                     if (response.isSuccessful) {
-                        val breeds = response.body()?.message?.keys?.toList() ?: emptyList()
-                        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, breeds)
+
+                        val message = response.body()?.message ?: emptyMap()
+
+                        val breeds = message.flatMap { (breed, subBreeds) ->
+
+                            if (subBreeds.isEmpty()) {
+                                listOf(breed)
+                            } else {
+                                subBreeds.map { sub -> "$sub $breed" }
+                            }
+
+                        }.map { breed ->
+                            breed.replaceFirstChar { it.uppercase() }
+                        }
+
+                        val adapter = ArrayAdapter(
+                            requireContext(),
+                            R.layout.list_item,
+                            breeds
+                        )
+
                         binding.breedDropdown.setAdapter(adapter)
 
-                        // ถ้ามี breed เดิม ให้เลือกไว้
+                        // restore ค่าเดิม
                         if (originalPetType == "Dog" && originalBreed.isNotEmpty()) {
                             binding.breedDropdown.setText(originalBreed, false)
                         }
@@ -170,7 +195,13 @@ class EditPetProfileFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<DogResponse>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Failed to load dog breeds", Toast.LENGTH_LONG).show()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to load dog breeds",
+                        Toast.LENGTH_LONG
+                    ).show()
+
                 }
             })
     }

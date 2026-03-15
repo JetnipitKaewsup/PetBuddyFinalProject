@@ -98,8 +98,17 @@ class CreatePetProfile : AppCompatActivity() {
 
                     if (response.isSuccessful) {
 
-                        val breeds =
-                            response.body()?.message?.keys?.toList() ?: emptyList()
+                        val message = response.body()?.message ?: emptyMap()
+
+                        val breeds = message.flatMap { (breed, subBreeds) ->
+
+                            if (subBreeds.isEmpty()) {
+                                listOf(breed)
+                            } else {
+                                subBreeds.map { sub -> "$sub $breed" }
+                            }
+
+                        }.map { it.replaceFirstChar { c -> c.uppercase() } }
 
                         val adapter = ArrayAdapter(
                             this@CreatePetProfile,
