@@ -272,14 +272,14 @@ class CreatePetProfile : AppCompatActivity() {
                     upsert = true
                 )
 
-                val imageUrl = bucket.publicUrl(filePath)
+                val imagePath = bucket.publicUrl(filePath)
 
                 savePetToFirestore(
                     petName,
                     sex,
                     breed,
                     petType,
-                    imageUrl
+                    imagePath
                 )
 
             } catch (e: Exception) {
@@ -302,7 +302,7 @@ class CreatePetProfile : AppCompatActivity() {
         sex: String,
         breed: String,
         petType: String,
-        imageUrl: String?
+        imagePath: String?
     ) {
 
         val userId = mAuth.uid ?: return
@@ -319,7 +319,7 @@ class CreatePetProfile : AppCompatActivity() {
             "breed" to breed,
             "petType" to petType,
             "birthDate" to selectedDate,
-            "imageUrl" to imageUrl
+            "imagePath" to imagePath
         )
 
         petRef.set(petData)
