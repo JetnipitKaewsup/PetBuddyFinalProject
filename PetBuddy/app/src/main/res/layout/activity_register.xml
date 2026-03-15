@@ -2,175 +2,202 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
-    tools:context=".activity.RegisterActivity">
+    android:background="@color/backgroundColor">
 
-    <!-- Profile Image -->
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageProfile"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="56dp"
-        android:background="@drawable/brown_oval_bg"
-        android:padding="6dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/baseline_person_24"
-        app:shapeAppearanceOverlay="@style/CircleImage"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/txtEdtProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit profile picture"
-        android:textColor="@color/brown"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/imageProfile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Username -->
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/usernameLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="24dp"
-        app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/light_brown"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/txtEdtProfile"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editUsername"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Username"
-            android:background="@null"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <!-- Header -->
 
-    <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Account"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/brown"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/light_brown"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/usernameLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create your profile to start managing your pets"
+                android:textSize="14sp"
+                android:textColor="#7A6A5C"
+                android:layout_marginTop="4dp"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextTextEmailAddress"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:background="@null"/>
+            <!-- Profile Image -->
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="24dp">
 
-    <!-- Password -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/baseline_person_24"
+                    android:background="@drawable/brown_oval_bg"
+                    app:shapeAppearanceOverlay="@style/CircleImage"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        app:endIconMode="password_toggle"
-        app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/light_brown"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/emailLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            </FrameLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextTextPassword"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:background="@null"/>
+            <!-- Form Card -->
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:padding="20dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/backgroundColor">
 
-    <!-- Confirm Password -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/confirmPasswordLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        app:endIconMode="password_toggle"
-        app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/light_brown"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/passwordLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+                    <!-- Username -->
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editConfPass"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Confirm Password"
-            android:inputType="textPassword"
-            android:background="@null"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/usernameLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:boxBackgroundMode="filled"
+                        app:boxBackgroundColor="@color/light_brown"
+                        app:boxStrokeWidth="0dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusBottomEnd="20dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:hint="Username"
+                            android:background="@null"
+                            android:paddingHorizontal="16dp"/>
 
-    <!-- Register Button -->
+                    </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/buttonReg"
-        android:layout_width="0dp"
-        android:layout_height="55dp"
-        android:layout_marginHorizontal="60dp"
-        android:layout_marginTop="20dp"
-        android:text="Register"
-        android:textSize="18sp"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="@color/brown"
-        android:elevation="4dp"
-        app:layout_constraintTop_toBottomOf="@id/confirmPasswordLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+                    <!-- Email -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/emailLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:boxBackgroundMode="filled"
+                        app:boxBackgroundColor="@color/light_brown"
+                        app:boxStrokeWidth="0dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusBottomEnd="20dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:hint="Email"
+                            android:inputType="textEmailAddress"
+                            android:background="@null"
+                            android:paddingHorizontal="16dp"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Password -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/passwordLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:endIconMode="password_toggle"
+                        app:boxBackgroundMode="filled"
+                        app:boxBackgroundColor="@color/light_brown"
+                        app:boxStrokeWidth="0dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusBottomEnd="20dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:hint="Password"
+                            android:inputType="textPassword"
+                            android:background="@null"
+                            android:paddingHorizontal="16dp"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Confirm Password -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/confirmPasswordLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:endIconMode="password_toggle"
+                        app:boxBackgroundMode="filled"
+                        app:boxBackgroundColor="@color/light_brown"
+                        app:boxStrokeWidth="0dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusBottomEnd="20dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editConfPass"
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:hint="Confirm Password"
+                            android:inputType="textPassword"
+                            android:background="@null"
+                            android:paddingHorizontal="16dp"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Create Button -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonReg"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Create Account"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/brown"
+                app:cornerRadius="28dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

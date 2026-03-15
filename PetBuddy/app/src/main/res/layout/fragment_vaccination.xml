@@ -13,20 +13,23 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
 
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="Vaccination"
         app:titleTextColor="@color/brown">
 
-<!--        <TextView-->
-<!--            android:id="@+id/btnAddNext"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="end"-->
-<!--            android:text="+ Add Next"-->
-<!--            android:textSize="14sp"-->
-<!--            android:textColor="@color/brown"-->
-<!--            android:padding="16dp"-->
-<!--            android:background="?selectableItemBackgroundBorderless" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/btnAddNext"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="end"-->
+        <!--            android:text="+ Add Next"-->
+        <!--            android:textSize="14sp"-->
+        <!--            android:textColor="@color/brown"-->
+        <!--            android:padding="16dp"-->
+        <!--            android:background="?selectableItemBackgroundBorderless" />-->
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -80,8 +83,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutPet">
-
-        >
 
         <LinearLayout
             android:layout_width="match_parent"
