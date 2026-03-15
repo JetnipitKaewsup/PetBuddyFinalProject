@@ -77,7 +77,7 @@ class ProfileFragment : Fragment() {
 
     private fun loadNotificationSetting() {
         // TODO("Not yet implemented")
-        Toast.makeText(requireContext(), "Notification Setting", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(requireContext(), "Notification Setting", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -92,8 +92,8 @@ class ProfileFragment : Fragment() {
 
         }
         binding.layoutPassword.setOnClickListener {
-            Toast.makeText(requireContext(), "Password clicked", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to Change Password
+            //Toast.makeText(requireContext(), "Password clicked", Toast.LENGTH_SHORT).show()
+            navigator.navigateToChangePassword()
         }
         binding.switchNotification.setOnCheckedChangeListener { _, isChecked ->
             isNotificationEnabled = isChecked

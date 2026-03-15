@@ -209,17 +209,17 @@ class WeightFragment : Fragment() {
     }
 
     private fun showEditDeleteDialog(record: WeightRecord) {
-        val options = arrayOf("แก้ไข", "ลบ")
+        val options = arrayOf("Edit", "Delete")
 
         AlertDialog.Builder(requireContext())
-            .setTitle("จัดการข้อมูลน้ำหนัก")
+            .setTitle("Manage weight record")
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> navigateToAddWeight(record)
                     1 -> showDeleteConfirmation(record)
                 }
             }
-            .setNegativeButton("ยกเลิก", null)
+            .setNegativeButton("Cancle", null)
             .show()
     }
 
