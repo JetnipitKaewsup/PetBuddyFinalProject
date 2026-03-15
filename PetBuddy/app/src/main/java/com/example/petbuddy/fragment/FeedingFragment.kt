@@ -67,6 +67,7 @@ class FeedingFragment : Fragment() {
         setupToolbar()
         setupRecyclerView()
         setupListeners()
+        setUpView()
         loadData()
     }
 
@@ -74,6 +75,15 @@ class FeedingFragment : Fragment() {
 
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+    }
+
+    private fun setUpView(){
+        binding.tvViewAllToday.setOnClickListener {
+            val fragment = TodayFeedingFragment()
+
+            parentFragmentManager.beginTransaction().replace(R.id.fragment_container,fragment)
+                .addToBackStack(null).commit()
         }
     }
 
