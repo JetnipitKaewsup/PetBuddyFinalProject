@@ -1,8 +1,11 @@
 package com.example.petbuddy.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class FeedingSchedule(
 
     val id: String = "",
@@ -25,4 +28,5 @@ data class FeedingSchedule(
     var isActive: Boolean = true,
 
     val createdAt: Timestamp? = null
-)
+
+) : Parcelable

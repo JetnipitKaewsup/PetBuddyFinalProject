@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 
     kotlin("plugin.serialization") version "1.9.22"
+
+    id("kotlin-parcelize")
 }
 
 android {

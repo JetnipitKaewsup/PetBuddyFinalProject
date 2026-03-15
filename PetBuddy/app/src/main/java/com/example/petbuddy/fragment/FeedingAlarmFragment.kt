@@ -10,6 +10,7 @@ import com.example.petbuddy.R
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.PetIconAdapter
 import com.example.petbuddy.databinding.FragmentFeedingAlarmBinding
+import com.example.petbuddy.model.FeedingSchedule
 import com.example.petbuddy.model.SelectionMode
 import com.example.petbuddy.notifications.ReminderManager
 import com.example.petbuddy.util.Constants
@@ -26,6 +27,8 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
     private var repeatType: String = "once"
     private val selectedDays = mutableListOf<String>()
 
+    private var schedule: FeedingSchedule? = null
+
     private lateinit var petAdapter: PetIconAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +36,11 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         _binding = FragmentFeedingAlarmBinding.bind(view)
 
-        setDefaultTime()
+        schedule = arguments?.getParcelable("schedule")
+
+        if (schedule == null) {
+            setDefaultTime()
+        }
 
         setupTimePicker()
         setupRepeatButtons()
@@ -45,13 +52,18 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
 
         loadSelectedPets()
 
+        schedule?.let {
+            restoreSchedule()
+        }
+
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // Default repeat
-        repeatType = "once"
-        selectRepeatButton(binding.btnOnce)
+        if (schedule == null) {
+            repeatType = "once"
+            selectRepeatButton(binding.btnOnce)
+        }
     }
 
     override fun onResume() {
@@ -194,6 +206,50 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
         binding.spinnerType.adapter = adapter
     }
 
+    private fun restoreSchedule() {
+
+        val s = schedule ?: return
+
+        binding.etTitle.setText(s.title)
+        binding.etNote.setText(s.note)
+
+        binding.tvTime.text =
+            String.format("%02d:%02d", s.hour, s.minute)
+
+        val adapter = binding.spinnerType.adapter as ArrayAdapter<String>
+
+        val index = adapter.getPosition(s.type)
+
+        if (index >= 0) {
+            binding.spinnerType.setSelection(index)
+        }
+
+        repeatType = s.repeatType
+
+        when (repeatType) {
+
+            "once" -> selectRepeatButton(binding.btnOnce)
+
+            "everyday" -> selectRepeatButton(binding.btnEveryday)
+
+            "custom" -> {
+                selectRepeatButton(binding.btnCustom)
+                binding.chipDays.visibility = View.VISIBLE
+            }
+        }
+
+        selectedDays.clear()
+        selectedDays.addAll(s.days)
+
+        binding.chipMon.isChecked = "Mon" in s.days
+        binding.chipTue.isChecked = "Tue" in s.days
+        binding.chipWed.isChecked = "Wed" in s.days
+        binding.chipThu.isChecked = "Thu" in s.days
+        binding.chipFri.isChecked = "Fri" in s.days
+        binding.chipSat.isChecked = "Sat" in s.days
+        binding.chipSun.isChecked = "Sun" in s.days
+    }
+
     private fun setupPetSelection() {
 
         binding.petSection.setOnClickListener {
@@ -257,7 +313,6 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 return@setOnClickListener
             }
 
-            // Validation
             if (repeatType == "custom" && selectedDays.isEmpty()) {
 
                 baseActivity.showToast("Please select days")
@@ -273,7 +328,12 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 )
             }
 
-            val scheduleData = hashMapOf(
+            val collection = baseActivity.db
+                .collection("users")
+                .document(userId)
+                .collection("feeding_schedules")
+
+            val data = hashMapOf(
 
                 "title" to title,
                 "note" to note,
@@ -283,30 +343,56 @@ class FeedingAlarmFragment : Fragment(R.layout.fragment_feeding_alarm) {
                 "repeatType" to repeatType,
                 "days" to selectedDays.toList(),
                 "petIds" to petIds,
-                "isActive" to true,
-                "createdAt" to FieldValue.serverTimestamp()
-
+                "isActive" to true
             )
 
-            baseActivity.db
-                .collection("users")
-                .document(userId)
-                .collection("feeding_schedules")
-                .add(scheduleData)
-                .addOnSuccessListener {
+            if (schedule == null) {
 
-                    scheduleAlarm(hour, minute)
+                val doc = collection.document()
 
-                    baseActivity.showToast("Schedule saved")
+                data["id"] = doc.id
+                data["createdAt"] = FieldValue.serverTimestamp()
 
-                    parentFragmentManager.popBackStack()
+                doc.set(data)
 
-                }
-                .addOnFailureListener {
+                    .addOnSuccessListener {
 
-                    baseActivity.showToast("Failed to save schedule")
+                        scheduleAlarm(hour, minute)
 
-                }
+                        baseActivity.showToast("Schedule saved")
+
+                        parentFragmentManager.popBackStack()
+
+                    }
+
+                    .addOnFailureListener {
+
+                        baseActivity.showToast("Failed to save schedule")
+
+                    }
+
+            } else {
+
+                collection.document(schedule!!.id)
+
+                    .update(data as Map<String, Any>)
+
+                    .addOnSuccessListener {
+
+                        scheduleAlarm(hour, minute)
+
+                        baseActivity.showToast("Schedule updated")
+
+                        parentFragmentManager.popBackStack()
+
+                    }
+
+                    .addOnFailureListener {
+
+                        baseActivity.showToast("Failed to update schedule")
+
+                    }
+            }
         }
     }
 

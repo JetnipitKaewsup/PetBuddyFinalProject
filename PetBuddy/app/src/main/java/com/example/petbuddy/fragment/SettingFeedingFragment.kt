@@ -40,10 +40,6 @@ class SettingFeedingFragment : Fragment() {
         enableSwipeDelete()
         buttonNavigation()
 
-        binding.toolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
         return binding.root
     }
 
@@ -90,9 +86,12 @@ class SettingFeedingFragment : Fragment() {
 
             baseActivity.loadFeedingSchedules { schedules ->
 
-                val activeSchedules = schedules.filter { it.isActive }
+                val pendingSchedules = schedules.filter {
 
-                adapter.submitList(activeSchedules)
+                    it.isActive && (it.completedDays == null || it.completedDays!!.isEmpty())
+                }
+
+                adapter.submitList(pendingSchedules)
             }
         }
     }
@@ -119,7 +118,7 @@ class SettingFeedingFragment : Fragment() {
         val fragment = FeedingAlarmFragment()
 
         val bundle = Bundle()
-        bundle.putString("scheduleId", schedule.id)
+        bundle.putParcelable("schedule", schedule)
 
         fragment.arguments = bundle
 
