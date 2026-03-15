@@ -130,15 +130,7 @@ class AddExpenseFragment : Fragment() {
 
             val amount = amountText.toDouble()
 
-            val petId = baseActivity.getSelectedPetId()
-
-            if (petId == null) {
-                baseActivity.showToast("No pet selected")
-                return@setOnClickListener
-            }
-
             val record = ExpenseRecord(
-                petId = petId,
                 category = selectedCategory,
                 amount = amount,
                 currency = "THB",
