@@ -51,10 +51,10 @@ class MyPetsAdapter(
                 tvPetName.text = pet.petName
                 tvPetBreed.text = pet.breed
 
-                if (!pet.imageUrl.isNullOrEmpty()) {
+                if (!pet.imagePath.isNullOrEmpty()) {
 
                     Glide.with(root.context)
-                        .load(pet.imageUrl)
+                        .load(pet.imagePath)
                         .apply(
                             RequestOptions()
                                 .placeholder(R.drawable.pet_placeholder)

@@ -11,6 +11,6 @@ data class Pet(
     val breed: String = "",
     val petType: String = "",
     val birthDate: Timestamp? = null,
-    val imageUrl: String? = null
+    val imagePath: String? = null
 
 ) : Serializable

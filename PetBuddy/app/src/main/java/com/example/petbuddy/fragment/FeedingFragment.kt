@@ -53,11 +53,13 @@ class FeedingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = FragmentFeedingBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
 
         baseActivity = activity as BaseActivity
@@ -69,6 +71,7 @@ class FeedingFragment : Fragment() {
     }
 
     private fun setupToolbar() {
+
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -87,17 +90,21 @@ class FeedingFragment : Fragment() {
             }
         )
 
-        binding.showFeeding.layoutManager = LinearLayoutManager(requireContext())
+        binding.showFeeding.layoutManager =
+            LinearLayoutManager(requireContext())
+
         binding.showFeeding.adapter = feedingAdapter
 
 
         recordAdapter = FeedingRecordAdapter(
-            petMap
+            emptyMap()
         ) { petId ->
             baseActivity.showToast("Pet clicked: $petId")
         }
 
-        binding.showRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.showRecords.layoutManager =
+            LinearLayoutManager(requireContext())
+
         binding.showRecords.adapter = recordAdapter
     }
 
@@ -123,11 +130,27 @@ class FeedingFragment : Fragment() {
                 .commit()
         }
 
+        // View All schedules
+        binding.tvViewAllToday.setOnClickListener {
+
+            feedingAdapter.submitList(feedingSchedules)
+        }
+
         binding.etSearchFood.addTextChangedListener(object : TextWatcher {
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
                 filterRecords(s.toString())
             }
 
@@ -158,13 +181,28 @@ class FeedingFragment : Fragment() {
             val todayDate = dateFormat.format(calendar.time)
             val todayDayIndex = calendar.get(Calendar.DAY_OF_WEEK)
 
-            feedingSchedules = schedules.filter { schedule ->
+            val todaySchedules = schedules.filter { schedule ->
 
                 shouldShowSchedule(schedule, todayDate, todayDayIndex)
 
             }.sortedWith(compareBy({ it.hour }, { it.minute }))
 
-            feedingAdapter.submitList(feedingSchedules)
+            feedingSchedules = todaySchedules
+
+
+            val limitedList =
+                if (todaySchedules.size > 3)
+                    todaySchedules.take(3)
+                else
+                    todaySchedules
+
+            feedingAdapter.submitList(limitedList)
+
+            binding.tvViewAllToday.visibility =
+                if (todaySchedules.size > 3)
+                    View.VISIBLE
+                else
+                    View.GONE
         }
     }
 
@@ -188,17 +226,19 @@ class FeedingFragment : Fragment() {
 
         if (!schedule.isActive) return false
 
-        if (schedule.completedDays?.contains(todayDate) == true) return false
+        if (schedule.completedDays?.contains(todayDate) == true)
+            return false
 
         return when (schedule.repeatType.lowercase(Locale.ENGLISH)) {
 
-            "once" -> schedule.completedDays.isNullOrEmpty()
+            "once" ->
+                schedule.completedDays.isNullOrEmpty()
 
-            "daily", "everyday" -> true
+            "daily", "everyday" ->
+                true
 
-            "weekly", "custom" -> {
+            "weekly", "custom" ->
                 isTodaySelected(schedule.days, todayDayIndex)
-            }
 
             else -> true
         }
@@ -237,7 +277,9 @@ class FeedingFragment : Fragment() {
             todayDate
         ) {
 
-            baseActivity.showToast("Feeding recorded for ${schedule.title}")
+            baseActivity.showToast(
+                "Feeding recorded for ${schedule.title}"
+            )
 
             loadSchedules()
             loadFeedingRecords()
@@ -246,23 +288,22 @@ class FeedingFragment : Fragment() {
 
     private fun filterRecords(query: String) {
 
-        filteredRecords = if (query.isEmpty()) {
+        filteredRecords =
+            if (query.isEmpty()) {
+                allRecords
+            } else {
+                allRecords.filter {
 
-            allRecords
-
-        } else {
-
-            allRecords.filter {
-
-                it.foodName.contains(query, true) ||
-                        it.foodType.contains(query, true)
+                    it.foodName.contains(query, true) ||
+                            it.foodType.contains(query, true)
+                }
             }
-        }
 
         recordAdapter.submitList(filteredRecords)
     }
 
     override fun onDestroyView() {
+
         super.onDestroyView()
         _binding = null
     }

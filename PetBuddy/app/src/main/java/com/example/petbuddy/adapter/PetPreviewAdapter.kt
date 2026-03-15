@@ -38,10 +38,10 @@ class PetPreviewAdapter(
 
         fun bind(pet: Pet) {
 
-            if (!pet.imageUrl.isNullOrEmpty()) {
+            if (!pet.imagePath.isNullOrEmpty()) {
 
                 Glide.with(imageView.context)
-                    .load(pet.imageUrl)
+                    .load(pet.imagePath)
                     .apply(
                         RequestOptions()
                             .placeholder(R.drawable.pet_placeholder)

@@ -32,11 +32,11 @@ class PetResultAdapter(
         holder.breedTextView.text = pet.breed
 
         Glide.with(holder.itemView.context)
-            .load(pet.imageUrl)
+            .load(pet.imagePath)
             .centerCrop()
             .into(holder.imageView)
 
-        Log.d("PET_IMAGE_URL", pet.imageUrl.toString())
+        Log.d("PET_IMAGE_URL", pet.imagePath.toString())
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(pet)
         }

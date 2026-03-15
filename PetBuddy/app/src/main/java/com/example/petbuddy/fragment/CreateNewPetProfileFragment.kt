@@ -294,7 +294,7 @@ class CreateNewPetProfileFragment : Fragment() {
             breed = breed,
             petType = petType,
             birthDate = selectedDate,
-            imageUrl = imageUrl
+            imagePath = imageUrl
         )
 
         db.collection("users")

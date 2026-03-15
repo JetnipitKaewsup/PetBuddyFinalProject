@@ -11,188 +11,210 @@
 
     <!-- Toolbar -->
 
-
-    <!-- Active Feeding Schedule -->
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="Feeding"
-        app:titleTextColor="@color/brown" />
+        app:titleTextColor="@color/brown"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+
+    <!-- Scrollable Content -->
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
-        <!-- Active Feeding Schedule -->
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardActiveFeeding"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:padding="16dp">
+
+
+            <!-- Active Feeding -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardActiveFeeding"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/showFeedingSchedules"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/light_brown_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/pet_bowl"/>
+
+                    <TextView
+                        android:id="@+id/tvActiveFeeding"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="View Active Feeding Schedules"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Today Title -->
+
+            <TextView
+                android:id="@+id/tvTodayFeeding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today's Feeding"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/cardActiveFeeding"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/tvViewAllToday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View All"
+                android:textStyle="bold"
+                android:textColor="@color/brown"
+                android:visibility="gone"
+                app:layout_constraintBaseline_toBaselineOf="@id/tvTodayFeeding"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
+            <!-- Today Feeding Card -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTodayFeeding"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/tvTodayFeeding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/showFeeding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:padding="8dp"
+                    android:background="@drawable/background_input_field"
+                    tools:listitem="@layout/item_feeding"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Feeding Records Title -->
+
+            <TextView
+                android:id="@+id/tvFeedingRecords"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feeding Records"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/cardTodayFeeding"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+
+            <!-- Filter Bar -->
 
             <LinearLayout
-                android:id="@+id/showFeedingSchedules"
-                android:layout_width="match_parent"
+                android:id="@+id/filterBar"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/light_brown_bg"
-                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@id/tvFeedingRecords"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/pet_bowl" />
-
-                <TextView
-                    android:id="@+id/tvActiveFeeding"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    android:text="View Active Feeding Schedules"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:hint="Search food">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/baseline_arrow_forward_ios_24" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSearchFood"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/btnFilter"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Filter"
+                    android:src="@drawable/ic_filter"/>
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
 
-
-        <!-- Today's Feeding Title -->
-
-        <TextView
-            android:id="@+id/tvTodayFeeding"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Today's Feeding"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardActiveFeeding" />
-
-
-        <!-- Today Feeding Card -->
-        <!-- Highlight Card for Today's Feeding -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardTodayFeeding"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.35"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTodayFeeding">
+            <!-- Records RecyclerView -->
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/showFeeding"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_input_field"
-                android:padding="8dp"
-                tools:listitem="@layout/item_feeding" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <!-- Feeding Records Title -->
-
-        <TextView
-            android:id="@+id/tvFeedingRecords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Feeding Records"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardTodayFeeding" />
-
-
-        <!-- Filter Bar -->
-
-        <LinearLayout
-            android:id="@+id/filterBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvFeedingRecords">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/showRecords"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Search food">
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/filterBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:listitem="@layout/item_feeding_record"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSearchFood"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <ImageButton
-                android:id="@+id/btnFilter"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Filter"
-                android:src="@drawable/ic_filter" />
-
-        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 
-        <!-- RecyclerView Feeding Records -->
+    <!-- Floating Button -->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/showRecords"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/filterBar"
-            tools:listitem="@layout/item_feeding_record" />
-
-        <!-- Floating Add Button -->
-    </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddFeeding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Add feeding"
         android:layout_margin="16dp"
+        android:contentDescription="Add feeding"
         app:srcCompat="@drawable/ic_add"
         app:tint="@android:color/white"
         app:backgroundTint="@color/brown"

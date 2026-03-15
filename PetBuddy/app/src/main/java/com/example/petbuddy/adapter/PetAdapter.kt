@@ -63,7 +63,7 @@ class PetAdapter(
                 tvPetBreed.text = "${pet.petType} • ${pet.breed}"
 
                 Glide.with(ivPet.context)
-                    .load(pet.imageUrl)
+                    .load(pet.imagePath)
                     .placeholder(R.drawable.pet_placeholder)
                     .error(R.drawable.pet_placeholder)
                     .circleCrop()

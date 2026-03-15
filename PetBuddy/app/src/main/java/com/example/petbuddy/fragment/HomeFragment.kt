@@ -88,8 +88,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupDate() {
+
         binding.homeDate.text =
-            SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+            SimpleDateFormat(
+                "dd MMM yyyy",
+                Locale.getDefault()
+            ).format(Date())
     }
 
     private fun setupRecycler() {
@@ -152,7 +156,9 @@ class HomeFragment : Fragment() {
                     val event = doc.toObject(Event::class.java)
 
                     val eventDate =
-                        dateFormatter.format(event.startDate.toDate())
+                        dateFormatter.format(
+                            event.startDate.toDate()
+                        )
 
                     if (eventDate == today) {
 
@@ -163,7 +169,10 @@ class HomeFragment : Fragment() {
                 todoAdapter.notifyDataSetChanged()
 
                 safe.tvNoTodo.visibility =
-                    if (todoList.isEmpty()) View.VISIBLE else View.GONE
+                    if (todoList.isEmpty())
+                        View.VISIBLE
+                    else
+                        View.GONE
             }
     }
 
@@ -226,6 +235,7 @@ class HomeFragment : Fragment() {
                             when (repeat) {
 
                                 "daily", "everyday" -> {
+
                                     feedingList.add(schedule)
                                 }
 
@@ -266,14 +276,21 @@ class HomeFragment : Fragment() {
                             }
                         }
 
-                        feedingAdapter.updatePetMap(petMap)
-
-                        feedingAdapter.submitList(
+                        val sortedList =
                             feedingList.sortedWith(
                                 compareBy(
                                     { it.hour },
-                                    { it.minute })
+                                    { it.minute }
+                                )
                             )
+
+                        val limitedList =
+                            sortedList.take(3)
+
+                        feedingAdapter.updatePetMap(petMap)
+
+                        feedingAdapter.submitList(
+                            limitedList
                         )
 
                         safe.tvNoFeeding.visibility =
@@ -304,7 +321,8 @@ class HomeFragment : Fragment() {
 
                 for (doc in docs) {
 
-                    val event = doc.toObject(Event::class.java)
+                    val event =
+                        doc.toObject(Event::class.java)
 
                     val time =
                         event.startDate.toDate().time
@@ -323,7 +341,9 @@ class HomeFragment : Fragment() {
 
                 activities.sortBy { it.time }
 
-                upcomingAdapter.submitList(activities)
+                upcomingAdapter.submitList(
+                    activities
+                )
 
                 safe.tvNoUpcoming.visibility =
                     if (activities.isEmpty())
@@ -353,7 +373,8 @@ class HomeFragment : Fragment() {
 
                 val cal = Calendar.getInstance()
 
-                cal.timeInMillis = expense.timestamp
+                cal.timeInMillis =
+                    expense.timestamp
 
                 val month =
                     cal.get(Calendar.MONTH)
@@ -361,7 +382,9 @@ class HomeFragment : Fragment() {
                 val year =
                     cal.get(Calendar.YEAR)
 
-                if (month == currentMonth && year == currentYear) {
+                if (month == currentMonth &&
+                    year == currentYear
+                ) {
 
                     if (expense.currency == "THB") {
 
@@ -375,19 +398,23 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun onFeedingDone(schedule: FeedingSchedule) {
+    private fun onFeedingDone(
+        schedule: FeedingSchedule
+    ) {
 
         val calendar = Calendar.getInstance()
 
-        val todayDate = dateFormatter.format(calendar.time)
+        val todayDate =
+            dateFormatter.format(calendar.time)
 
-        val record = FeedingRecord(
-            scheduleId = schedule.id,
-            foodName = schedule.title,
-            foodType = schedule.type,
-            petIds = schedule.petIds,
-            fedAt = calendar.timeInMillis
-        )
+        val record =
+            FeedingRecord(
+                scheduleId = schedule.id,
+                foodName = schedule.title,
+                foodType = schedule.type,
+                petIds = schedule.petIds,
+                fedAt = calendar.timeInMillis
+            )
 
         baseActivity.saveFeedingRecord(record)
 
