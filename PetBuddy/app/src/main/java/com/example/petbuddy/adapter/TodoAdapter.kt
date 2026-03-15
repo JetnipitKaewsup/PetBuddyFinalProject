@@ -4,11 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petbuddy.databinding.ItemTodoBinding
-import com.example.petbuddy.databinding.ItemUpcomingBinding
-import com.example.petbuddy.model.UpcomingActivity
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+
 
 class TodoAdapter(
     private var list: MutableList<String>

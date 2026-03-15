@@ -107,7 +107,7 @@ class HealthDashboardFragment : Fragment() {
 
                         timestamp?.let { time ->
                             val date = Date(time)
-                            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+                            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
                             binding.tvWeightDate.text = "Recorded on ${dateFormat.format(date)}"
                             binding.tvWeightDate.visibility = View.VISIBLE
                             binding.tvNoWeight.visibility = View.GONE

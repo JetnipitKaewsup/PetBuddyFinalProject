@@ -48,8 +48,8 @@ class AddEventFragment : Fragment() {
     private var allPets: List<Pet> = emptyList()
 
     // Formatters
-    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
     // Tag options
     private val tagOptions =

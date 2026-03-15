@@ -36,7 +36,7 @@ class FeedingFragment : Fragment() {
 
     private var petMap: Map<String, Pet> = emptyMap()
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
 
     private val dayNameToIndex = mapOf(
         "sun" to Calendar.SUNDAY, "sunday" to Calendar.SUNDAY,
@@ -190,7 +190,7 @@ class FeedingFragment : Fragment() {
 
         if (schedule.completedDays?.contains(todayDate) == true) return false
 
-        return when (schedule.repeatType.lowercase(Locale.getDefault())) {
+        return when (schedule.repeatType.lowercase(Locale.ENGLISH)) {
 
             "once" -> schedule.completedDays.isNullOrEmpty()
 
@@ -211,7 +211,7 @@ class FeedingFragment : Fragment() {
 
         return selectedDays?.any {
 
-            dayNameToIndex[it.lowercase(Locale.getDefault())] == todayDayIndex
+            dayNameToIndex[it.lowercase(Locale.ENGLISH)] == todayDayIndex
 
         } == true
     }

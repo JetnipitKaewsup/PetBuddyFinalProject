@@ -201,8 +201,8 @@ class VaccinationFragment : Fragment() {
                 binding.tvNextPlace.visibility = View.GONE
             }
 
-            val dateFormat = SimpleDateFormat(datePattern, Locale.US)
-            val timeFormat = SimpleDateFormat(timePattern, Locale.US)
+            val dateFormat = SimpleDateFormat(datePattern, Locale.ENGLISH)
+            val timeFormat = SimpleDateFormat(timePattern, Locale.ENGLISH)
             val nextDate = Date(next.nextDueDate!!)
             binding.tvNextDateTime.text = "Date ${dateFormat.format(nextDate)} Time ${timeFormat.format(nextDate)}"
 
@@ -226,8 +226,8 @@ class VaccinationFragment : Fragment() {
             binding.tvLatestVaccineName.text = "Name ${latest.vaccineName}"
             binding.tvLatestDose.text = "Dose ${latest.dose}"
 
-            val dateFormat = SimpleDateFormat(datePattern, Locale.US)
-            val timeFormat = SimpleDateFormat(timePattern, Locale.US)
+            val dateFormat = SimpleDateFormat(datePattern, Locale.ENGLISH)
+            val timeFormat = SimpleDateFormat(timePattern, Locale.ENGLISH)
             binding.tvLatestDateTime.text = "Date ${dateFormat.format(Date(latest.timestamp))} Time ${timeFormat.format(Date(latest.timestamp))}"
         } else {
             binding.layoutLatestVaccine.visibility = View.GONE
@@ -285,7 +285,7 @@ class VaccinationFragment : Fragment() {
                 itemView.findViewById<TextView>(R.id.tvPlace).visibility = View.GONE
             }
 
-            val timeFormat = SimpleDateFormat(timePattern, Locale.US)
+            val timeFormat = SimpleDateFormat(timePattern, Locale.ENGLISH)
             itemView.findViewById<TextView>(R.id.tvTime).text = "Time ${timeFormat.format(Date(record.timestamp))}"
 
             binding.layoutRecentVaccines.addView(itemView)

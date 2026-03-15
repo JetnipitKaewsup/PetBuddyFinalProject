@@ -45,8 +45,8 @@ class AddVaccinationFragment : Fragment() {
     private val doseOptions = (1..10).map { it.toString() }
 
     // Formatters
-    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.US)
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
     // State
     private var isNextVaccineVisible = false

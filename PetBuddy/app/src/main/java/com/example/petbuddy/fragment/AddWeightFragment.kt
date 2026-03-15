@@ -28,8 +28,8 @@ class AddWeightFragment : Fragment() {
     private var existingRecord: WeightRecord? = null
     private var selectedTimestamp: Long = System.currentTimeMillis()
 
-    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
     companion object {
         private const val ARG_RECORD = "record"

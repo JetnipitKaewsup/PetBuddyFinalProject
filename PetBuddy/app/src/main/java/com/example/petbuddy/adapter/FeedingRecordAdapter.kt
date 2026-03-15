@@ -19,7 +19,7 @@ class FeedingRecordAdapter(
     private var recordList: List<FeedingRecord> = emptyList()
 
     private val formatter =
-        SimpleDateFormat("dd MMM • HH:mm", Locale.getDefault())
+        SimpleDateFormat("dd MMM • HH:mm", Locale.ENGLISH)
 
     fun submitList(newList: List<FeedingRecord>) {
 

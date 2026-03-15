@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/backgroundColor"
     android:fillViewport="true">
 
     <LinearLayout
@@ -114,7 +114,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="12dp"
-                android:background="@drawable/light_brown_bg"
+                android:background="@drawable/background_input_field"
                 android:layout_marginEnd="8dp">
 
                 <EditText
@@ -145,7 +145,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="12dp"
-                android:background="@drawable/light_brown_bg"
+                android:background="@drawable/background_input_field"
                 android:layout_marginStart="8dp">
 
                 <EditText
@@ -224,7 +224,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@color/light_brown"
+            android:background="@drawable/light_brown_bg"
             android:visibility="visible"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp">
@@ -251,7 +251,7 @@
                 android:id="@+id/spinnerNextVaccineName"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/white_input_bg"
+                android:background="@drawable/background_input_field"
                 android:paddingHorizontal="12dp"
                 android:layout_marginBottom="12dp"/>
 
@@ -269,7 +269,7 @@
                 android:id="@+id/spinnerNextDose"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/white_input_bg"
+                android:background="@drawable/background_input_field"
                 android:paddingHorizontal="12dp"
                 android:layout_marginBottom="12dp"/>
 
@@ -299,7 +299,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="12dp"
-                    android:background="@drawable/white_input_bg"
+                    android:background="@drawable/background_input_field"
                     android:layout_marginEnd="8dp">
 
                     <EditText
@@ -330,7 +330,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="12dp"
-                    android:background="@drawable/white_input_bg"
+                    android:background="@drawable/background_input_field"
                     android:layout_marginStart="8dp">
 
                     <EditText
@@ -368,7 +368,7 @@
                 android:id="@+id/edtNextVaccinePlace"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/white_input_bg"
+                android:background="@drawable/background_input_field"
                 android:hint="Clinic"
                 android:paddingHorizontal="12dp"
                 android:layout_marginBottom="8dp"/>

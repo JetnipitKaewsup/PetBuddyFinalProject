@@ -111,7 +111,7 @@ class AddExpenseFragment : Fragment() {
 
     private fun updateDate() {
 
-        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val format = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
         selectedDate = format.format(calendar.time)
 
         binding.expenseDate.setText(selectedDate)

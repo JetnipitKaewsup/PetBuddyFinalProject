@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.petbuddy.MainActivity
@@ -22,14 +23,15 @@ import com.example.petbuddy.api.RetrofitClient
 import com.example.petbuddy.databinding.FragmentCreateNewPetProfileBinding
 import com.example.petbuddy.model.Pet
 import com.example.petbuddy.navigation.MainNavigator
+import com.example.petbuddy.supabase.SupabaseClient
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 
 class CreateNewPetProfileFragment : Fragment() {
@@ -230,39 +232,50 @@ class CreateNewPetProfileFragment : Fragment() {
         binding.crePetBtn.text = "Saving..."
 
         if (selectedImageUri != null) {
-            // Save image and then pet data
-            saveImageAndPet(userId, petName, sex, breed, petType)
+            // มีรูป -> อัปโหลดก่อน
+            uploadImageAndSave(userId, petName, sex, breed, petType)
         } else {
-            // Save only pet data
+            // ไม่มีรูป -> บันทึกอย่างเดียว
             savePetData(userId, petName, sex, breed, petType, null)
         }
     }
 
-    private fun saveImageAndPet(
+    private fun uploadImageAndSave(
         userId: String,
         petName: String,
         sex: String,
         breed: String,
         petType: String
     ) {
-        try {
-            val inputStream = requireContext().contentResolver.openInputStream(selectedImageUri!!)
-            val fileName = "pet_${UUID.randomUUID()}.jpg"
-            val file = File(requireContext().filesDir, fileName)
+        lifecycleScope.launch {
+            try {
+                val bytes = requireContext().contentResolver.openInputStream(selectedImageUri!!)?.use {
+                    it.readBytes()
+                } ?: throw Exception("Image read failed")
 
-            FileOutputStream(file).use { outputStream ->
-                inputStream?.copyTo(outputStream)
+                val bucket = SupabaseClient.client.storage.from("picture")
+                val filePath = "pet/${currentPetId}.jpg"
+
+                bucket.upload(
+                    path = filePath,
+                    data = bytes,
+                    upsert = true
+                )
+
+                val imageUrl = bucket.publicUrl(filePath)
+
+                savePetData(userId, petName, sex, breed, petType, imageUrl)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(
+                    requireContext(),
+                    "Image upload failed: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                binding.crePetBtn.isEnabled = true
+                binding.crePetBtn.text = "Create Pet"
             }
-            inputStream?.close()
-
-            val imagePath = file.absolutePath
-            savePetData(userId, petName, sex, breed, petType, imagePath)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_LONG).show()
-            binding.crePetBtn.isEnabled = true
-            binding.crePetBtn.text = "Create Pet"
         }
     }
 
@@ -272,7 +285,7 @@ class CreateNewPetProfileFragment : Fragment() {
         sex: String,
         breed: String,
         petType: String,
-        imagePath: String?
+        imageUrl: String?
     ) {
         val pet = Pet(
             petId = currentPetId ?: UUID.randomUUID().toString(),
@@ -281,7 +294,7 @@ class CreateNewPetProfileFragment : Fragment() {
             breed = breed,
             petType = petType,
             birthDate = selectedDate,
-            imageUrl = imagePath
+            imageUrl = imageUrl
         )
 
         db.collection("users")
@@ -293,7 +306,7 @@ class CreateNewPetProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "Pet created successfully!", Toast.LENGTH_LONG).show()
 
                 // Select this pet automatically
-                //baseActivity.selectPet(pet)
+                // baseActivity.selectPet(pet)
 
                 // Navigate back
                 parentFragmentManager.popBackStack()

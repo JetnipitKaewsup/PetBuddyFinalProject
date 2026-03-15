@@ -84,7 +84,7 @@ class FeedingTodayAdapter(
 
             // 🔥 Show today's date
             val calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
             binding.tvDate.text = dateFormat.format(calendar.time)
 
             // Pets

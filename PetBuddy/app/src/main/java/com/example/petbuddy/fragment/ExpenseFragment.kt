@@ -107,7 +107,7 @@ class ExpenseFragment : Fragment() {
         val currentMonth = calendar.get(Calendar.MONTH)
         val currentYear = calendar.get(Calendar.YEAR)
 
-        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
 
         val filtered = expenseList.filter { expense ->
 
@@ -189,7 +189,7 @@ class ExpenseFragment : Fragment() {
 
         val calendar = Calendar.getInstance()
 
-        val format = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+        val format = SimpleDateFormat("MMMM yyyy", Locale.ENGLISH)
 
         binding.tvMonth.text = format.format(calendar.time)
     }
@@ -202,7 +202,7 @@ class ExpenseFragment : Fragment() {
 
         var total = 0.0
 
-        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
 
         for (expense in expenseList) {
 

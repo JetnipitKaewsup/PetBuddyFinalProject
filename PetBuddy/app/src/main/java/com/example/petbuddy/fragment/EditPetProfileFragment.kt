@@ -483,7 +483,7 @@ class EditPetProfileFragment : Fragment() {
         }
 
         if (imageUrl != null) {
-            updates["imagePath"] = imageUrl
+            updates["imageUrl"] = imageUrl
         }
 
         baseActivity.db.collection("users")

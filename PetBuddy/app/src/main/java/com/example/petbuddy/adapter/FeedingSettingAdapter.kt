@@ -70,7 +70,7 @@ class FeedingSettingAdapter(
 
                 val formatter = SimpleDateFormat(
                     "dd MMM yyyy",
-                    Locale.getDefault()
+                    Locale.ENGLISH
                 )
 
                 binding.tvDate.text = formatter.format(it)

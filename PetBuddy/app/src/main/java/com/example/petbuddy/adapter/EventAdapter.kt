@@ -17,8 +17,8 @@ class EventAdapter(
 ) : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
 
     // Formatters
-    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val timeFormatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+    private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = ItemEventBinding.inflate(

@@ -20,17 +20,6 @@
         app:title="Vaccination"
         app:titleTextColor="@color/brown">
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/btnAddNext"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="end"-->
-        <!--            android:text="+ Add Next"-->
-        <!--            android:textSize="14sp"-->
-        <!--            android:textColor="@color/brown"-->
-        <!--            android:padding="16dp"-->
-        <!--            android:background="?selectableItemBackgroundBorderless" />-->
-
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Pet Info -->
@@ -78,8 +67,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/fabAddVaccine"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutPet">
@@ -87,6 +76,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:orientation="vertical">
 
             <!-- Next Vaccine Card -->

@@ -47,8 +47,8 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.buttonReg.setOnClickListener {
 
-            val email = binding.editTextTextEmailAddress.text.toString().trim()
-            val password = binding.editTextTextPassword.text.toString().trim()
+            val email = binding.editEmail.text.toString().trim()
+            val password = binding.editPassword.text.toString().trim()
             val confirmPassword = binding.editConfPass.text.toString().trim()
             val username = binding.editUsername.text.toString().trim()
 

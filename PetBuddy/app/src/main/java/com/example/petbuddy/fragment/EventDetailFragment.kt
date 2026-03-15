@@ -210,12 +210,12 @@ class EventDetailFragment : Fragment() {
     }
 
     private fun formatDate(date: Date): String {
-        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
         return format.format(date)
     }
 
     private fun formatTime(date: Date): String {
-        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val format = SimpleDateFormat("HH:mm", Locale.ENGLISH)
         return format.format(date)
     }
 
