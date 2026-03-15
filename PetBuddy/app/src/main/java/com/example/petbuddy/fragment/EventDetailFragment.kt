@@ -139,9 +139,9 @@ class EventDetailFragment : Fragment() {
 
             tvPetName.text = pet.petName
 
-            if (!pet.imagePath.isNullOrEmpty()) {
+            if (!pet.imageUrl.isNullOrEmpty()) {
                 Glide.with(this)
-                    .load(pet.imagePath)
+                    .load(pet.imageUrl)
                     .apply(
                         RequestOptions()
                             .placeholder(R.drawable.pet_placeholder)

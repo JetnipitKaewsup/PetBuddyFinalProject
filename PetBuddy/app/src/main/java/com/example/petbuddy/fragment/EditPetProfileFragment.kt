@@ -286,7 +286,7 @@ class EditPetProfileFragment : Fragment() {
             originalBreed = currentPet.breed
             originalSex = currentPet.sex
             originalBirthDate = currentPet.birthDate
-            originalImagePath = currentPet.imagePath
+            originalImagePath = currentPet.imageUrl
 
             // แสดงข้อมูล
             binding.crePUser.setText(originalPetName)

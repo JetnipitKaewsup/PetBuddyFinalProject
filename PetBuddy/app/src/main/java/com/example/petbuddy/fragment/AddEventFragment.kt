@@ -371,9 +371,9 @@ class AddEventFragment : Fragment() {
                     showRemovePetDialog(pet)
                 }
 
-                if (!pet.imagePath.isNullOrEmpty()) {
+                if (!pet.imageUrl.isNullOrEmpty()) {
                     Glide.with(this)
-                        .load(pet.imagePath)
+                        .load(pet.imageUrl)
                         .apply(
                             RequestOptions()
                                 .placeholder(R.drawable.pet_placeholder)
@@ -384,7 +384,6 @@ class AddEventFragment : Fragment() {
                 } else {
                     imageView.setImageResource(R.drawable.pet_placeholder)
                 }
-
                 frameLayout.addView(imageView)
                 frameLayout.addView(removeButton)
                 container.addView(frameLayout)

@@ -43,7 +43,10 @@ class PetIconAdapter(
         fun bind(pet: Pet) {
 
             Glide.with(binding.root.context)
-                .load(pet.imagePath)
+                .load(pet.imageUrl)
+                .placeholder(R.drawable.pet_placeholder)
+                .error(R.drawable.pet_placeholder)
+                .circleCrop()
                 .into(binding.imgPet)
 
             binding.root.setOnClickListener {

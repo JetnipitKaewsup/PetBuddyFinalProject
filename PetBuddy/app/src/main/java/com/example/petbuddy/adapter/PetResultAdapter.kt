@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.petbuddy.data.Pet
+import com.example.petbuddy.model.Pet
 import com.example.petbuddy.R
 
 class PetResultAdapter(
@@ -32,11 +32,11 @@ class PetResultAdapter(
         holder.breedTextView.text = pet.breed
 
         Glide.with(holder.itemView.context)
-            .load(pet.imagePath)
+            .load(pet.imageUrl)
             .centerCrop()
             .into(holder.imageView)
 
-        Log.d("PET_IMAGE_URL", pet.imagePath)
+        Log.d("PET_IMAGE_URL", pet.imageUrl.toString())
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(pet)
         }

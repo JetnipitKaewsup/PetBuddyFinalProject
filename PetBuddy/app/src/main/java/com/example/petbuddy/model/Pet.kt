@@ -4,11 +4,13 @@ import com.google.firebase.Timestamp
 import java.io.Serializable
 
 data class Pet(
+
     var petId: String = "",
     val petName: String = "",
     val sex: String = "",
     val breed: String = "",
     val petType: String = "",
     val birthDate: Timestamp? = null,
-    val imagePath: String ?= null,
-    ) : Serializable
+    val imageUrl: String? = null
+
+) : Serializable

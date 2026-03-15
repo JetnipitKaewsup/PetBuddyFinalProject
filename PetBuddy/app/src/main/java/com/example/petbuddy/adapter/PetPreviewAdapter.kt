@@ -15,11 +15,13 @@ class PetPreviewAdapter(
 ) : RecyclerView.Adapter<PetPreviewAdapter.PetPreviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetPreviewViewHolder {
+
         val imageView = ImageView(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(80, 80)
             scaleType = ImageView.ScaleType.CENTER_CROP
             setPadding(4, 4, 4, 4)
         }
+
         return PetPreviewViewHolder(imageView)
     }
 
@@ -30,12 +32,16 @@ class PetPreviewAdapter(
 
     override fun getItemCount() = pets.size
 
-    inner class PetPreviewViewHolder(private val imageView: ImageView) : RecyclerView.ViewHolder(imageView) {
+    inner class PetPreviewViewHolder(
+        private val imageView: ImageView
+    ) : RecyclerView.ViewHolder(imageView) {
+
         fun bind(pet: Pet) {
-            // โหลดรูปสัตว์เลี้ยง
-            if (!pet.imagePath.isNullOrEmpty()) {
+
+            if (!pet.imageUrl.isNullOrEmpty()) {
+
                 Glide.with(imageView.context)
-                    .load(pet.imagePath)
+                    .load(pet.imageUrl)
                     .apply(
                         RequestOptions()
                             .placeholder(R.drawable.pet_placeholder)
@@ -43,11 +49,13 @@ class PetPreviewAdapter(
                             .circleCrop()
                     )
                     .into(imageView)
+
             } else {
+
                 imageView.setImageResource(R.drawable.pet_placeholder)
+
             }
 
-            // คลิกเพื่อลบออก
             imageView.setOnClickListener {
                 onRemoveClick(pet)
             }

@@ -10,8 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.MainActivity
 import com.example.petbuddy.adapter.PetResultAdapter
-import com.example.petbuddy.data.Pet
-import com.example.petbuddy.data.User
+import com.example.petbuddy.model.Pet
 import com.example.petbuddy.databinding.ActivityPetResultBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -54,7 +53,6 @@ class PetResult : AppCompatActivity() {
 
                     val pet = document.toObject(Pet::class.java)
                     pet.petId = document.id
-
                     pets.add(pet)
                 }
 

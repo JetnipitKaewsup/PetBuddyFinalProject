@@ -9,19 +9,21 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.petbuddy.R
 import com.example.petbuddy.databinding.ActivityCreatePetProfileBinding
 import com.example.petbuddy.api.RetrofitClient
 import com.example.petbuddy.api.DogResponse
 import com.example.petbuddy.api.CatBreed
+import com.example.petbuddy.supabase.SupabaseClient
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 
 class CreatePetProfile : AppCompatActivity() {
@@ -31,12 +33,15 @@ class CreatePetProfile : AppCompatActivity() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private var selectedDate: Timestamp? = null
-    private var pathImage: String? = null
     private var currentPetId: String? = null
+    private var imageUri: Uri? = null
 
     private val pickImage =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let { saveProfileImage(it) }
+            uri?.let {
+                imageUri = it
+                binding.imageProfilePet.setImageURI(it)
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +87,6 @@ class CreatePetProfile : AppCompatActivity() {
                 loadCatBreeds()
 
             }
-
         }
     }
 
@@ -119,7 +123,6 @@ class CreatePetProfile : AppCompatActivity() {
                         binding.breedDropdown.setAdapter(adapter)
 
                     }
-
                 }
 
                 override fun onFailure(call: Call<DogResponse>, t: Throwable) {
@@ -201,6 +204,13 @@ class CreatePetProfile : AppCompatActivity() {
         }
     }
 
+    private fun setupImagePicker() {
+
+        binding.imageProfilePet.setOnClickListener {
+            pickImage.launch("image/*")
+        }
+    }
+
     private fun setupCreateButton() {
 
         binding.crePetBtn.setOnClickListener {
@@ -216,28 +226,83 @@ class CreatePetProfile : AppCompatActivity() {
             }
 
             if (petName.isEmpty()) {
-                Toast.makeText(this,"Enter pet name",Toast.LENGTH_LONG).show()
+
+                Toast.makeText(
+                    this,
+                    "Enter pet name",
+                    Toast.LENGTH_LONG
+                ).show()
+
                 return@setOnClickListener
             }
 
-            savePetToFirestore(petName, sex, breed, petType)
-
+            uploadImageAndSave(petName, sex, breed, petType)
 
         }
     }
 
-    private fun setupImagePicker() {
+    private fun uploadImageAndSave(
+        petName: String,
+        sex: String,
+        breed: String,
+        petType: String
+    ) {
 
-        binding.imageProfilePet.setOnClickListener {
-            pickImage.launch("image/*")
+        if (imageUri == null) {
+
+            savePetToFirestore(petName, sex, breed, petType, null)
+            return
         }
+
+        lifecycleScope.launch {
+
+            try {
+
+                val bytes = contentResolver.openInputStream(imageUri!!)?.use {
+                    it.readBytes()
+                } ?: throw Exception("Image read failed")
+
+                val bucket = SupabaseClient.client.storage.from("picture")
+
+                val filePath = "pet/${currentPetId}.jpg"
+
+                bucket.upload(
+                    path = filePath,
+                    data = bytes,
+                    upsert = true
+                )
+
+                val imageUrl = bucket.publicUrl(filePath)
+
+                savePetToFirestore(
+                    petName,
+                    sex,
+                    breed,
+                    petType,
+                    imageUrl
+                )
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+
+                Toast.makeText(
+                    this@CreatePetProfile,
+                    "Image upload failed",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        }
+
     }
 
     private fun savePetToFirestore(
         petName: String,
         sex: String,
         breed: String,
-        petType: String
+        petType: String,
+        imageUrl: String?
     ) {
 
         val userId = mAuth.uid ?: return
@@ -254,46 +319,33 @@ class CreatePetProfile : AppCompatActivity() {
             "breed" to breed,
             "petType" to petType,
             "birthDate" to selectedDate,
-            "imagePath" to pathImage,
+            "imageUrl" to imageUrl
         )
 
         petRef.set(petData)
             .addOnSuccessListener {
 
-                Toast.makeText(this,"Pet created successfully!",Toast.LENGTH_LONG).show()
-                startActivity(Intent(this, PetResult::class.java))
+                Toast.makeText(
+                    this,
+                    "Pet created successfully!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                startActivity(
+                    Intent(this, PetResult::class.java)
+                )
+
                 finish()
 
             }
             .addOnFailureListener {
 
-                Toast.makeText(this,"Error saving pet",Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "Error saving pet",
+                    Toast.LENGTH_LONG
+                ).show()
 
             }
-    }
-
-    private fun saveProfileImage(uri: Uri) {
-
-        try {
-
-            val inputStream = contentResolver.openInputStream(uri)
-
-            val fileName = "pet_${UUID.randomUUID()}.jpg"
-            val file = File(filesDir, fileName)
-
-            val outputStream = FileOutputStream(file)
-
-            inputStream?.copyTo(outputStream)
-
-            inputStream?.close()
-            outputStream.close()
-
-            pathImage = file.absolutePath
-
-            binding.imageProfilePet.setImageURI(uri)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 }

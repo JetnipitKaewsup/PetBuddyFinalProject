@@ -6,31 +6,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.petbuddy.R
-import com.example.petbuddy.databinding.ItemPetBinding
 import com.example.petbuddy.databinding.ItemPetInProfileBinding
 import com.example.petbuddy.model.Pet
-import com.example.petbuddy.navigation.MainNavigator
 
-class MyPetsAdapter (
-    private val onPetClick : (Pet) -> Unit
-) : RecyclerView.Adapter<MyPetsAdapter.MyPetViewHolder>(){
-    private var pets : List<Pet> = emptyList()
-    fun submitList(newPets : List<Pet>){
+class MyPetsAdapter(
+    private val onPetClick: (Pet) -> Unit
+) : RecyclerView.Adapter<MyPetsAdapter.MyPetViewHolder>() {
+
+    private var pets: List<Pet> = emptyList()
+
+    fun submitList(newPets: List<Pet>) {
         pets = newPets
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): MyPetsAdapter.MyPetViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPetViewHolder {
 
         val binding = ItemPetInProfileBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return MyPetViewHolder(binding,onPetClick)
+
+        return MyPetViewHolder(binding, onPetClick)
     }
 
     override fun onBindViewHolder(holder: MyPetViewHolder, position: Int) {
@@ -44,17 +42,19 @@ class MyPetsAdapter (
     class MyPetViewHolder(
         private val binding: ItemPetInProfileBinding,
         private val onPetClick: (Pet) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root){
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(pet: Pet){
+        fun bind(pet: Pet) {
+
             binding.apply {
-                tvPetName.text = pet.petName ?: "-"
-                tvPetBreed.text = pet.breed ?: "-"
 
-                // load pet profile
-                if (!pet.imagePath.isNullOrEmpty()){
+                tvPetName.text = pet.petName
+                tvPetBreed.text = pet.breed
+
+                if (!pet.imageUrl.isNullOrEmpty()) {
+
                     Glide.with(root.context)
-                        .load(pet.imagePath)
+                        .load(pet.imageUrl)
                         .apply(
                             RequestOptions()
                                 .placeholder(R.drawable.pet_placeholder)
@@ -62,14 +62,17 @@ class MyPetsAdapter (
                                 .circleCrop()
                         )
                         .into(ivPet)
+
                 } else {
+
                     ivPet.setImageResource(R.drawable.pet_placeholder)
+
                 }
+
                 root.setOnClickListener {
-                    onPetClick(pet)  // เรียก callback เมื่อคลิก
+                    onPetClick(pet)
                 }
             }
         }
     }
-
 }
