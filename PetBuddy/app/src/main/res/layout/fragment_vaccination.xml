@@ -38,9 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Pet Name"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/brown" />
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/btnChangePet"

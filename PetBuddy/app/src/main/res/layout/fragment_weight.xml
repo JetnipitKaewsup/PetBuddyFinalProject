@@ -45,7 +45,7 @@
                 android:text="Pet Name"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="@color/brown"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btnSortRecord"
                 app:layout_constraintTop_toTopOf="parent"

@@ -445,10 +445,10 @@ class EditPetProfileFragment : Fragment() {
                 )
 
                 // ได้ public URL
-                val imageUrl = bucket.publicUrl(fileName)
+                val imagePath = bucket.publicUrl(fileName)
 
                 // อัปเดท Firestore
-                updatePetInFirestore(petName, sex, breed, petType, imageUrl)
+                updatePetInFirestore(petName, sex, breed, petType, imagePath)
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -464,7 +464,7 @@ class EditPetProfileFragment : Fragment() {
         sex: String,
         breed: String,
         petType: String,
-        imageUrl: String?
+        imagePath: String?
     ) {
         val userId = baseActivity.getCurrentUserIdSafe() ?: return
         val petId = pet?.petId ?: return
@@ -482,8 +482,8 @@ class EditPetProfileFragment : Fragment() {
             updates["birthDate"] = selectedDate!!
         }
 
-        if (imageUrl != null) {
-            updates["imageUrl"] = imageUrl
+        if (imagePath != null) {
+            updates["imagePath"] = imagePath
         }
 
         baseActivity.db.collection("users")
