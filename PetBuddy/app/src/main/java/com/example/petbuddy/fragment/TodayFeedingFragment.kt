@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petbuddy.activity.BaseActivity
 import com.example.petbuddy.adapter.FeedingTodayAdapter
 import com.example.petbuddy.databinding.FragmentTodayFeedingBinding
-import com.example.petbuddy.model.*
+import com.example.petbuddy.model.FeedingSchedule
+import com.example.petbuddy.model.Pet
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,8 +22,21 @@ class TodayFeedingFragment : Fragment() {
     private lateinit var baseActivity: BaseActivity
     private lateinit var adapter: FeedingTodayAdapter
 
-    private val dateFormatter =
+    private var petMap: Map<String, Pet> = emptyMap()
+
+    private val dateFormat =
         SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+
+    // 🔥 map Mon → Calendar
+    private val dayMap = mapOf(
+        "sun" to Calendar.SUNDAY,
+        "mon" to Calendar.MONDAY,
+        "tue" to Calendar.TUESDAY,
+        "wed" to Calendar.WEDNESDAY,
+        "thu" to Calendar.THURSDAY,
+        "fri" to Calendar.FRIDAY,
+        "sat" to Calendar.SATURDAY
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,24 +51,23 @@ class TodayFeedingFragment : Fragment() {
                 false
             )
 
-        baseActivity = activity as BaseActivity
+        baseActivity = requireActivity() as BaseActivity
+
+        setupToolbar()
+        setupRecycler()
 
         return binding.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onResume() {
+        super.onResume()
+        loadData()
+    }
 
-        setupRecycler()
-
-        loadTodayFeeding()
+    private fun setupToolbar() {
 
         binding.toolbar.setNavigationOnClickListener {
-
-            parentFragmentManager.popBackStack()
-
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -62,7 +75,7 @@ class TodayFeedingFragment : Fragment() {
 
         adapter = FeedingTodayAdapter(
             feedingList = emptyList(),
-            petMap = emptyMap(),
+            petMap = petMap,
             onDoneClick = { schedule ->
                 onFeedingDone(schedule)
             },
@@ -75,152 +88,74 @@ class TodayFeedingFragment : Fragment() {
         binding.recyclerTodayFeeding.adapter = adapter
     }
 
-    private fun loadTodayFeeding() {
+    private fun loadData() {
 
-        val userId =
-            baseActivity.getCurrentUserIdSafe()
-                ?: return
+        baseActivity.loadAllPets { pets ->
 
-        val todayDate =
-            dateFormatter.format(Date())
+            petMap = pets.associateBy { it.petId }
+            adapter.updatePetMap(petMap)
 
-        val feedingList =
-            mutableListOf<FeedingSchedule>()
+            baseActivity.loadFeedingSchedules { schedules ->
 
-        val petMap =
-            mutableMapOf<String, Pet>()
+                val calendar = Calendar.getInstance()
 
-        val calendar =
-            Calendar.getInstance()
+                val todayDate = dateFormat.format(calendar.time)
+                val todayIndex = calendar.get(Calendar.DAY_OF_WEEK)
 
-        val todayDayName =
-            calendar.getDisplayName(
-                Calendar.DAY_OF_WEEK,
-                Calendar.LONG,
-                Locale.ENGLISH
-            ) ?: ""
+                val todaySchedules = schedules.filter { schedule ->
 
-        baseActivity.db.collection("users")
-            .document(userId)
-            .collection("pets")
-            .get()
-            .addOnSuccessListener { pets ->
+                    if (!schedule.isActive) return@filter false
 
-                for (doc in pets) {
+                    val repeat =
+                        schedule.repeatType
+                            ?.trim()
+                            ?.lowercase(Locale.ENGLISH)
+                            ?: ""
 
-                    petMap[doc.id] =
-                        doc.toObject(Pet::class.java)
-                }
+                    when (repeat) {
 
-                baseActivity.db.collection("users")
-                    .document(userId)
-                    .collection("feeding_schedules")
-                    .get()
-                    .addOnSuccessListener { docs ->
+                        "daily", "everyday" -> true
 
-                        val safe = _binding ?: return@addOnSuccessListener
+                        "weekly", "custom" -> {
 
-                        for (doc in docs) {
+                            val days = schedule.days ?: emptyList()
 
-                            val schedule =
-                                doc.toObject(
-                                    FeedingSchedule::class.java
-                                ).copy(id = doc.id)
-
-                            if (!schedule.isActive) continue
-
-                            if (schedule.completedDays?.contains(todayDate) == true)
-                                continue
-
-                            val repeat =
-                                schedule.repeatType
-                                    .trim()
-                                    .lowercase(Locale.ENGLISH)
-
-                            when (repeat) {
-
-                                "daily", "everyday" -> {
-
-                                    feedingList.add(schedule)
-                                }
-
-                                "weekly", "custom" -> {
-
-                                    val days =
-                                        schedule.days ?: emptyList()
-
-                                    if (days.any {
-
-                                            it.trim()
-                                                .equals(
-                                                    todayDayName,
-                                                    ignoreCase = true
-                                                )
-
-                                        }) {
-
-                                        feedingList.add(schedule)
-                                    }
-                                }
-
-                                "once" -> {
-
-                                    schedule.createdAt?.let {
-
-                                        val date =
-                                            dateFormatter.format(
-                                                it.toDate()
-                                            )
-
-                                        if (date == todayDate) {
-
-                                            feedingList.add(schedule)
-                                        }
-                                    }
-                                }
+                            days.any {
+                                val key =
+                                    it.trim().lowercase(Locale.ENGLISH)
+                                dayMap[key] == todayIndex
                             }
                         }
 
-                        val sortedList =
-                            feedingList.sortedWith(
-                                compareBy(
-                                    { it.hour },
-                                    { it.minute }
-                                )
-                            )
+                        "once" -> {
 
-                        adapter.updatePetMap(petMap)
+                            schedule.createdAt?.let {
+                                val date =
+                                    dateFormat.format(it.toDate())
+                                date == todayDate
+                            } ?: false
+                        }
 
-                        adapter.submitList(sortedList)
-
-                        safe.tvNoFeeding.visibility =
-                            if (sortedList.isEmpty())
-                                View.VISIBLE
-                            else
-                                View.GONE
+                        else -> false
                     }
+                }.sortedWith(compareBy({ it.hour }, { it.minute }))
+
+                adapter.submitList(todaySchedules)
+
+                binding.tvNoFeeding.visibility =
+                    if (todaySchedules.isEmpty())
+                        View.VISIBLE
+                    else
+                        View.GONE
             }
+        }
     }
 
-    private fun onFeedingDone(
-        schedule: FeedingSchedule
-    ) {
+    private fun onFeedingDone(schedule: FeedingSchedule) {
 
         val calendar = Calendar.getInstance()
 
-        val todayDate =
-            dateFormatter.format(calendar.time)
-
-        val record =
-            FeedingRecord(
-                scheduleId = schedule.id,
-                foodName = schedule.title,
-                foodType = schedule.type,
-                petIds = schedule.petIds,
-                fedAt = calendar.timeInMillis
-            )
-
-        baseActivity.saveFeedingRecord(record)
+        val todayDate = dateFormat.format(calendar.time)
 
         baseActivity.markScheduleCompleted(
             schedule.id,
@@ -231,7 +166,7 @@ class TodayFeedingFragment : Fragment() {
                 "Feeding recorded for ${schedule.title}"
             )
 
-            loadTodayFeeding()
+            loadData()
         }
     }
 

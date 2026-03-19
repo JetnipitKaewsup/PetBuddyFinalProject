@@ -27,6 +27,7 @@ data class FeedingSchedule(
     @set:PropertyName("isActive")
     var isActive: Boolean = true,
 
-    val createdAt: Timestamp? = null
+    val createdAt: Timestamp? = null,
 
+    val date: String? = null
 ) : Parcelable

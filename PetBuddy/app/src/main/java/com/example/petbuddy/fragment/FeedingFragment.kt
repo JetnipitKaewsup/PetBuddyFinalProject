@@ -72,18 +72,19 @@ class FeedingFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }
 
-    private fun setUpView(){
+    private fun setUpView() {
         binding.tvViewAllToday.setOnClickListener {
             val fragment = TodayFeedingFragment()
 
-            parentFragmentManager.beginTransaction().replace(R.id.fragment_container,fragment)
-                .addToBackStack(null).commit()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -105,7 +106,6 @@ class FeedingFragment : Fragment() {
 
         binding.showFeeding.adapter = feedingAdapter
 
-
         recordAdapter = FeedingRecordAdapter(
             emptyMap()
         ) { petId ->
@@ -121,7 +121,6 @@ class FeedingFragment : Fragment() {
     private fun setupListeners() {
 
         binding.cardActiveFeeding.setOnClickListener {
-
             val fragment = SettingFeedingFragment()
 
             parentFragmentManager.beginTransaction()
@@ -131,7 +130,6 @@ class FeedingFragment : Fragment() {
         }
 
         binding.btnAddFeeding.setOnClickListener {
-
             val fragment = FeedingAlarmFragment()
 
             parentFragmentManager.beginTransaction()
@@ -140,27 +138,15 @@ class FeedingFragment : Fragment() {
                 .commit()
         }
 
-        // View All schedules
         binding.tvViewAllToday.setOnClickListener {
-
             feedingAdapter.submitList(feedingSchedules)
         }
 
         binding.etSearchFood.addTextChangedListener(object : TextWatcher {
 
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 filterRecords(s.toString())
             }
 
@@ -192,13 +178,10 @@ class FeedingFragment : Fragment() {
             val todayDayIndex = calendar.get(Calendar.DAY_OF_WEEK)
 
             val todaySchedules = schedules.filter { schedule ->
-
                 shouldShowSchedule(schedule, todayDate, todayDayIndex)
-
             }.sortedWith(compareBy({ it.hour }, { it.minute }))
 
             feedingSchedules = todaySchedules
-
 
             val limitedList =
                 if (todaySchedules.size > 3)
@@ -228,6 +211,7 @@ class FeedingFragment : Fragment() {
         }
     }
 
+    // 🔥🔥🔥 FIX อยู่ตรงนี้
     private fun shouldShowSchedule(
         schedule: FeedingSchedule,
         todayDate: String,
@@ -241,14 +225,19 @@ class FeedingFragment : Fragment() {
 
         return when (schedule.repeatType.lowercase(Locale.ENGLISH)) {
 
-            "once" ->
-                schedule.completedDays.isNullOrEmpty()
+            // ✅ ใช้ createdAt แทน date
+            "once" -> {
+                val createdDate = schedule.createdAt?.toDate()?.let {
+                    dateFormat.format(it)
+                }
+                createdDate == todayDate
+            }
 
-            "daily", "everyday" ->
-                true
+            "daily", "everyday" -> true
 
-            "weekly", "custom" ->
+            "weekly", "custom" -> {
                 isTodaySelected(schedule.days, todayDayIndex)
+            }
 
             else -> true
         }
@@ -260,9 +249,7 @@ class FeedingFragment : Fragment() {
     ): Boolean {
 
         return selectedDays?.any {
-
             dayNameToIndex[it.lowercase(Locale.ENGLISH)] == todayDayIndex
-
         } == true
     }
 
@@ -303,7 +290,6 @@ class FeedingFragment : Fragment() {
                 allRecords
             } else {
                 allRecords.filter {
-
                     it.foodName.contains(query, true) ||
                             it.foodType.contains(query, true)
                 }
@@ -313,7 +299,6 @@ class FeedingFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-
         super.onDestroyView()
         _binding = null
     }
